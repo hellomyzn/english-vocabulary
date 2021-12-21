@@ -29,7 +29,7 @@ def get_urls() -> list:
 
 
 def get_data_from_cambridge(url: str):
-    '''get vocabulary data from cambridge'''
+    '''Get vocabulary data from cambridge'''
 
     # TO AVOID SCRAPING ERROR ON CAMBRIDGE SITE: requests.exceptions.ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))        
     # REF: https://gammasoft.jp/support/solutions-of-requests-get-failed/
@@ -47,7 +47,6 @@ def get_data_from_cambridge(url: str):
     us_pronunciation = soup.select('.us > .pron > .ipa', limit=1)[0].text 
     uk_pronunciation = soup.select('.uk > .pron > .ipa', limit=1)[0].text
     
-
     # Get all difinition
     definitions = [d for d in soup.find_all(class_="pr entry-body__el")]
     for dif in definitions:
@@ -60,25 +59,33 @@ def get_data_from_cambridge(url: str):
     return vocabularies, parts_of_speechs, us_pronunciation, uk_pronunciation, meanings, example_sentences
 
 
+def write_csv(vocabularies: list, 
+                parts_of_speechs: list, 
+                us_pronunciation: str, 
+                uk_pronunciation: str, 
+                meanings: list, 
+                example_sentences: list):
+    '''Write vacabularies on CSV(/backend/data/vocabularies.csv)'''
 
-# with open('data/voc.csv', 'w', newline='') as csvfile:
-#     fieldnames = ['vocabulary', 'parts of speach', 'us pronunciation', 'uk pronunciation', 'definition', 'example sentence']
-#     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    with open('data/vocabularies.csv', 'w', newline='') as csvfile:
+        fieldnames = ['vocabulary', 'parts of speach', 'us pronunciation', 'uk pronunciation', 'definition', 'example sentence']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-    # writer.writeheader()
-    # for i in range(len(titles)):
-    #     for j in range(len((definitions[i]))):
-    #         writer.writerow({'vocabulary': titles[i], 
-    #                     'parts of speach': parts_of_speechs[i], 
-    #                     'us pronunciation': us_pronunciation, 
-    #                     'uk pronunciation': uk_pronunciation, 
-    #                     'definition': definitions[i][j], 
-    #                     'example sentence': example_sentences[i][j]})
+        writer.writeheader()
+        for i in range(len(vocabularies)):
+            for j in range(len((meanings[i]))):
+                writer.writerow({'vocabulary': vocabularies[i], 
+                                'parts of speach': parts_of_speechs[i], 
+                                'us pronunciation': us_pronunciation, 
+                                'uk pronunciation': uk_pronunciation, 
+                                'definition': meanings[i][j], 
+                                'example sentence': example_sentences[i][j]})
 
 def main():
     urls = get_urls()
     url = 'https://dictionary.cambridge.org/dictionary/english/need'
     vocabularies, parts_of_speechs, us_pronunciation, uk_pronunciation, meanings, example_sentences = get_data_from_cambridge(url)
+    write_csv(vocabularies, parts_of_speechs, us_pronunciation, uk_pronunciation, meanings, example_sentences)
 
 if __name__ == "__main__":
     main()
