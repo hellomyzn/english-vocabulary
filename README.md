@@ -6,6 +6,8 @@ This is for generating vocabulary list.
 Bookmark
 
 
+$ cp /Users/<USER NAME>/Library/Application\ Support/Google/Chrome/Default/Bookmarks  backend
+
 
 
 
