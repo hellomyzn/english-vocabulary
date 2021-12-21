@@ -1,7 +1,7 @@
 import json
-import getpass
 import requests
 import bs4
+import csv
 from dotenv import load_dotenv
 
 
@@ -34,18 +34,29 @@ titles = []
 parts_of_speechs = []
 definitions = []
 example_sentences = []
-uk_pronunciation = soup.select('.uk .ipa', limit=1)
-us_pronunciation = soup.select('.us .ipa', limit=1)
+uk_pronunciation = soup.select('.uk > .pron > .ipa', limit=1)[0].text
+us_pronunciation = soup.select('.us > .pron > .ipa', limit=1)[0].text
 # Sometimes there are some meanings of the vocabulary
 meaning_blocks = [d for d in soup.find_all(class_="pr entry-body__el")]
 
 for meaning in meaning_blocks:
-    titles += meaning.find(class_="hw dhw").text
-    parts_of_speechs += meaning.find(class_="pos dpos").text
+    titles.append(meaning.find(class_="hw dhw").text)
+    parts_of_speechs.append(meaning.find(class_="pos dpos").text)
     definitions.append([d.text for d in meaning.select(".sense-body > .ddef_block .ddef_d")])
     example_sentences.append([d.find(class_='eg').text for d in meaning.select(".sense-body > .ddef_block > .def-body")])
-    
 
-print(len(example_sentences))
-print(example_sentences)
-# print(example_sentence)
+
+
+with open('data/voc.csv', 'w', newline='') as csvfile:
+    fieldnames = ['vocabulary', 'parts of speach', 'us pronunciation', 'uk pronunciation', 'definition', 'example sentence']
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+    writer.writeheader()
+    for i, _ in enumerate(titles):
+        for j, _ in enumerate(definitions[i]):
+            writer.writerow({'vocabulary': titles[i], 
+                        'parts of speach': parts_of_speechs[i], 
+                        'us pronunciation': us_pronunciation, 
+                        'uk pronunciation': uk_pronunciation, 
+                        'definition': definitions[i][j], 
+                        'example sentence': example_sentences[i][j]})
