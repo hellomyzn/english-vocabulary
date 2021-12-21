@@ -17,6 +17,7 @@ def get_chrome_bookmark_data() -> dict:
 
 def get_urls() -> list:
     '''Get the list of the urls '''
+    
     bookmark_data = get_chrome_bookmark_data()
     bookmark_data = bookmark_data['roots']['bookmark_bar']
 
@@ -26,34 +27,37 @@ def get_urls() -> list:
     
     return urls
 
+
+def get_data_from_cambridge(url: str):
+    '''get vocabulary data from cambridge'''
+
+    # TO AVOID SCRAPING ERROR ON CAMBRIDGE SITE: requests.exceptions.ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))        
+    # REF: https://gammasoft.jp/support/solutions-of-requests-get-failed/
+    headers_dic = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"}
+
+    vocabularies = []
+    parts_of_speechs = []
+    meanings = []
+    example_sentences = []
+
+    html = requests.get(url, headers=headers_dic)
+    soup = bs4.BeautifulSoup(html.content, "html.parser")
+
+    # Get data of pronunciation
+    us_pronunciation = soup.select('.us > .pron > .ipa', limit=1)[0].text 
+    uk_pronunciation = soup.select('.uk > .pron > .ipa', limit=1)[0].text
     
 
-# for entry in bookmarks:
-#     if entry['type'] == 'folder' and entry['name'] == 'voc':
-#         urls = [d.get('url') for d in entry['children']]
-#         # print(urls)
+    # Get all difinition
+    definitions = [d for d in soup.find_all(class_="pr entry-body__el")]
+    for dif in definitions:
+        vocabularies.append(dif.find(class_="hw dhw").text)
+        parts_of_speechs.append(dif.find(class_="pos dpos").text)
+        meanings.append([d.text for d in dif.select(".sense-body > .ddef_block .ddef_d")])
+        # Get the first example sentence 
+        example_sentences.append([d.find(class_='eg').text for d in dif.select(".sense-body > .ddef_block > .def-body")])
 
-# TO AVOID ERROR: requests.exceptions.ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))        
-# REF: https://gammasoft.jp/support/solutions-of-requests-get-failed/
-# headers_dic = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"}
-# load_url = "https://dictionary.cambridge.org/dictionary/english/need"
-# html = requests.get(load_url, headers=headers_dic)
-# soup = bs4.BeautifulSoup(html.content, "html.parser")
-
-# titles = []
-# parts_of_speechs = []
-# definitions = []
-# example_sentences = []
-# uk_pronunciation = soup.select('.uk > .pron > .ipa', limit=1)[0].text
-# us_pronunciation = soup.select('.us > .pron > .ipa', limit=1)[0].text
-# # Sometimes there are some meanings of the vocabulary
-# meaning_blocks = [d for d in soup.find_all(class_="pr entry-body__el")]
-
-# for meaning in meaning_blocks:
-#     titles.append(meaning.find(class_="hw dhw").text)
-#     parts_of_speechs.append(meaning.find(class_="pos dpos").text)
-#     definitions.append([d.text for d in meaning.select(".sense-body > .ddef_block .ddef_d")])
-#     example_sentences.append([d.find(class_='eg').text for d in meaning.select(".sense-body > .ddef_block > .def-body")])
+    return vocabularies, parts_of_speechs, us_pronunciation, uk_pronunciation, meanings, example_sentences
 
 
 
@@ -73,7 +77,8 @@ def get_urls() -> list:
 
 def main():
     urls = get_urls()
-    print(urls)
+    url = 'https://dictionary.cambridge.org/dictionary/english/need'
+    vocabularies, parts_of_speechs, us_pronunciation, uk_pronunciation, meanings, example_sentences = get_data_from_cambridge(url)
 
 if __name__ == "__main__":
     main()
