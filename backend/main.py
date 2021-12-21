@@ -49,12 +49,25 @@ def get_data_from_cambridge(url: str):
     
     # Get all difinition
     definitions = [d for d in soup.find_all(class_="pr entry-body__el")]
-    for dif in definitions:
-        vocabularies.append(dif.find(class_="hw dhw").text)
-        parts_of_speechs.append(dif.find(class_="pos dpos").text)
-        meanings.append([d.text for d in dif.select(".sense-body > .ddef_block .ddef_d")])
-        # Get the first example sentence 
-        example_sentences.append([d.find(class_='eg').text for d in dif.select(".sense-body > .ddef_block > .def-body")])
+    for defi in definitions:
+        vocabularies.append(defi.find(class_="hw dhw").text)
+        parts_of_speechs.append(defi.find(class_="pos dpos").text)
+
+        # Get the block of details 
+        details_of_definitions = [d for d in defi.find_all(class_="def-block ddef_block")]
+        meaning = []
+        example_sentence = []
+
+        for dod in details_of_definitions:
+            print("#############################################################")
+            meaning += [d.find(class_="ddef_d").text for d in dod.select(".ddef_h", limit=1)]
+            # Get the first example sentence 
+            print(dod)
+            example_sentence += [d.find(class_='eg').text for d in dod.select(".ddef_b > .examp", limit=1)]
+            
+        
+        meanings.append(meaning)
+        example_sentences.append(example_sentence)
 
     return vocabularies, parts_of_speechs, us_pronunciation, uk_pronunciation, meanings, example_sentences
 
@@ -73,7 +86,13 @@ def write_csv(vocabularies: list,
 
         writer.writeheader()
         for i in range(len(vocabularies)):
+            # Debug1: match number of meanings and number of example
+            print('DEBUG1: ', len(meanings[i]), ' : ',  len(example_sentences[i]))
             for j in range(len((meanings[i]))):
+                # Debug2: 
+                print('DEBUG2: ', 'Meaning: ', meanings[i][j])
+                print('DEBUG2: ', 'Example: ', example_sentences[i][j])
+                # print(meanings[i][j], ' : ', example_sentences[i][j])
                 writer.writerow({'vocabulary': vocabularies[i], 
                                 'parts of speach': parts_of_speechs[i], 
                                 'us pronunciation': us_pronunciation, 
@@ -81,11 +100,15 @@ def write_csv(vocabularies: list,
                                 'definition': meanings[i][j], 
                                 'example sentence': example_sentences[i][j]})
 
+
 def main():
-    urls = get_urls()
-    url = 'https://dictionary.cambridge.org/dictionary/english/need'
-    vocabularies, parts_of_speechs, us_pronunciation, uk_pronunciation, meanings, example_sentences = get_data_from_cambridge(url)
-    write_csv(vocabularies, parts_of_speechs, us_pronunciation, uk_pronunciation, meanings, example_sentences)
+    # urls = get_urls()
+    urls = ['https://dictionary.cambridge.org/dictionary/english/make']
+    for url in urls:
+        print('\n\n#####################################################################################')
+        print(url)
+        vocabularies, parts_of_speechs, us_pronunciation, uk_pronunciation, meanings, example_sentences = get_data_from_cambridge(url)
+        write_csv(vocabularies, parts_of_speechs, us_pronunciation, uk_pronunciation, meanings, example_sentences)
 
 if __name__ == "__main__":
     main()
