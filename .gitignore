@@ -1,6 +1,11 @@
 backend/data/*
+backend/__pycache__
 backend/.env
 backend/.bash_history
-backend/.cache
+backend/.python_history
+backend/.DS_Store
+backend/.cache/*
 backend/src
+.cache/pip
 .env
+.DS_Store
