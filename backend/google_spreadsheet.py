@@ -85,5 +85,3 @@ def write_vocabulary_to_google_spreadsheet(sheet, columns: list, vocabularies: l
             print("Try it again later on!")
             print("###################################################################################################\n\n")
             break
-            
-

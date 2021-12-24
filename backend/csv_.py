@@ -17,4 +17,3 @@ def write_csv(vocabularies: list):
                             'uk_pronunciation': vocabulary['uk_pronunciation'],
                             'definition': vocabulary['definition'],
                             'example_sentence': vocabulary['example_sentence']})
-
