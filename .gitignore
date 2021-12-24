@@ -2,4 +2,5 @@ backend/data/*
 backend/.env
 backend/.bash_history
 backend/.cache
+backend/src
 .env

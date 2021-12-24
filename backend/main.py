@@ -1,15 +1,17 @@
 import csv
 import json
 import requests
+import os
 
 import bs4
 from dotenv import load_dotenv
+
+import google_spreadsheet as gs
 
 
 def get_chrome_bookmark_data() -> dict:
     '''Get the json of user's Chrome bookmark.'''
 
-    load_dotenv()
     CHROME_BOOKMARK_PATH = ('data/Bookmarks')
 
     with open(CHROME_BOOKMARK_PATH) as f:
@@ -66,7 +68,7 @@ def get_data_from_cambridge(url: str) -> dict:
 
     vocabulary['example_sentence'] = soup.select(s_example,          limit=1)[0].text if soup.select(s_example, limit=1) else ''
     print(vocabulary['example_sentence'], "\n\n\n")
-
+    print(vocabulary)
     return vocabulary
 
 
@@ -80,22 +82,34 @@ def write_csv(vocabularies: list):
 
         for vocabulary in vocabularies:
             writer.writerow({'title': vocabulary['title'],
-                            'parts of speach': vocabulary['parts_of_speechs'],
-                            'us pronunciation': vocabulary['us_pronunciation'],
-                            'uk pronunciation': vocabulary['uk_pronunciation'],
+                            'parts_of_speach': vocabulary['parts_of_speechs'],
+                            'us_pronunciation': vocabulary['us_pronunciation'],
+                            'uk_pronunciation': vocabulary['uk_pronunciation'],
                             'definition': vocabulary['definition'],
-                            'example sentence': vocabulary['example_sentence']})
+                            'example_sentence': vocabulary['example_sentence']})
 
 
 def main():
+    load_dotenv()
+    JSONF = os.getenv('JSONF')
+    JSONF_DIR = './src/'
+    SPREAD_SHEET_KEY = os.getenv('SPREAD_SHEET_KEY')
+    SPREAD_SHEET_NAME = 'Vocabulary2'
+
     urls = get_urls()
     vocabularies = []
     for url in urls:
         print(url)
         vocabularies.append(get_data_from_cambridge(url))
-
-    write_csv(vocabularies)
     
+    sheet = gs.connect_gspread(JSONF_DIR + JSONF, SPREAD_SHEET_KEY, SPREAD_SHEET_NAME)
+    columns = gs.get_columns_data(sheet)
+    gs.write_vocabulary_to_google_spreadsheet(sheet, columns, vocabularies)
+    # write_csv(vocabularies)
+    
+    
+
+
 
 if __name__ == "__main__":
     main()
