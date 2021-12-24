@@ -14,27 +14,35 @@ def main():
     SPREAD_SHEET_KEY = os.getenv('SPREAD_SHEET_KEY')
     SPREAD_SHEET_NAME = 'Vocabulary2'
 
+    print("\n###################################################################################################")
+    print("Please run this command below.")
+    print("$ cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/data/Bookmarks")
+    input('\nIf you finish, Press enter to continue.')
+    print("###################################################################################################\n\n")
+
     urls = scraping.get_urls()
     vocabularies = []
 
     # Get URL list
     for url in urls:
-        print(url)
+        print("URL:              ", url)
+
         vocabularies.append(scraping.get_data_from_cambridge(url))
     
-    # Write vocabularies on google spreadsheet
-    sheet = gs.connect_gspread(JSONF_DIR + JSONF, SPREAD_SHEET_KEY, SPREAD_SHEET_NAME)
-    columns = gs.get_columns_data(sheet)
-    try:
-    x = int(input("Please enter a number: "))
+    # # Write vocabularies on google spreadsheet
+    # sheet = gs.connect_gspread(JSONF_DIR + JSONF, SPREAD_SHEET_KEY, SPREAD_SHEET_NAME)
+    # columns = gs.get_columns_data(sheet)
+    # gs.write_vocabulary_to_google_spreadsheet(sheet, columns, vocabularies)
 
-    except ValueError:
-        print("Oops!  That was no valid number.  Try again...")
-    gs.write_vocabulary_to_google_spreadsheet(sheet, columns, vocabularies)
-    
-    # Write vocabularies on CSV
-    csv_.write_csv(vocabularies)
-    
+    # # Write vocabularies on CSV
+    # csv_.write_csv(vocabularies)
+    # print("\n###################################################################################################")
+    # print("Run this command below if you want to check the vocabulary table on CSV")
+    # print("$ open ./backend/data/vocabularies.csv")
+    # input('\nIf you finish, Press enter to continue.')
+    # print("###################################################################################################\n\n")
+
+    os.remove('./data/Bookmarks')
 
 if __name__ == "__main__":
     main()

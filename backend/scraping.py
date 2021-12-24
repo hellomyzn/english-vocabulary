@@ -8,9 +8,21 @@ def get_chrome_bookmark_data() -> dict:
     '''Get the json of user's Chrome bookmark.'''
 
     CHROME_BOOKMARK_PATH = ('data/Bookmarks')
-
-    with open(CHROME_BOOKMARK_PATH) as f:
-        return json.load(f)
+    while True:
+        try:
+            with open(CHROME_BOOKMARK_PATH) as f:
+                return json.load(f)
+        except FileNotFoundError:
+            print("\n###################################################################################################")
+            print("Please copy a Bookmark file from Google Chrome Folder")
+            print("$ cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/data/Bookmarks")
+            i = input("\nIf you don't want, Enter 'quit'")
+            print("###################################################################################################\n\n")
+            if i == "quit":
+                quit()
+            else:
+                continue
+    
 
 
 def get_urls() -> list:
@@ -47,20 +59,20 @@ def get_data_from_cambridge(url: str) -> dict:
     # Get data via scraping
     vocabulary = {}
     vocabulary['title']            = soup.select(s_title, limit=1)[0].text
-    print(vocabulary['title'])
+    print("TITLE:            " , vocabulary['title'])
 
-    vocabulary['parts_of_speechs'] = soup.select(s_parts_of_speech, limit=1)[0].text
-    print(vocabulary['parts_of_speechs'])
+    vocabulary['parts_of_speech'] = soup.select(s_parts_of_speech, limit=1)[0].text
+    print("Parts Of Speech:  ", vocabulary['parts_of_speech'])
 
     vocabulary['us_pronunciation'] = soup.select(s_us_pronunciation, limit=1)[0].text if soup.select(s_us_pronunciation, limit=1) else ''
-    print(vocabulary['us_pronunciation'])
+    print("US_PRONUNCIATION: ", vocabulary['us_pronunciation'])
 
     vocabulary['uk_pronunciation'] = soup.select(s_uk_pronunciation, limit=1)[0].text if soup.select(s_uk_pronunciation, limit=1) else ''
-    print(vocabulary['uk_pronunciation'])
+    print("UK_RONUNCIATION:  ", vocabulary['uk_pronunciation'])
 
     vocabulary['definition']       = soup.select(s_definition,       limit=1)[0].text if soup.select(s_definition, limit=1) else ''
-    print(vocabulary['definition'])
+    print("DEFINITION:       ", vocabulary['definition'])
 
     vocabulary['example_sentence'] = soup.select(s_example,          limit=1)[0].text if soup.select(s_example, limit=1) else ''
-    print(vocabulary['example_sentence'], "\n\n\n")
+    print("EXAMPLE SENTENCE: ", vocabulary['example_sentence'], "\n\n\n")
     return vocabulary

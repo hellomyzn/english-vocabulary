@@ -4,8 +4,10 @@ This is for generating vocabulary list.
 ## Usage
 ### Preparation
 #### Set symbolic link of Bookmark for Mac User
-
+```
 $ cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks backend/data/Bookmarks
+```
+
 #### Confirm
 $ open backend/data/vocabularies.csv
 

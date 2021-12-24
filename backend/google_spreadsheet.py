@@ -34,7 +34,7 @@ def create_columns(sheet):
     ''' If the spreadsheet is empty, Add column on header(from (1,1))'''
 
     COLUMN_FORMAT = ['title', 
-                'parts_of_speechs', 
+                'parts_of_speech', 
                 'us_pronunciation', 
                 'uk_pronunciation', 
                 'definition', 
@@ -70,7 +70,12 @@ def write_vocabulary_to_google_spreadsheet(sheet, columns: list, vocabularies: l
     for voc in vocabularies:
         voc['timestamp'] = date
         voc['check'] = False
+        try:
+            for j, column in enumerate(columns, start=1):
+                sheet.update_cell(next_row, j, voc[column])
+            next_row += 1
+        except gspread.exceptions.APIError:
+            print("Quota exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'")
+            break
+            
 
-        for j, column in enumerate(columns, start=1):
-            sheet.update_cell(next_row, j, voc[column])
-        next_row += 1
