@@ -37,12 +37,14 @@ def main():
     # # Write vocabularies on CSV
     csv_.write_csv(vocabularies)
     print("\n###################################################################################################")
-    print("Run this command below if you want to check the vocabulary table on CSV")
+    print("1. Run this command below if you want to check the vocabulary table on CSV")
     print("$ open ./backend/data/vocabularies.csv")
-    input('\nIf you finish, Press enter to continue.')
+    print("2. Open the following link to remove some bookmark links you already wrote on GSS")
+    print("chrome://bookmarks/")
+    i = input("3. Is it okay to delete 'data/Bookmarks' file? (y/n): ")
+    os.remove('./data/Bookmarks') if i == 'y' else print('Bookmarks file has remained')
     print("###################################################################################################\n\n")
 
-    os.remove('./data/Bookmarks')
 
 if __name__ == "__main__":
     main()
