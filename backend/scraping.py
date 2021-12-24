@@ -61,8 +61,8 @@ def get_data_from_cambridge(url: str) -> dict:
     vocabulary['title']            = soup.select(s_title, limit=1)[0].text
     print("TITLE:            " , vocabulary['title'])
 
-    vocabulary['parts_of_speech'] = soup.select(s_parts_of_speech, limit=1)[0].text
-    print("Parts Of Speech:  ", vocabulary['parts_of_speech'])
+    vocabulary['part_of_speech'] = soup.select(s_parts_of_speech, limit=1)[0].text
+    print("Parts Of Speech:  ", vocabulary['part_of_speech'])
 
     vocabulary['us_pronunciation'] = soup.select(s_us_pronunciation, limit=1)[0].text if soup.select(s_us_pronunciation, limit=1) else ''
     print("US_PRONUNCIATION: ", vocabulary['us_pronunciation'])

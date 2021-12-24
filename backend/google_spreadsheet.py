@@ -34,7 +34,7 @@ def create_columns(sheet):
     ''' If the spreadsheet is empty, Add column on header(from (1,1))'''
 
     COLUMN_FORMAT = ['title', 
-                'parts_of_speech', 
+                'part_of_speech', 
                 'us_pronunciation', 
                 'uk_pronunciation', 
                 'definition', 
@@ -67,7 +67,12 @@ def write_vocabulary_to_google_spreadsheet(sheet, columns: list, vocabularies: l
 
     next_row = next_available_row(sheet)
 
-    for voc in vocabularies:
+    print("\n###################################################################################################")      
+    print("Start writing vocabularies on Google Spreadsheet")
+    print("###################################################################################################\n\n")
+
+    for i, voc in enumerate(vocabularies, start=1):
+        print('[',i, ']: ', voc, "\n\n")
         voc['timestamp'] = date
         voc['check'] = False
         try:
@@ -75,7 +80,10 @@ def write_vocabulary_to_google_spreadsheet(sheet, columns: list, vocabularies: l
                 sheet.update_cell(next_row, j, voc[column])
             next_row += 1
         except gspread.exceptions.APIError:
-            print("Quota exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'")
+            print("\n###################################################################################################")
+            print("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'")
+            print("Try it again later on!")
+            print("###################################################################################################\n\n")
             break
             
 

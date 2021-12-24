@@ -29,18 +29,18 @@ def main():
 
         vocabularies.append(scraping.get_data_from_cambridge(url))
     
-    # # Write vocabularies on google spreadsheet
-    # sheet = gs.connect_gspread(JSONF_DIR + JSONF, SPREAD_SHEET_KEY, SPREAD_SHEET_NAME)
-    # columns = gs.get_columns_data(sheet)
-    # gs.write_vocabulary_to_google_spreadsheet(sheet, columns, vocabularies)
+    # Write vocabularies on google spreadsheet
+    sheet = gs.connect_gspread(JSONF_DIR + JSONF, SPREAD_SHEET_KEY, SPREAD_SHEET_NAME)
+    columns = gs.get_columns_data(sheet)
+    gs.write_vocabulary_to_google_spreadsheet(sheet, columns, vocabularies)
 
     # # Write vocabularies on CSV
-    # csv_.write_csv(vocabularies)
-    # print("\n###################################################################################################")
-    # print("Run this command below if you want to check the vocabulary table on CSV")
-    # print("$ open ./backend/data/vocabularies.csv")
-    # input('\nIf you finish, Press enter to continue.')
-    # print("###################################################################################################\n\n")
+    csv_.write_csv(vocabularies)
+    print("\n###################################################################################################")
+    print("Run this command below if you want to check the vocabulary table on CSV")
+    print("$ open ./backend/data/vocabularies.csv")
+    input('\nIf you finish, Press enter to continue.')
+    print("###################################################################################################\n\n")
 
     os.remove('./data/Bookmarks')
 
