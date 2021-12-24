@@ -6,5 +6,5 @@ services:
     container_name: 'python3'
     working_dir: '/root/'
     tty: true
-    volumes:
+    volumes: 
       - ./backend/:/root

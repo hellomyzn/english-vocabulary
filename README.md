@@ -3,12 +3,9 @@ This is for generating vocabulary list.
 
 ## Usage
 ### Preparation
-Bookmark
+#### Set symbolic link of Bookmark for Mac User
 
-
-$ cp /Users/<USER NAME>/Library/Application\ Support/Google/Chrome/Default/Bookmarks  backend
-
-
+$ cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks backend/data/Bookmarks
 
 
 ## Environment

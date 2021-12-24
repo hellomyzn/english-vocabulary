@@ -1,7 +1,8 @@
+import csv
 import json
 import requests
+
 import bs4
-import csv
 from dotenv import load_dotenv
 
 
@@ -9,7 +10,7 @@ def get_chrome_bookmark_data() -> dict:
     '''Get the json of user's Chrome bookmark.'''
 
     load_dotenv()
-    CHROME_BOOKMARK_PATH = ('Bookmarks')
+    CHROME_BOOKMARK_PATH = ('data/Bookmarks')
 
     with open(CHROME_BOOKMARK_PATH) as f:
         return json.load(f)
@@ -39,7 +40,7 @@ def get_data_from_cambridge(url: str) -> dict:
     soup = bs4.BeautifulSoup(html.content, "html.parser")
 
     # Set class for scraping
-    s_title = '.di-title .hw'
+    s_title = '.di-title .dhw'
     s_parts_of_speech = '.pos'
     s_us_pronunciation = '.us > .pron > .ipa'
     s_uk_pronunciation = '.uk > .pron > .ipa'
@@ -48,12 +49,23 @@ def get_data_from_cambridge(url: str) -> dict:
 
     # Get data via scraping
     vocabulary = {}
-    vocabulary['title']       = soup.select(s_title, limit=1)[0].text
+    vocabulary['title']            = soup.select(s_title, limit=1)[0].text
+    print(vocabulary['title'])
+
     vocabulary['parts_of_speechs'] = soup.select(s_parts_of_speech, limit=1)[0].text
-    vocabulary['us_pronunciation'] = soup.select(s_us_pronunciation, limit=1)[0].text 
-    vocabulary['uk_pronunciation'] = soup.select(s_uk_pronunciation, limit=1)[0].text    
-    vocabulary['definition']       = soup.select(s_definition, limit=1)[0].text
-    vocabulary['example_sentence'] = soup.select(s_example, limit=1)[0].text
+    print(vocabulary['parts_of_speechs'])
+
+    vocabulary['us_pronunciation'] = soup.select(s_us_pronunciation, limit=1)[0].text if soup.select(s_us_pronunciation, limit=1) else ''
+    print(vocabulary['us_pronunciation'])
+
+    vocabulary['uk_pronunciation'] = soup.select(s_uk_pronunciation, limit=1)[0].text if soup.select(s_uk_pronunciation, limit=1) else ''
+    print(vocabulary['uk_pronunciation'])
+
+    vocabulary['definition']       = soup.select(s_definition,       limit=1)[0].text if soup.select(s_definition, limit=1) else ''
+    print(vocabulary['definition'])
+
+    vocabulary['example_sentence'] = soup.select(s_example,          limit=1)[0].text if soup.select(s_example, limit=1) else ''
+    print(vocabulary['example_sentence'], "\n\n\n")
 
     return vocabulary
 
@@ -79,6 +91,7 @@ def main():
     urls = get_urls()
     vocabularies = []
     for url in urls:
+        print(url)
         vocabularies.append(get_data_from_cambridge(url))
 
     write_csv(vocabularies)
