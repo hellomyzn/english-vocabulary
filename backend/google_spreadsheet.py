@@ -66,15 +66,21 @@ def write_vocabulary_to_google_spreadsheet(sheet, columns: list, vocabularies: l
     date = now.strftime('%Y/%m/%d')
 
     next_row = next_available_row(sheet)
+    all_vocabularies_on_GSS = sheet.col_values(1)
 
     print("\n###################################################################################################")      
     print("Start writing vocabularies on Google Spreadsheet")
     print("###################################################################################################\n\n")
-
+    
     for i, voc in enumerate(vocabularies, start=1):
-        print('[',i, ']: ', voc, "\n\n")
+        if voc['title'] in all_vocabularies_on_GSS:
+            print('\n[',i, ']: There is already "', voc['title'], '" on the Google Spreadsheet. so it was skiped\n\n')
+            continue
+        
+        print('\n[',i, ']: ', voc, "\n\n")
         voc['timestamp'] = date
         voc['check'] = False
+
         try:
             for j, column in enumerate(columns, start=1):
                 sheet.update_cell(next_row, j, voc[column])
