@@ -58,29 +58,31 @@ def get_data_from_cambridge(url: str) -> dict:
     return vocabulary
 
 
-def write_csv(vocabulary: dict):
+def write_csv(vocabularies: list):
     '''Write vacabularies on CSV(/backend/data/vocabularies.csv)'''
 
     with open('data/vocabularies.csv', 'w', newline='') as csvfile:
         fieldnames = ['title', 'parts of speach', 'us pronunciation', 'uk pronunciation', 'definition', 'example sentence']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
-        
-        writer.writerow({'title': vocabulary['title'],
-                        'parts of speach': vocabulary['parts_of_speechs'],
-                        'us pronunciation': vocabulary['us_pronunciation'],
-                        'uk pronunciation': vocabulary['uk_pronunciation'],
-                        'definition': vocabulary['definition'],
-                        'example sentence': vocabulary['example_sentence']})
+
+        for vocabulary in vocabularies:
+            writer.writerow({'title': vocabulary['title'],
+                            'parts of speach': vocabulary['parts_of_speechs'],
+                            'us pronunciation': vocabulary['us_pronunciation'],
+                            'uk pronunciation': vocabulary['uk_pronunciation'],
+                            'definition': vocabulary['definition'],
+                            'example sentence': vocabulary['example_sentence']})
 
 
 def main():
-    # urls = get_urls()
-    urls = ['https://dictionary.cambridge.org/dictionary/english/make']
+    urls = get_urls()
+    vocabularies = []
     for url in urls:
-        
-        vocabulary = get_data_from_cambridge(url)
-        write_csv(vocabulary)
+        vocabularies.append(get_data_from_cambridge(url))
+
+    write_csv(vocabularies)
+    
 
 if __name__ == "__main__":
     main()
