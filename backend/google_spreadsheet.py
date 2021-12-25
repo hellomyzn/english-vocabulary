@@ -5,8 +5,6 @@ import gspread
 import json
 from oauth2client.service_account import ServiceAccountCredentials
 
-import time_ as time_
-
 """
 Reference: 
 - https://qiita.com/164kondo/items/eec4d1d8fd7648217935

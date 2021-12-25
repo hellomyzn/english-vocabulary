@@ -1,20 +1,13 @@
-import os
-
-from dotenv import load_dotenv
-
 import scraping as scraping
 import google_spreadsheet as gs
 import csv_ as csv_
 import text_ as text_
+import config_ as config_
 
 
 def main():
-    # Set up
-    load_dotenv()
-    JSONF = os.getenv('JSONF')
-    JSONF_DIR = './src/'
-    SPREAD_SHEET_KEY = os.getenv('SPREAD_SHEET_KEY')
-    SPREAD_SHEET_NAME = 'Vocabulary11'
+    # Set up env as dict
+    config = config_.set_up()
 
     print("\n###################################################################################################")
     print("Please run this command below.")
@@ -32,7 +25,7 @@ def main():
         vocabularies.append(scraping.get_data_from_cambridge(url))
     
     # # Write vocabularies on google spreadsheet
-    sheet = gs.connect_gspread(JSONF_DIR + JSONF, SPREAD_SHEET_KEY, SPREAD_SHEET_NAME)
+    sheet = gs.connect_gspread(config['JSONF_DIR'] + config['JSONF'], config['SPREAD_SHEET_KEY'], config['SPREAD_SHEET_NAME'])
     columns = gs.get_columns_data(sheet)
     gs.write_vocabulary_to_google_spreadsheet(sheet, columns, vocabularies)
 

@@ -1,5 +1,6 @@
 # Generate vocabulary list
 This is for generating vocabulary list.
+You can write up to 26 vocabularies so far
 
 ## Requirements
 - [ ] Mac OS
