@@ -32,39 +32,32 @@ def main():
     is_GSS = conv.check_with_yn("1: Do you want to write those vocabularies on Google spread sheet? (y/n): ")
     is_CSV = conv.check_with_yn("2: Do you want to write those vocabularies on CSV? (y/n): ")
     
-    # Get all vocabularies on Google Spreadsheet
-    all_vocabularies = sheet.col_values(1)
+    if is_GSS == True:
+        # Get all vocabularies on Google Spreadsheet
+        all_vocabularies = sheet.col_values(1)
 
+    if is_CSV == True:
+        csv_.is_exsit_file()
+        csv_.is_exist_columns(columns)
+        
+
+    # Start logic
     for url in urls:
         vocabulary = scraping.get_data_from_cambridge(url)
-        
-        # Check if it is exist or not on Google Spreasheet
-        if vocabulary['title'] in all_vocabularies:
-            conv.say_something(f"There is already '{vocabulary['title']}' on the Google Spreadsheet. so it was skiped")
-            continue
 
         if is_GSS == True:
+            # Check if it is exist or not on Google Spreasheet
+            if vocabulary['title'] in all_vocabularies:
+                conv.say_something(f"There is already '{vocabulary['title']}' on the Google Spreadsheet. so it was skiped")
+                continue
+
             conv.say_something("Start writing vocabularies on Google Spreadsheet")
             gs.write_vocabulary_to_google_spreadsheet(sheet, columns, vocabulary)
+        
         if is_CSV == True:
-            conv.say_something("Start to write on CSV")
-            csv_.write_csv(vocabulary)
-    quit()
-    # - While URL
-    #     - Scraping
-    #     - GSS
-    #     - CSV
+            conv.say_something("Start writing on CSV")
+            csv_.write_csv(columns, vocabulary)
 
-    # # Get vocabularies
-    # for url in urls:
-    #     print("URL:              ", url)
-    #     vocabularies.append(scraping.get_data_from_cambridge(url))
-    
-    # # Write vocabularies on google spreadsheet
-    # gs.write_vocabulary_to_google_spreadsheet(sheet, columns, vocabularies)
-
-    # Write vocabularies on CSV
-    # csv_.write_csv(vocabularies)
 
     # # Get example sentences as list and dict
     # examples = text_.get_list_of_example()

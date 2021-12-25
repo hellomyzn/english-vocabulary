@@ -58,21 +58,20 @@ def get_data_from_cambridge(url: str) -> dict:
     # Get data via scraping
     vocabulary = {}
     vocabulary['title']            = soup.select(s_title, limit=1)[0].text
-    print("TITLE:            " , vocabulary['title'])
+    
 
     vocabulary['part_of_speech'] = soup.select(s_parts_of_speech, limit=1)[0].text
-    print("Parts Of Speech:  ", vocabulary['part_of_speech'])
-
     vocabulary['us_pronunciation'] = soup.select(s_us_pronunciation, limit=1)[0].text if soup.select(s_us_pronunciation, limit=1) else ''
-    print("US_PRONUNCIATION: ", vocabulary['us_pronunciation'])
-
     vocabulary['uk_pronunciation'] = soup.select(s_uk_pronunciation, limit=1)[0].text if soup.select(s_uk_pronunciation, limit=1) else ''
-    print("UK_RONUNCIATION:  ", vocabulary['uk_pronunciation'])
-
     vocabulary['definition']       = soup.select(s_definition,       limit=1)[0].text if soup.select(s_definition, limit=1) else ''
-    print("DEFINITION:       ", vocabulary['definition'])
-
     vocabulary['example_sentence'] = soup.select(s_example,          limit=1)[0].text if soup.select(s_example, limit=1) else ''
+
+    print("URL:              ", url)
+    print("TITLE:            ", vocabulary['title'])
+    print("Parts Of Speech:  ", vocabulary['part_of_speech'])
+    print("US_PRONUNCIATION: ", vocabulary['us_pronunciation'])
+    print("UK_RONUNCIATION:  ", vocabulary['uk_pronunciation'])
+    print("DEFINITION:       ", vocabulary['definition'])
     print("EXAMPLE SENTENCE: ", vocabulary['example_sentence'], "\n\n\n")
     return vocabulary
 
