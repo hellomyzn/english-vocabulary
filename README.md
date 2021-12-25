@@ -6,6 +6,7 @@ You can write up to 26 vocabularies so far
 - [ ] Mac OS
 - [ ] Google Chrome
 - [ ] Docker
+- [ ] Internet Connection
 
 
 ## Set up

@@ -25,7 +25,7 @@ def get_chrome_bookmark_data() -> dict:
     
 
 
-def get_urls() -> list:
+def get_urls_from_bookmarks() -> list:
     '''Get the list of the urls '''
     
     bookmark_data = get_chrome_bookmark_data()
@@ -34,7 +34,6 @@ def get_urls() -> list:
     for data in bookmark_data['children']:
         if data['type'] == 'folder' and data['name'] == 'voc':
             urls = [d['url'] for d in data['children']]
-    
     return urls
 
 
@@ -76,3 +75,6 @@ def get_data_from_cambridge(url: str) -> dict:
     vocabulary['example_sentence'] = soup.select(s_example,          limit=1)[0].text if soup.select(s_example, limit=1) else ''
     print("EXAMPLE SENTENCE: ", vocabulary['example_sentence'], "\n\n\n")
     return vocabulary
+
+
+    

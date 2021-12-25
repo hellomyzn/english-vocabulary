@@ -31,33 +31,24 @@ def next_available_row(sheet) -> int:
     return int(len(str_list)+1)
 
 
-def create_columns(sheet):
+def create_columns(sheet, columns):
     ''' If the spreadsheet is empty, Add column on header(from (1,1))'''
 
-    COLUMN_FORMAT = ['title', 
-                'part_of_speech', 
-                'us_pronunciation', 
-                'uk_pronunciation', 
-                'definition', 
-                'example_sentence', 
-                'timestamp', 
-                'check']
-    for i, cf in enumerate(COLUMN_FORMAT, start=1):
-        sheet.update_cell(1, i, cf)
+    for i, column in enumerate(columns, start=1):
+        sheet.update_cell(1, i, column)
+    return 
 
 
-def get_columns_data(sheet):
+def check_columns_data(sheet, columns):
     ''''Return list of header data'''
 
     # If the spreadsheet is empty
     if sheet.row_values(1) == []:
-        create_columns(sheet)
-    
-    columns = sheet.row_values(1)
-    return columns
+        create_columns(sheet, columns)
+    return     
 
 
-def write_vocabulary_to_google_spreadsheet(sheet, columns: list, vocabularies: list):
+def write_vocabulary_to_google_spreadsheet(sheet, columns: list, vocabulary: dict):
     ''''Write on the spreadsheet'''
 
     # Set up the date data
@@ -67,32 +58,20 @@ def write_vocabulary_to_google_spreadsheet(sheet, columns: list, vocabularies: l
     date = now.strftime('%Y/%m/%d')
 
     next_row = next_available_row(sheet)
-    all_vocabularies_on_GSS = sheet.col_values(1)
+    vocabulary['timestamp'] = date
+    vocabulary['check'] = False
 
-    print("\n###################################################################################################")      
-    print("Start writing vocabularies on Google Spreadsheet")
-    print("###################################################################################################\n\n")
-    
-    for i, voc in enumerate(vocabularies, start=1):
-        if voc['title'] in all_vocabularies_on_GSS:
-            print('\n[',i, ']: There is already "', voc['title'], '" on the Google Spreadsheet. so it was skiped\n\n')
-            continue
-        
-        print('\n[',i, ']: ', voc, "\n\n")
-        voc['timestamp'] = date
-        voc['check'] = False
-
-        for j, column in enumerate(columns, start=1):
-            try:
-                sheet.update_cell(next_row, j, voc[column])
-                time.sleep(0.7)
-            except gspread.exceptions.APIError:
-                print("\n###################################################################################################")
-                print("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'")
-                print("Try it again later on!")
-                print("###################################################################################################\n\n")
-                break
-        next_row += 1
+    for i, column in enumerate(columns, start=1):
+        try:
+            sheet.update_cell(next_row, i, vocabulary[column])
+            time.sleep(0.5)
+        except gspread.exceptions.APIError:
+            print("\n###################################################################################################")
+            print("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'")
+            print("Try it again later on!")
+            print("###################################################################################################\n\n")
+            break
+    next_row += 1
 
 
 def write_examples_to_google_spreadsheet(sheet, columns: list, examples: list):
@@ -115,13 +94,8 @@ def write_examples_to_google_spreadsheet(sheet, columns: list, examples: list):
             try:
                 sheet.update_cell(row_num, example_column_num, example['example_sentence'])
             except gspread.exceptions.APIError:
-                # print("\n###################################################################################################")
-                # print("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'")
-                # print("Try it again later on!")
-                # print("###################################################################################################\n\n")
-                # break
-
-                time_.sleep_and_countdown(30, 5)
-                sheet.update_cell(row_num, example_column_num, example['example_sentence'])
-
-
+                print("\n###################################################################################################")
+                print("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'")
+                print("Try it again later on!")
+                print("###################################################################################################\n\n")
+                break
