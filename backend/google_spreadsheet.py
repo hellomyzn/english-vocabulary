@@ -50,7 +50,7 @@ def check_columns_data(sheet, columns):
     return     
 
 
-def write_vocabulary_to_google_spreadsheet(sheet, columns: list, vocabulary: dict):
+def write_vocabulary_to_google_spreadsheet(sheet, columns: list, vocabulary: dict, sleep_time: float):
     ''''Write on the spreadsheet'''
 
     # Set up the date data
@@ -66,14 +66,14 @@ def write_vocabulary_to_google_spreadsheet(sheet, columns: list, vocabulary: dic
     for i, column in enumerate(columns, start=1):
         try:
             sheet.update_cell(next_row, i, vocabulary[column])
-            time.sleep(0.5)
+            time.sleep(sleep_time)
         except gspread.exceptions.APIError:
             conv.say_something("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'\nTry it again later on!")
             break
     next_row += 1
 
 
-def write_examples_to_google_spreadsheet(sheet, columns: list, examples: list):
+def write_examples_to_google_spreadsheet(sheet, columns: list, examples: list, sleep_time: float):
     '''  '''
 
     all_vocabularies_on_GSS = sheet.col_values(1)
@@ -88,7 +88,7 @@ def write_examples_to_google_spreadsheet(sheet, columns: list, examples: list):
 
             try:
                 sheet.update_cell(row_num, example_column_num, example['example_sentence'])
-                time.sleep(0.5)
+                time.sleep(sleep_time)
             except gspread.exceptions.APIError:
                 conv.say_something("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'\nTry it again later on!")
                 break

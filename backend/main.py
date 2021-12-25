@@ -57,7 +57,7 @@ def main():
                 continue
 
             conv.say_something("Start writing vocabularies on Google Spreadsheet")
-            gs.write_vocabulary_to_google_spreadsheet(sheet, columns, vocabulary)
+            gs.write_vocabulary_to_google_spreadsheet(sheet, columns, vocabulary, config['SLEEP_TIME'])
         
         if is_CSV == True:
             conv.say_something("Start writing on CSV")
@@ -70,7 +70,7 @@ def main():
     
             # Write those example on GSS
             conv.say_something("Start writing examples on Google Spreadsheet")
-            gs.write_examples_to_google_spreadsheet(sheet, columns, examples)
+            gs.write_examples_to_google_spreadsheet(sheet, columns, examples, config['SLEEP_TIME'])
 
     print("\n###################################################################################################")
     print("1. Run this command below if you want to check the vocabulary table on CSV")

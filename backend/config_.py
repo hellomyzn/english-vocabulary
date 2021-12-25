@@ -21,5 +21,6 @@ def set_up() ->dict:
                 'example_sentence', 
                 'timestamp', 
                 'check']
+    config['SLEEP_TIME'] = float(os.getenv('SLEEP_TIME'))
 
     return config
