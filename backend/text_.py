@@ -1,5 +1,3 @@
-
-
 def get_list_of_example():
     '''Get list including dict from data/examples.txt'''
     
@@ -9,4 +7,3 @@ def get_list_of_example():
         examples = [{'title': example.split("\n")[0], 'example_sentence': example.split("\n")[1]} for example in examples_SBV]
         
     return examples
-        
