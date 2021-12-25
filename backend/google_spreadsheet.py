@@ -91,3 +91,31 @@ def write_vocabulary_to_google_spreadsheet(sheet, columns: list, vocabularies: l
             print("Try it again later on!")
             print("###################################################################################################\n\n")
             break
+
+
+def write_examples_to_google_spreadsheet(sheet, columns: list, examples: list):
+    ''''  '''
+    print("\n###################################################################################################")      
+    print("Start writing examples on Google Spreadsheet")
+    print("###################################################################################################\n\n")
+
+    all_vocabularies_on_GSS = sheet.col_values(1)
+    example_column_num = int(columns.index('example_sentence')) + 1
+    
+    for example in examples:
+        title = example['title']
+
+        if title in all_vocabularies_on_GSS:
+            row_num = int(all_vocabularies_on_GSS.index(title)) + 1
+
+            print("[", row_num, "]: ", title)
+
+            try:
+                sheet.update_cell(row_num, example_column_num, example['example_sentence'])
+            except gspread.exceptions.APIError:
+                print("\n###################################################################################################")
+                print("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'")
+                print("Try it again later on!")
+                print("###################################################################################################\n\n")
+                break
+

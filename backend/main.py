@@ -7,6 +7,7 @@ import google_spreadsheet as gs
 import csv_ as csv_
 import text_ as text_
 
+
 def main():
     # Set up
     load_dotenv()
@@ -31,8 +32,8 @@ def main():
     #     vocabularies.append(scraping.get_data_from_cambridge(url))
     
     # # Write vocabularies on google spreadsheet
-    # sheet = gs.connect_gspread(JSONF_DIR + JSONF, SPREAD_SHEET_KEY, SPREAD_SHEET_NAME)
-    # columns = gs.get_columns_data(sheet)
+    sheet = gs.connect_gspread(JSONF_DIR + JSONF, SPREAD_SHEET_KEY, SPREAD_SHEET_NAME)
+    columns = gs.get_columns_data(sheet)
     # gs.write_vocabulary_to_google_spreadsheet(sheet, columns, vocabularies)
 
     # # # Write vocabularies on CSV
@@ -43,7 +44,7 @@ def main():
 
 
     # Write those example on GSS
-    
+    gs.write_examples_to_google_spreadsheet(sheet, columns, examples)
 
     # print("\n###################################################################################################")
     # print("1. Run this command below if you want to check the vocabulary table on CSV")
