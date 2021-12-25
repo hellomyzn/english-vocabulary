@@ -3,6 +3,8 @@ import requests
 
 import bs4
 
+import conversation as conv
+
 
 def get_chrome_bookmark_data() -> dict:
     '''Get the json of user's Chrome bookmark.'''
@@ -13,26 +15,18 @@ def get_chrome_bookmark_data() -> dict:
             with open(CHROME_BOOKMARK_PATH) as f:
                 return json.load(f)
         except FileNotFoundError:
-            print("\n###################################################################################################")
-            print("Please copy a Bookmark file from Google Chrome Folder")
-            print("$ cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/data/Bookmarks")
-            i = input("\nIf you don't want, Enter 'quit'")
-            print("###################################################################################################\n\n")
-            if i == "quit":
-                quit()
-            else:
-                continue
-    
+            conv.check_with_quit("There is no Bookmarks on ./data folder. please copy a Bookmark file from Google Chrome Folder using the following command.\n>>> $ cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/data/Bookmarks\nIf you don't want, Enter 'quit'")
+            continue
 
 
-def get_urls_from_bookmarks() -> list:
+def get_urls_from_bookmarks(bookmark_name: str) -> list:
     '''Get the list of the urls '''
     
     bookmark_data = get_chrome_bookmark_data()
     bookmark_data = bookmark_data['roots']['bookmark_bar']
 
     for data in bookmark_data['children']:
-        if data['type'] == 'folder' and data['name'] == 'voc':
+        if data['type'] == 'folder' and data['name'] == bookmark_name:
             urls = [d['url'] for d in data['children']]
     return urls
 

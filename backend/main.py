@@ -4,6 +4,7 @@ import csv_ as csv_
 import text_ as text_
 import config_ as config_
 import conversation as conv
+import helper
 
 
 def main():
@@ -21,26 +22,30 @@ def main():
     # If there is no columns, write header on GSS
     gs.check_columns_data(sheet,columns)
 
-    # Get URL list
-    urls = scraping.get_urls_from_bookmarks()
-
     # Confirm
-    conv.check_with_enter(
-        "Please run this command below.\n>>> $ cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/data/Bookmarks",
-        "Press Enter if you finsh.")
-    conv.say_something(f"You have {len(urls)} URLs")
+    if helper.is_file('./data/Bookmarks'):
+        conv.check_with_enter(
+            "Please run this command below.\n>>> $ cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/data/Bookmarks",
+            "Press Enter if you finsh.")
     is_GSS = conv.check_with_yn("1: Do you want to write those vocabularies on Google spread sheet? (y/n): ")
     is_CSV = conv.check_with_yn("2: Do you want to write those vocabularies on CSV? (y/n): ")
     
+    if is_GSS == False and is_CSV == False:
+        quit()
+
+    # Get URL list
+    urls = scraping.get_urls_from_bookmarks(config['BOOKMARK_NAME'])
+    conv.say_something(f"You have {len(urls)} URLs")
+
     if is_GSS == True:
         # Get all vocabularies on Google Spreadsheet
         all_vocabularies = sheet.col_values(1)
+        helper.check_file('./data/examples.txt')
 
     if is_CSV == True:
-        csv_.is_exsit_file()
-        csv_.is_exist_columns(columns)
+        helper.check_file('./data/vocabularies.csv')
+        csv_.check_columns(columns)
         
-
     # Start logic
     for url in urls:
         vocabulary = scraping.get_data_from_cambridge(url)
@@ -58,12 +63,14 @@ def main():
             conv.say_something("Start writing on CSV")
             csv_.write_csv(columns, vocabulary)
 
-
-    # # Get example sentences as list and dict
-    # examples = text_.get_list_of_example()
-
-    # # Write those example on GSS
-    # gs.write_examples_to_google_spreadsheet(sheet, columns, examples)
+    if is_GSS == True:
+        if text_.is_exist_examples():
+            # Get example sentences as list and dict
+            examples = text_.get_list_of_example()
+    
+            # Write those example on GSS
+            conv.say_something("Start writing examples on Google Spreadsheet")
+            gs.write_examples_to_google_spreadsheet(sheet, columns, examples)
 
     print("\n###################################################################################################")
     print("1. Run this command below if you want to check the vocabulary table on CSV")

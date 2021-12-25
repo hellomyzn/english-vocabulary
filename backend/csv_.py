@@ -2,12 +2,10 @@ import csv
 import os
 import pathlib
 
+import conversation as conv
 
-def is_exsit_file():
-    if not os.path.isfile('./data/vocabularies.csv'):
-        pathlib.Path('./data/vocabularies.csv').touch()
 
-def is_exist_columns(columns: list):
+def check_columns(columns: list):
     with open('data/vocabularies.csv', 'r', newline='') as csvfile:
         data = csvfile.readline()
 

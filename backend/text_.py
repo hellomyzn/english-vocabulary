@@ -1,3 +1,19 @@
+import os
+import pathlib
+
+import conversation as conv
+
+
+def is_exist_examples():
+    with open('data/examples.txt', 'r', newline='') as txt:
+        data = txt.readline()
+
+        if not data:
+            conv.say_something("There is no example sentence you write on 'data/examples.txt'")
+            return False
+        return True
+
+
 def get_list_of_example():
     '''Get list including dict from data/examples.txt'''
     

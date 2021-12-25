@@ -11,7 +11,8 @@ def set_up() ->dict:
     config['JSONF'] = os.getenv('JSONF')
     config['JSONF_DIR'] = './src/'
     config['SPREAD_SHEET_KEY'] = os.getenv('SPREAD_SHEET_KEY')
-    config['SPREAD_SHEET_NAME'] = 'Vocabulary11'
+    config['SPREAD_SHEET_NAME'] = os.getenv('SHEET_NAME')
+    config['BOOKMARK_NAME'] = os.getenv('BOOKMARK_NAME')
     config['COLUMNS'] = ['title', 
                 'part_of_speech', 
                 'us_pronunciation', 

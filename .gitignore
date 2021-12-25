@@ -1,11 +1,13 @@
-backend/data/*
+backend/data/Bookmarks
+backend/data/examples.txt
+backend/data/vocabularies.csv
 backend/__pycache__
 backend/.env
 backend/.bash_history
 backend/.python_history
 backend/.DS_Store
 backend/.cache/*
-backend/src
+backend/src/*.json
 .cache/pip
 .env
 .DS_Store

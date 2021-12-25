@@ -5,6 +5,8 @@ import gspread
 import json
 from oauth2client.service_account import ServiceAccountCredentials
 
+import conversation as conv
+
 """
 Reference: 
 - https://qiita.com/164kondo/items/eec4d1d8fd7648217935
@@ -66,19 +68,13 @@ def write_vocabulary_to_google_spreadsheet(sheet, columns: list, vocabulary: dic
             sheet.update_cell(next_row, i, vocabulary[column])
             time.sleep(0.5)
         except gspread.exceptions.APIError:
-            print("\n###################################################################################################")
-            print("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'")
-            print("Try it again later on!")
-            print("###################################################################################################\n\n")
+            conv.say_something("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'\nTry it again later on!")
             break
     next_row += 1
 
 
 def write_examples_to_google_spreadsheet(sheet, columns: list, examples: list):
-    ''''  '''
-    print("\n###################################################################################################")      
-    print("Start writing examples on Google Spreadsheet")
-    print("###################################################################################################\n\n")
+    '''  '''
 
     all_vocabularies_on_GSS = sheet.col_values(1)
     example_column_num = int(columns.index('example_sentence')) + 1
@@ -88,14 +84,11 @@ def write_examples_to_google_spreadsheet(sheet, columns: list, examples: list):
 
         if title in all_vocabularies_on_GSS:
             row_num = int(all_vocabularies_on_GSS.index(title)) + 1
-
-            print("[", row_num, "]: ", title)
+            conv.say_something(f"[{row_num}]: {title}")
 
             try:
                 sheet.update_cell(row_num, example_column_num, example['example_sentence'])
+                time.sleep(0.5)
             except gspread.exceptions.APIError:
-                print("\n###################################################################################################")
-                print("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'")
-                print("Try it again later on!")
-                print("###################################################################################################\n\n")
+                conv.say_something("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'\nTry it again later on!")
                 break
