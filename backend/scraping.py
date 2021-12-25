@@ -51,10 +51,8 @@ def get_data_from_cambridge(url: str) -> dict:
 
     # Get data via scraping
     vocabulary = {}
-    vocabulary['title']            = soup.select(s_title, limit=1)[0].text
-    
-
-    vocabulary['part_of_speech'] = soup.select(s_parts_of_speech, limit=1)[0].text
+    vocabulary['title']            = soup.select(s_title, limit=1)[0].text if soup.select(s_title, limit=1) else ''
+    vocabulary['part_of_speech'] = soup.select(s_parts_of_speech, limit=1)[0].text if soup.select(s_parts_of_speech, limit=1) else ''
     vocabulary['us_pronunciation'] = soup.select(s_us_pronunciation, limit=1)[0].text if soup.select(s_us_pronunciation, limit=1) else ''
     vocabulary['uk_pronunciation'] = soup.select(s_uk_pronunciation, limit=1)[0].text if soup.select(s_uk_pronunciation, limit=1) else ''
     vocabulary['definition']       = soup.select(s_definition,       limit=1)[0].text if soup.select(s_definition, limit=1) else ''
