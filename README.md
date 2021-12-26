@@ -22,7 +22,7 @@ $ docker-compose up -d --build
 ```
 
 2. Google Cloud Platform
-- [Qiita](https://qiita.com/164kondo/items/eec4d1d8fd7648217935)
+- [Google Spread Sheets に Pythonを用いてアクセスしてみた](https://qiita.com/164kondo/items/eec4d1d8fd7648217935)
 
 3. Put Auth json Key file
 Put json key you created on step2 to src/
@@ -72,6 +72,8 @@ Create vocabularies.csv file in `data` directory so that you can write vocabular
 
 ## Usage
 ### Steps
+
+1. Run Command
 ```
 # Into docker continer (python3 server)
 $ docker-compose exec python3 bash
@@ -79,6 +81,24 @@ $ docker-compose exec python3 bash
 # Run python command
 $ python main.py
 ```
+
+2. If you want to renew a Bookmarks file, copy it again.
+![image](https://user-images.githubusercontent.com/20104403/147403426-3de72213-6211-4714-a929-f2191d4f19b2.png)
+
+3. Press y/n for a few options
+
+![image](https://user-images.githubusercontent.com/20104403/147403489-1eb3abad-fb46-4321-89ec-92419279551f.png)
+
+4. Wait for proce processing
+![image](https://user-images.githubusercontent.com/20104403/147403553-af042d5d-e854-4f52-b4a3-961375061bac.png)
+![image](https://user-images.githubusercontent.com/20104403/147403560-fe5a3c1c-31a3-4821-a473-0257bccb94a6.png)
+
+5. If you want to delte current Bookmarks file, press 'y'
+![image](https://user-images.githubusercontent.com/20104403/147403594-82df235b-efc5-44c6-b4f6-363dc49d22f8.png)
+
+6. If you want to edit your Bookmarks, open chrome://bookmarks/ on your google chrome browser
+![image](https://user-images.githubusercontent.com/20104403/147403671-94409855-8329-45a1-9f20-46850943f5c1.png)
+
 
 
 ## Environment
