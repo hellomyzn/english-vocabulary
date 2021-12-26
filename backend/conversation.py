@@ -11,6 +11,7 @@ def check_with_yn(conv: str) -> bool:
         elif i == 'n':
             return False 
     
+
 def check_with_quit(conv: str):
     print(line_above)
     i = input(conv)

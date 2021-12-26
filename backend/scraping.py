@@ -15,11 +15,14 @@ def get_chrome_bookmark_data() -> dict:
             with open(CHROME_BOOKMARK_PATH) as f:
                 return json.load(f)
         except FileNotFoundError:
-            conv.check_with_quit("There is no Bookmarks on ./data folder. please copy a Bookmark file from Google Chrome Folder using the following command.\n>>> $ cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/data/Bookmarks\nIf you don't want, Enter 'quit'")
+            conv.check_with_quit(\
+"■ There is no Bookmarks on ./data folder. please copy a Bookmark file from Google Chrome Folder using the following command.\n\
+>>> $ cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/data/Bookmarks\n\n\
+■ Press Enter after copy. If you don't want, Enter 'quit': ")
             continue
 
 
-def get_urls_from_bookmarks(bookmark_name: str) -> list:
+def get_urls_from_bookmarks(bookmark_name: str, urls: list):
     '''Get the list of the urls '''
     
     bookmark_data = get_chrome_bookmark_data()
@@ -27,8 +30,8 @@ def get_urls_from_bookmarks(bookmark_name: str) -> list:
 
     for data in bookmark_data['children']:
         if data['type'] == 'folder' and data['name'] == bookmark_name:
-            urls = [d['url'] for d in data['children']]
-    return urls
+            for d in data['children']:
+                urls.append(d['url'])
 
 
 def get_data_from_cambridge(url: str) -> dict:

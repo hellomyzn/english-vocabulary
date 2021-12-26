@@ -22,5 +22,12 @@ def set_up() ->dict:
                 'timestamp', 
                 'check']
     config['SLEEP_TIME'] = float(os.getenv('SLEEP_TIME'))
+    config['RESULT'] = {\
+        'urls': [],
+        'scraping': [],
+        'voc_written': [],
+        'voc_not_written': [],
+        'ex_written': [],
+        'ex_not_written': []}
 
     return config

@@ -9,12 +9,13 @@ import helper
 
 def main():
 
-    vocabularies = []
-    is_GSS = False
-    is_CSV = False
-
     # Set up env as dict
     config = config_.set_up()
+    result = config['RESULT']
+
+    is_GSS = False
+    is_CSV = False
+    
     # Set up GSS
     sheet = gs.connect_gspread(config['JSONF_DIR'] + config['JSONF'], config['SPREAD_SHEET_KEY'], config['SPREAD_SHEET_NAME'])
     columns = config['COLUMNS']
@@ -24,18 +25,20 @@ def main():
 
     # Confirm
     if helper.is_file('./data/Bookmarks'):
-        conv.check_with_enter(
-            "Please run this command below.\n>>> $ cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/data/Bookmarks",
-            "Press Enter if you finsh.")
-    is_GSS = conv.check_with_yn("1: Do you want to write those vocabularies on Google spread sheet? (y/n): ")
-    is_CSV = conv.check_with_yn("2: Do you want to write those vocabularies on CSV? (y/n): ")
+        conv.check_with_enter("\
+■ Please run this command below.\n\
+>>> $ cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/data/Bookmarks\n",
+"■ Press Enter if you finsh.")
+
+    is_GSS = conv.check_with_yn("■ Do you want to write vocabularies on Google spread sheet? (y/n): ")
+    is_CSV = conv.check_with_yn("■ Do you want to write vocabularies on CSV? (y/n): ")
     
     if is_GSS == False and is_CSV == False:
         quit()
 
     # Get URL list
-    urls = scraping.get_urls_from_bookmarks(config['BOOKMARK_NAME'])
-    conv.say_something(f"You have {len(urls)} URLs")
+    scraping.get_urls_from_bookmarks(config['BOOKMARK_NAME'], result['urls'])
+    conv.say_something(f"You have {len(result['urls'])} URLs")
 
     if is_GSS == True:
         # Get all vocabularies on Google Spreadsheet
@@ -46,41 +49,72 @@ def main():
         helper.check_file('./data/vocabularies.csv')
         csv_.check_columns(columns)
         
-    # Start logic
-    for url in urls:
+    # Write vocabulary
+    for url in result['urls']:
+
+        # Get vocabulary from URL
         vocabulary = scraping.get_data_from_cambridge(url)
+        result['scraping'].append(vocabulary['title'])
 
         if is_GSS == True:
-            # Check if it is exist or not on Google Spreasheet
+            # Avoid the vocabulary if it exists on Google Spreasheet
             if vocabulary['title'] in all_vocabularies:
-                conv.say_something(f"There is already '{vocabulary['title']}' on the Google Spreadsheet. so it was skiped")
+                conv.say_something(f"\t■ There is already '{vocabulary['title']}' on the Google Spreadsheet. so it was skiped")
+                result['voc_not_written'].append(vocabulary['title'])
                 continue
 
-            conv.say_something("Start writing vocabularies on Google Spreadsheet")
+            conv.say_something("\t■ Start writing vocabularies on Google Spreadsheet")
             gs.write_vocabulary_to_google_spreadsheet(sheet, columns, vocabulary, config['SLEEP_TIME'])
+            result['voc_written'].append(vocabulary['title'])
         
         if is_CSV == True:
-            conv.say_something("Start writing on CSV")
+            conv.say_something("\t■ Start writing on CSV")
             csv_.write_csv(columns, vocabulary)
 
+    # Write example on GSS
     if is_GSS == True:
         if text_.is_exist_examples():
             # Get example sentences as list and dict
             examples = text_.get_list_of_example()
     
             # Write those example on GSS
-            conv.say_something("Start writing examples on Google Spreadsheet")
-            gs.write_examples_to_google_spreadsheet(sheet, columns, examples, config['SLEEP_TIME'])
+            conv.say_something("■ Start writing examples on Google Spreadsheet")
+            gs.write_examples_to_google_spreadsheet(sheet, columns, examples, config['SLEEP_TIME'], result)
 
-    print("\n###################################################################################################")
-    print("1. Run this command below if you want to check the vocabulary table on CSV")
-    print(">>> $ open ./backend/data/vocabularies.csv\n")
-    print("2. Open the following link to remove some bookmark links you already wrote on GSS")
-    print(">>> chrome://bookmarks/\n")
-    i = input("3. Is it okay to delete 'data/Bookmarks' file? (y/n): ")
-    os.remove('./data/Bookmarks') if i == 'y' else print('>>> Bookmarks file has remained')
-    print(">>> done.")
-    print("###################################################################################################\n\n")
+  
+    conv.say_something(f"\
+■ Result:\n\
+- URLs: {len(result['urls'])} \n\
+- SCRAPING: {len(result['scraping'])} \n\
+- GSS: \n\
+    - VOCABULARY: \n\
+        - WRITTEN: {len(result['voc_written'])} \n\
+        {result['voc_written']} \n\n\
+        - NOT_WRITTEN: {len(result['voc_not_written'])} \n\
+        {result['voc_not_written']} \n\n\
+    - EXAMPLE: \n\
+        - WRITTEN: {len(result['ex_written'])} \n\
+        {result['ex_written']} \n\n\
+        - NOT_WRITTEN: {len(result['ex_not_written'])} \n\
+        {result['ex_not_written']} ")   
+
+
+    # Ending
+    conv.say_something("\
+■ Run this command below if you want to check the vocabulary table on CSV\n\
+>>> $ open ./backend/data/vocabularies.csv\n\n\
+■ Open the following link to remove some bookmark links you already wrote on GSS\n\
+>>> chrome://bookmarks/")
+    
+    # Ask to delete Bookmarks
+    if conv.check_with_yn("■ Is it okay to delete 'data/Bookmarks' file? (y/n): "):
+        # Delete Bookmarks
+        helper.remove_file('./data/Bookmarks')
+        print('>>> Bookmarks file has been deleted')
+    else:
+        print('>>> Bookmarks file has been remained')
+
+    print('>>>  done.')
 
 
 if __name__ == "__main__":
