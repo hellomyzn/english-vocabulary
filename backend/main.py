@@ -119,10 +119,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-"""
-1. Delete example.txt
-2. Create exqample.txt
-3. Give a time to edit example.txt
-"""
