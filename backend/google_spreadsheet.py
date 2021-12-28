@@ -17,6 +17,7 @@ Reference:
 
 def connect_gspread(jsonf: str, key: str, sheet_name: str):
 
+    conv.say_something("Start connecting GSS...")
     scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
     credentials = ServiceAccountCredentials.from_json_keyfile_name(jsonf, scope)
     gc = gspread.authorize(credentials)
@@ -35,6 +36,7 @@ def next_available_row(sheet) -> int:
 
 def create_columns(sheet, columns):
     ''' If the spreadsheet is empty, Add column on header(from (1,1))'''
+    conv.say_something("Start creating header on GSS")
 
     for i, column in enumerate(columns, start=1):
         sheet.update_cell(1, i, column)

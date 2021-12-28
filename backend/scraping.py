@@ -27,7 +27,7 @@ def get_urls_from_bookmarks(bookmark_name: str):
     urls = []
     bookmark_data = get_chrome_bookmark_data()
     bookmark_data = bookmark_data['roots']['bookmark_bar']
-
+    
     for data in bookmark_data['children']:
         if data['type'] == 'folder' and data['name'] == bookmark_name:
             for d in data['children']:

@@ -19,5 +19,5 @@ def check_and_create_file(path: str):
         
         pathlib.Path(path).touch()
 
-def remove_file(path: str):
+def delete_file(path: str):
     os.remove(path)
