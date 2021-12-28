@@ -18,22 +18,15 @@ def main():
 
     EXAMPLE_PATH = config['PATH_EX'] + config['FILE_EX']
     CSV_PATH = config['PATH_CSV'] + config['FILE_CSV']
-    EXAMPLE_PATH = config['PATH_EX'] + config['FILE_EX']
-    
-    # Set up GSS
-    sheet = gs.connect_gspread(config['JSONF_DIR'] + config['JSONF'], config['SPREAD_SHEET_KEY'], config['SPREAD_SHEET_NAME'])
-    columns = config['COLUMNS']
+    BOOKMARKS_PATH = config['PATH_BOOKMARKS'] + config['FILE_BOOKMARKS']
 
-    # If there is no columns, write header on GSS
-    gs.check_columns_data(sheet, columns)
-
-    # Confirm
-    if helper.is_file('./data/Bookmarks'):
+    # Confirm Bookamrk updates
+    if helper.is_file(BOOKMARKS_PATH):
         conv.check_with_enter("\
-■ Please run this command below.\n\
->>> $ cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/data/Bookmarks\n",
-"■ Press Enter if you finsh.")
+■ Please run this command below to update your Bookmarks.\n\
+>>> $ cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/data/Bookmarks\n")
 
+    # Confirm GSS and CSV
     is_GSS = conv.check_with_yn("■ Do you want to write vocabularies on Google spread sheet? (y/n): ")
     is_CSV = conv.check_with_yn("■ Do you want to write vocabularies on CSV? (y/n): ")
     
@@ -41,22 +34,32 @@ def main():
         quit()
 
     # Get URL list
-    scraping.get_urls_from_bookmarks(config['BOOKMARK_NAME'], result['urls'])
-    conv.say_something(f"You have {len(result['urls'])} URLs")
+    result['urls'] = scraping.get_urls_from_bookmarks(config['BOOKMARK_NAME'])
 
+    # Set up for GSS
     if is_GSS == True:
+        # Set up GSS
+        sheet = gs.connect_gspread(config['JSONF_DIR'] + config['JSONF'], config['SPREAD_SHEET_KEY'], config['SPREAD_SHEET_NAME'])
+        columns = config['COLUMNS']
+
+        # If there is no columns, write header on GSS
+        gs.check_columns_data(sheet, columns)
+
         # Get all vocabularies on Google Spreadsheet
         all_vocabularies = sheet.col_values(1)
+
+        # Check examples file
         if not helper.is_file(EXAMPLE_PATH):
             helper.create_file(EXAMPLE_PATH)
-
-
+        
+        conv.check_with_enter(f"■ Please update your {EXAMPLE_PATH} if you need.\n")
+    
+    # Set up for CSV
     if is_CSV == True:
         if not helper.is_file(CSV_PATH):
             helper.create_file(CSV_PATH)
         csv_.check_columns(columns)
         
-    quit()
     # Write vocabulary
     for url in result['urls']:
 
@@ -81,9 +84,6 @@ def main():
 
     # Write example on GSS
     if is_GSS == True:
-        if not helper.is_file('data/examples.txt'):
-            # Create file
-            print("hge")
         if text_.is_examples():
             # Get example sentences as list and dict
             examples = text_.get_list_of_example()

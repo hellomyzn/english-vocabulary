@@ -22,9 +22,9 @@ def get_chrome_bookmark_data() -> dict:
             continue
 
 
-def get_urls_from_bookmarks(bookmark_name: str, urls: list):
+def get_urls_from_bookmarks(bookmark_name: str):
     '''Get the list of the urls '''
-    
+    urls = []
     bookmark_data = get_chrome_bookmark_data()
     bookmark_data = bookmark_data['roots']['bookmark_bar']
 
@@ -32,6 +32,9 @@ def get_urls_from_bookmarks(bookmark_name: str, urls: list):
         if data['type'] == 'folder' and data['name'] == bookmark_name:
             for d in data['children']:
                 urls.append(d['url'])
+
+    conv.say_something(f"You have {len(urls)} URLs")
+    return urls
 
 
 def get_data_from_cambridge(url: str) -> dict:

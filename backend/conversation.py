@@ -21,7 +21,7 @@ def check_with_quit(conv: str):
     return 
 
 
-def check_with_enter(conv: str, confirm: str):
+def check_with_enter(conv: str, confirm="■ Press Enter if you finsh."):
     print(line_above)
     print(conv)
     input(confirm)
