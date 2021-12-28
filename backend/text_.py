@@ -4,7 +4,7 @@ import pathlib
 import conversation as conv
 
 
-def is_exist_examples():
+def is_examples():
     with open('data/examples.txt', 'r', newline='') as txt:
         data = txt.readline()
 

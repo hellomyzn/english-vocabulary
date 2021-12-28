@@ -15,13 +15,17 @@ def main():
 
     is_GSS = False
     is_CSV = False
+
+    EXAMPLE_PATH = config['PATH_EX'] + config['FILE_EX']
+    CSV_PATH = config['PATH_CSV'] + config['FILE_CSV']
+    EXAMPLE_PATH = config['PATH_EX'] + config['FILE_EX']
     
     # Set up GSS
     sheet = gs.connect_gspread(config['JSONF_DIR'] + config['JSONF'], config['SPREAD_SHEET_KEY'], config['SPREAD_SHEET_NAME'])
     columns = config['COLUMNS']
 
     # If there is no columns, write header on GSS
-    gs.check_columns_data(sheet,columns)
+    gs.check_columns_data(sheet, columns)
 
     # Confirm
     if helper.is_file('./data/Bookmarks'):
@@ -43,12 +47,16 @@ def main():
     if is_GSS == True:
         # Get all vocabularies on Google Spreadsheet
         all_vocabularies = sheet.col_values(1)
-        helper.check_file('./data/examples.txt')
+        if not helper.is_file(EXAMPLE_PATH):
+            helper.create_file(EXAMPLE_PATH)
+
 
     if is_CSV == True:
-        helper.check_file('./data/vocabularies.csv')
+        if not helper.is_file(CSV_PATH):
+            helper.create_file(CSV_PATH)
         csv_.check_columns(columns)
         
+    quit()
     # Write vocabulary
     for url in result['urls']:
 
@@ -73,7 +81,10 @@ def main():
 
     # Write example on GSS
     if is_GSS == True:
-        if text_.is_exist_examples():
+        if not helper.is_file('data/examples.txt'):
+            # Create file
+            print("hge")
+        if text_.is_examples():
             # Get example sentences as list and dict
             examples = text_.get_list_of_example()
     

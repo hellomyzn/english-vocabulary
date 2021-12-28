@@ -36,6 +36,12 @@ JSONF=file name
 SPREAD_SHEET_KEY=spread sheet key
 SHEET_NAME=sheet name
 SLEEP_TIME=0.7
+PATH_EX='./data/'
+FILE_EX='examples.txt'
+PATH_BOOKMARKS='./data/'
+FILE_BOOKMARKS='Bookmarks'
+PATH_CSV='./data/'
+FILE_CSV='vocabularies.csv'
 ```
 
 5. Bookmark 
@@ -43,7 +49,7 @@ Save some (cambridge links)[https://dictionary.cambridge.org/] on Bookmark
 Bookmark directory: /Bookmarks Bar/GVL
 Edit .env file
 ```
-# Generate Vocabulary List
+# GVL = Generate Vocabulary List
 BOOKMARK_NAME="GVL"
 ```
 
@@ -66,9 +72,20 @@ Vacabulary3
 Example Sentence3
 ```
 
+if you want to edit the directory, you have to edit .env
+```
+PATH_EX='./data/'
+FILE_EX='examples.txt'
+```
+
 8. Create a vocabularies.csv
 Create vocabularies.csv file in `data` directory so that you can write vocabularies on CSV
 
+if you want to edit the directory, you have to edit .env
+```
+PATH_CSV='./data/'
+FILE_CSV='vocabularies.csv'
+```
 
 ## Usage
 ### Steps
