@@ -9,19 +9,27 @@ import helper
 """Controller for speaking with robot"""
 from models import bot
 from models import scraping
+from models import vocabulary as voc
 from models.url import UrlModel
 
 
 
 def talk_about_input_vocabulary():
     """Function to speak with robot"""
-    input_bot = bot.InputVocabularyBot()
-    input_bot.hello()
-    
-
     # Set up env as dict
     config = config_.set_up()
     result = config['RESULT']
+
+    # Set up instances
+    input_bot = bot.InputVocabularyBot()
+    cambridge = scraping.Cambridge()
+    GSS = voc.GoogleSpreadSheet(config['SPREAD_SHEET_KEY'], 
+                                config['SPREAD_SHEET_NAME'],
+                                config['COLUMNS'],
+                                config['SLEEP_TIME'])
+    input_bot.hello()
+    
+
 
     EXAMPLE_PATH = config['PATH_EX'] + config['FILE_EX']
     CSV_PATH = config['PATH_CSV'] + config['FILE_CSV']
@@ -31,32 +39,20 @@ def talk_about_input_vocabulary():
     if helper.is_file(BOOKMARKS_PATH):
         input_bot.confirm_to_updates()
 
-
-    urls = UrlModel.from_bookmarks(config['BOOKMARK_NAME'])
-    # Confirm GSS and CSV
-    quit()
-    input_bot.ask_user_favorites()
-    
-    print(src.urls)
-
-
     # Get URL list
-    # result['urls'] = scraping.get_urls_from_bookmarks(config['BOOKMARK_NAME'])
+    result['urls'] = UrlModel.from_bookmarks(config['BOOKMARK_NAME'])
+    input_bot.say_number_of_urls(result['urls'])
 
-    quit()
+    # Confirm GSS and CSV
+    input_bot.ask_user_favorites()
 
-    # Set up for GSS
-    if is_GSS == True:
-        # Set up GSS
-        sheet = gs.connect_gspread(config['JSONF_DIR'] + config['JSONF'], config['SPREAD_SHEET_KEY'], config['SPREAD_SHEET_NAME'])
-        columns = config['COLUMNS']
-
-        # If there is no columns, write header on GSS
-        gs.check_columns_data(sheet, columns)
-
-        # Get all vocabularies on Google Spreadsheet
-        all_vocabularies = sheet.col_values(1)
-
+    for url in result['urls']:
+        # Get vocabulary from URL
+        vocabulary = cambridge.scraping(url)
+        result['scraping'].append(vocabulary['title'])
+    
+        if input_bot.is_GSS == True:
+            GSS.write(vocabulary)
         # Check examples file
         if not helper.is_file(EXAMPLE_PATH):
             helper.create_file(EXAMPLE_PATH)

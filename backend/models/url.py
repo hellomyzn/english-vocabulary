@@ -30,6 +30,10 @@ class UrlModel(object):
             if data['type'] == 'folder' and data['name'] == folder_name:
                 for d in data['children']:
                     urls.append(d['url'])
+                    
+        template = console.get_template('no_bookmarks.txt', 'red')
+        user_name = input(template.substitute({'USER': '$USER'}))
+
         return urls
     
     def from_text(self, path: str):

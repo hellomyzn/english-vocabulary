@@ -15,53 +15,15 @@ Reference:
 """
 
 
-def connect_gspread(jsonf: str, key: str, sheet_name: str):
-
-    conv.say_something("Start connecting GSS...")
-    scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(jsonf, scope)
-    gc = gspread.authorize(credentials)
-    workbook = gc.open_by_key(key)
-    worksheet = workbook.worksheet(sheet_name)
-    
-    return worksheet
 
 
-def next_available_row(sheet) -> int:
-    ''' Return the number of available row '''
 
-    str_list = list(filter(None, sheet.col_values(1)))
-    return int(len(str_list)+1)
-
-
-def create_columns(sheet, columns):
-    ''' If the spreadsheet is empty, Add column on header(from (1,1))'''
-    conv.say_something("Start creating header on GSS")
-
-    for i, column in enumerate(columns, start=1):
-        sheet.update_cell(1, i, column)
-    return 
-
-
-def check_columns_data(sheet, columns):
-    ''''Return list of header data'''
-
-    # If the spreadsheet is empty
-    if sheet.row_values(1) == []:
-        create_columns(sheet, columns)
-    return     
+ 
 
 
 def write_vocabulary_to_google_spreadsheet(sheet, columns: list, vocabulary: dict, sleep_time: float):
     ''''Write on the spreadsheet'''
 
-    # Set up the date data
-    t_delta = datetime.timedelta(hours=9)
-    JST = datetime.timezone(t_delta, 'JST')
-    now = datetime.datetime.now(JST)
-    date = now.strftime('%Y/%m/%d')
-
-    next_row = next_available_row(sheet)
     vocabulary['timestamp'] = date
     vocabulary['check'] = False
 

@@ -60,6 +60,10 @@ class InputVocabularyBot(Bot):
             print("goodbye")
             quit()
 
+    def say_number_of_urls(self, urls: list):
+        urls_num = len(urls)
+        template = console.get_template('how_many_urls.txt', self.speak_color)
+        input(template.substitute({'urls': urls_num}))
 
     # def __init__(self, name=DEFAULT_ROBOT_NAME):
     #     super().__init__(name=name)
