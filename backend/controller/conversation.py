@@ -18,44 +18,15 @@ def talk_about_input_vocabulary():
     """Function to speak with robot"""
     # Set up env as dict
     config = config_.set_up()
-    result = config['RESULT']
-
+    
     # Set up instances
-    input_bot = bot.InputVocabularyBot()
-    cambridge = scraping.Cambridge()
-    GSS = voc.GoogleSpreadSheet(config['SPREAD_SHEET_KEY'], 
-                                config['SPREAD_SHEET_NAME'],
-                                config['COLUMNS'],
-                                config['SLEEP_TIME'])
+    input_bot = bot.InputVocabularyBot(config)
     input_bot.hello()
-    
-    EXAMPLE_PATH = config['PATH_EX'] + config['FILE_EX']
-    CSV_PATH = config['PATH_CSV'] + config['FILE_CSV']
-    BOOKMARKS_PATH = config['PATH_BOOKMARKS'] + config['FILE_BOOKMARKS']
-
-    # Confirm Bookamrk updates
-    if helper.is_file(BOOKMARKS_PATH):
-        input_bot.confirm_to_updates()
-
-    # Get URL list
-    result['urls'] = UrlModel.from_bookmarks(config['BOOKMARK_NAME'])
-    input_bot.say_number_of_urls(result['urls'])
-
-    # Confirm GSS and CSV
+    input_bot.check_files()
     input_bot.ask_user_favorites()
+    input_bot.get_urls()
+    input_bot.write_vocabularies()
 
-    for url in result['urls']:
-        # Get vocabulary from URL
-        vocabulary = cambridge.scraping(url)
-        result['scraping'].append(vocabulary['title'])
-    
-        if input_bot.is_GSS == True:
-            GSS.write(vocabulary)
-        # Check examples file
-        if not helper.is_file(EXAMPLE_PATH):
-            helper.create_file(EXAMPLE_PATH)
-        
-        conv.check_with_enter(f"■ Please update your {EXAMPLE_PATH} if you need.\n")
     
     # Set up for CSV
     if is_CSV == True:

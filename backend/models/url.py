@@ -21,18 +21,15 @@ class UrlModel(object):
 
     @staticmethod
     def from_bookmarks(folder_name: str):
+        print("Get urls")
         '''Get the list of the urls '''
         urls = []
         bookmark_data = UrlModel.get_chrome_bookmark_data()
         bookmark_data = bookmark_data['roots']['bookmark_bar']
-        print(folder_name)
         for data in bookmark_data['children']:
             if data['type'] == 'folder' and data['name'] == folder_name:
                 for d in data['children']:
                     urls.append(d['url'])
-                    
-        template = console.get_template('no_bookmarks.txt', 'red')
-        user_name = input(template.substitute({'USER': '$USER'}))
 
         return urls
     

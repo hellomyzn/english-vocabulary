@@ -24,20 +24,14 @@ def set_up() ->dict:
     config['PATH_CSV'] = os.getenv('PATH_CSV')
     config['FILE_CSV'] = os.getenv('FILE_CSV')
 
-    config['RESULT'] = {\
-        'urls': [],
-        'scraping': [],
-        'voc_written': [],
-        'voc_not_written': [],
-        'ex_written': [],
-        'ex_not_written': []}
-    config['COLUMNS'] = ['title', 
-                'part_of_speech', 
-                'us_pronunciation', 
-                'uk_pronunciation', 
-                'definition', 
-                'example_sentence', 
-                'timestamp', 
-                'check']
+    config['COLUMNS'] = [\
+        'title', 
+        'part_of_speech', 
+        'us_pronunciation', 
+        'uk_pronunciation', 
+        'definition', 
+        'example_sentence', 
+        'timestamp', 
+        'check']
 
     return config
