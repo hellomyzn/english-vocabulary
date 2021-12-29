@@ -15,6 +15,7 @@ def talk_about_input_vocabulary():
     """Function to speak with robot"""
     input_bot = bot.InputVocabularyBot()
     input_bot.hello()
+    
 
     quit()
     # Set up env as dict
@@ -30,9 +31,7 @@ def talk_about_input_vocabulary():
 
     # Confirm Bookamrk updates
     if helper.is_file(BOOKMARKS_PATH):
-        conv.check_with_enter("\
-■ Please run this command below to update your Bookmarks.\n\
->>> $ cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/data/Bookmarks\n")
+        input_bot.confirm_to_updates()
 
     # Confirm GSS and CSV
     is_GSS = conv.check_with_yn("■ Do you want to write vocabularies on Google spread sheet? (y/n): ")

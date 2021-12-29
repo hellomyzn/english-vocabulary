@@ -1,0 +1,2 @@
+■ Please run this command below if you want to update your Bookmarks.
+>>> cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/data/Bookmarks

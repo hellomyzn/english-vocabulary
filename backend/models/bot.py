@@ -31,8 +31,17 @@ class Bot(object):
 
 class InputVocabularyBot(Bot):
     """Handle data model on restaurant."""
-    def byt(self):
-        print("bye")
+    def confirm_to_updates(self):
+        template = console.get_template('confirm_to_update.txt', self.speak_color)
+        input(template.substitute({
+            'USER': '$USER'
+        }))
+    
+    def confirm_to_updates(self):
+        template = console.get_template('confirm_to_update.txt', self.speak_color)
+        input(template.substitute({
+            'USER': '$USER'
+        })) 
 
 
     # def __init__(self, name=DEFAULT_ROBOT_NAME):
