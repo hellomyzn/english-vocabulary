@@ -29,8 +29,6 @@ def talk_about_input_vocabulary():
                                 config['SLEEP_TIME'])
     input_bot.hello()
     
-
-
     EXAMPLE_PATH = config['PATH_EX'] + config['FILE_EX']
     CSV_PATH = config['PATH_CSV'] + config['FILE_CSV']
     BOOKMARKS_PATH = config['PATH_BOOKMARKS'] + config['FILE_BOOKMARKS']

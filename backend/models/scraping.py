@@ -53,26 +53,3 @@ class Cambridge(Scraping):
         self.uk_pronunciation = '.uk > .pron > .ipa'
         self.definition = '.ddef_h > .def'
         self.example = '.ddef_b > .examp > .eg'
-
-
-     
-
-
-
-#     def get_chrome_bookmark_data(self) -> dict:
-#         '''Get the json of user's Chrome bookmark.'''
-
-#         CHROME_BOOKMARK_PATH = ('data/Bookmarks')
-#         while True:
-#             try:
-#                 with open(CHROME_BOOKMARK_PATH) as f:
-#                     return json.load(f)
-#             except FileNotFoundError:
-#                 conv.check_with_quit(\
-#     "■ There is no Bookmarks on ./data folder. please copy a Bookmark file from Google Chrome Folder using the following command.\n\
-#     >>> $ cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/data/Bookmarks\n\n\
-#     ■ Press Enter after copy. If you don't want, Enter 'quit': ")
-#                 continue
-
-
-# def get_data_from_cambridge(url: str) -> dict:
