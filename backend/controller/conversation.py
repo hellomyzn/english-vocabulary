@@ -1,4 +1,4 @@
-import scraping as scraping
+# import scraping as scraping
 import google_spreadsheet as gs
 import csv_ as csv_
 import text_ as text_
@@ -8,6 +8,8 @@ import helper
 
 """Controller for speaking with robot"""
 from models import bot
+from models import scraping
+from models.url import UrlModel
 
 
 
@@ -21,9 +23,6 @@ def talk_about_input_vocabulary():
     config = config_.set_up()
     result = config['RESULT']
 
-    is_GSS = False
-    is_CSV = False
-
     EXAMPLE_PATH = config['PATH_EX'] + config['FILE_EX']
     CSV_PATH = config['PATH_CSV'] + config['FILE_CSV']
     BOOKMARKS_PATH = config['PATH_BOOKMARKS'] + config['FILE_BOOKMARKS']
@@ -32,14 +31,19 @@ def talk_about_input_vocabulary():
     if helper.is_file(BOOKMARKS_PATH):
         input_bot.confirm_to_updates()
 
+
+    urls = UrlModel.from_bookmarks(config['BOOKMARK_NAME'])
     # Confirm GSS and CSV
+    quit()
     input_bot.ask_user_favorites()
     
-    quit()
+    print(src.urls)
 
 
     # Get URL list
-    result['urls'] = scraping.get_urls_from_bookmarks(config['BOOKMARK_NAME'])
+    # result['urls'] = scraping.get_urls_from_bookmarks(config['BOOKMARK_NAME'])
+
+    quit()
 
     # Set up for GSS
     if is_GSS == True:
