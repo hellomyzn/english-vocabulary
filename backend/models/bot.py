@@ -37,11 +37,28 @@ class InputVocabularyBot(Bot):
             'USER': '$USER'
         }))
     
-    def confirm_to_updates(self):
-        template = console.get_template('confirm_to_update.txt', self.speak_color)
-        input(template.substitute({
-            'USER': '$USER'
-        })) 
+    def ask_user_favorites(self):
+        while True:
+            template = console.get_template('ask_gss.txt', self.speak_color)
+            is_yes = input(template.substitute()) 
+            if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
+                self.is_GSS = True
+                break
+            elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
+                break
+
+        while True:
+            template = console.get_template('ask_csv.txt', self.speak_color)
+            is_yes = input(template.substitute()) 
+            if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
+                self.is_CSV = True
+                break
+            elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
+                break
+        
+        if self.is_GSS == False and self.is_CSV == False:
+            print("goodbye")
+            quit()
 
 
     # def __init__(self, name=DEFAULT_ROBOT_NAME):

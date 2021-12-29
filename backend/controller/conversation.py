@@ -17,7 +17,6 @@ def talk_about_input_vocabulary():
     input_bot.hello()
     
 
-    quit()
     # Set up env as dict
     config = config_.set_up()
     result = config['RESULT']
@@ -34,11 +33,10 @@ def talk_about_input_vocabulary():
         input_bot.confirm_to_updates()
 
     # Confirm GSS and CSV
-    is_GSS = conv.check_with_yn("■ Do you want to write vocabularies on Google spread sheet? (y/n): ")
-    is_CSV = conv.check_with_yn("■ Do you want to write vocabularies on CSV? (y/n): ")
+    input_bot.ask_user_favorites()
     
-    if is_GSS == False and is_CSV == False:
-        quit()
+    quit()
+
 
     # Get URL list
     result['urls'] = scraping.get_urls_from_bookmarks(config['BOOKMARK_NAME'])
