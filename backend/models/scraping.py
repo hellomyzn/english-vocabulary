@@ -3,8 +3,6 @@ import requests
 
 import bs4
 
-import conversation as conv
-
 class Scraping(object):
     def __init__(self):
         self.headers_dic = None

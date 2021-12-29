@@ -1,9 +1,6 @@
 import os
 import pathlib
 
-import conversation as conv
-
-
 def is_file(path: str):
     if os.path.isfile(path):
         return True

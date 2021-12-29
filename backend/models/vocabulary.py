@@ -25,6 +25,11 @@ class Vocabulary(metaclass=abc.ABCMeta):
         pass
 
 class GoogleSpreadSheet(Vocabulary):
+    """
+        Reference: 
+        - https://qiita.com/164kondo/items/eec4d1d8fd7648217935
+        - https://www.cdatablog.jp/entry/2019/04/16/191006
+    """
     def __init__(self, 
                 key: str, 
                 sheet_name: str, 
@@ -100,9 +105,6 @@ class GoogleSpreadSheet(Vocabulary):
                 conv.say_something("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'\nTry it again later on!")
                 break
         self.next_row += 1
-        
-
-    
     
 
 class CSV(Vocabulary):
