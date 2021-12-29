@@ -1,4 +1,5 @@
 import abc
+import csv
 import os
 import time
 import datetime
@@ -15,6 +16,13 @@ class Vocabulary(metaclass=abc.ABCMeta):
     def write(self):
         pass
 
+    @abc.abstractmethod
+    def create_columns(self):
+        pass
+
+    @abc.abstractmethod
+    def is_not_columns(self):
+        pass
 
 class GoogleSpreadSheet(Vocabulary):
     def __init__(self, 
@@ -59,7 +67,6 @@ class GoogleSpreadSheet(Vocabulary):
         str_list = list(filter(None, worksheet.col_values(1)))
         return int(len(str_list)+1)
 
-
     @classmethod
     def create_columns(cls, worksheet, columns):
         print('Create header on GSS')
@@ -67,7 +74,6 @@ class GoogleSpreadSheet(Vocabulary):
             worksheet.update_cell(1, i, column)
 
         return None
-
 
     @classmethod
     def is_not_columns(cls, worksheet):
@@ -100,8 +106,28 @@ class GoogleSpreadSheet(Vocabulary):
     
 
 class CSV(Vocabulary):
-    def __init__(self):
-        pass
+    def __init__(self, columns: dict):
+        self.columns = columns
 
-    def write(self):
-        print("hoge")
+    @classmethod
+    def create_columns(cls, url, columns):
+        print('Create header on CSV')
+        with open(url, 'a', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=columns)
+            writer.writeheader()
+    @classmethod
+    def is_not_columns(cls, url):
+        with open(url, 'r', newline='') as csvfile:
+            data = csvfile.readline()
+            if not data:
+                return True
+            else:
+                return False
+
+    def write(self, vocabulary, url):
+        if CSV.is_not_columns(url):
+            CSV.create_columns(url, self.columns)
+        with open(url, 'a', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=self.columns)
+            writer.writerow(vocabulary)
+        return

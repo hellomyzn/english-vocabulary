@@ -20,7 +20,3 @@ def write_csv(columns: list, vocabulary: dict):
     '''Write vacabularies on CSV(/backend/data/vocabularies.csv)'''
 
 
-    with open('data/vocabularies.csv', 'a', newline='') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=columns)
-        writer.writerow(vocabulary)
-    return

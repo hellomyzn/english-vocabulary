@@ -3,7 +3,7 @@
 from views import console
 from models.url import UrlModel
 from models import scraping
-from models import vocabulary as voc
+from models import vocabulary
 import helper
 
 class Bot(object):
@@ -27,6 +27,7 @@ class InputVocabularyBot(Bot):
         self.is_GSS = False
         self.is_CSV = False
         self.GSS = None
+        self.CSV = None
         self.urls = []
         self.examples = []
         self.result = {'scraping': [],
@@ -59,7 +60,7 @@ class InputVocabularyBot(Bot):
             if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
                 # Set up GSS
                 self.is_GSS = True
-                self.GSS = voc.GoogleSpreadSheet(self.config['SPREAD_SHEET_KEY'], 
+                self.GSS = vocabulary.GoogleSpreadSheet(self.config['SPREAD_SHEET_KEY'], 
                             self.config['SPREAD_SHEET_NAME'],
                             self.config['COLUMNS'],
                             self.config['SLEEP_TIME'])
@@ -75,6 +76,8 @@ class InputVocabularyBot(Bot):
             is_yes = input(template.substitute()) 
             if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
                 self.is_CSV = True
+
+                self.CSV = vocabulary.CSV(self.config['COLUMNS'],)
                 break
             elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
                 break
@@ -108,7 +111,7 @@ class InputVocabularyBot(Bot):
             if self.is_GSS == True:
                 self.GSS.write(vocabulary)
             if self.is_CSV == True:
-                
+                self.CSV.write(vocabulary, self.config['PATH_CSV'] + self.config['FILE_CSV'])
         return None
 
     def check_files(self):
