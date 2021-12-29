@@ -2,7 +2,7 @@
 import google_spreadsheet as gs
 import csv_ as csv_
 import text_ as text_
-import config_ as config_
+import config_ as my_config
 import conversation as conv
 import helper
 
@@ -17,7 +17,7 @@ from models.url import UrlModel
 def talk_about_input_vocabulary():
     """Function to speak with robot"""
     # Set up env as dict
-    config = config_.set_up()
+    config = my_config.set_up()
     
     # Set up instances
     input_bot = bot.InputVocabularyBot(config)
