@@ -1,4 +1,4 @@
 ■ There is no Bookmarks on ./data folder. please copy a Bookmark file from Google Chrome Folder using the following command.
->>> cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/data/Bookmarks
+>>> cp /Users/$USER/Library/Application\ Support/Google/Chrome/Default/Bookmarks ./backend/$bookmarks_file_path
 
 ■ Press Enter after copy. If you don't want, Enter 'quit': 

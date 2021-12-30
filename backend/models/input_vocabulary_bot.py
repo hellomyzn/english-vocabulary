@@ -1,11 +1,11 @@
 from interfaces import bot
 from views import console
-from models import from_bookmarks
-from models import from_cambridge
+from models.vocabulary import Vocabulary
+from models.from_cambridge import FromCambridge
+from models.from_bookmarks import FromBookmarks
 from models.google_spread_sheet import GoogleSpreadSheet
 from models.own_example_sentence import OwnExampleSentence
-from models import csv
-from models import vocabulary as vocabulary_file
+from models.csv import CSV
 import helper
 
 
@@ -24,7 +24,7 @@ class InputVocabularyBot(bot.Bot):
         self.vocabulary = None
         self.scraping = None
         self.url = None
-        self.examples = []
+        self.examples = None
         self.result = {'scraping': [],
                         'voc_written': [],
                         'voc_not_written': [],
@@ -32,10 +32,39 @@ class InputVocabularyBot(bot.Bot):
                         'ex_not_written': []}
 
 
-    def confirm_to_updates(self):
-        template = console.get_template('confirm_to_update.txt', self.speak_color)
-        input(template.substitute({'USER': '$USER'}))
-        return  None
+    def check_files(self):
+        ''' '''
+        # Check whether there is a bookmarks file or not. If there is no, tell to copy a bookmarks file until executing
+        if helper.is_file(self.bookmarks_file_path):
+            template = console.get_template('confirm_to_update_bookmarks.txt', self.speak_color)
+            input(template.substitute({
+                'USER': '$USER',
+                'bookmarks_file_path': self.bookmarks_file_path
+                }))
+        else:
+            while True:
+                template = console.get_template('copy_bookmarks.txt', self.speak_color)
+                is_quit = input(template.substitute({
+                    'USER': '$USER',
+                    'bookmarks_file_path': self.bookmarks_file_path
+                    }))
+                    
+                if helper.is_file(self.bookmarks_file_path):
+                    break
+                if is_quit == 'quit':
+                    quit()
+        
+        # Check whether there is example, csv file or not. If there is no, create those files
+        for file_path in [self.examples_file_path, self.csv_file_path]:
+            if not helper.is_file(file_path):
+                helper.create_file(file_path)
+                template = console.get_template('create_file.txt', self.speak_color)
+                print(template.substitute({
+                    'file_path': file_path,
+                    'dir': self.config['FILES']['DIR']
+                }))
+
+        return None
 
 
     def ask_user_favorites(self):
@@ -57,12 +86,8 @@ class InputVocabularyBot(bot.Bot):
                             self.config['GOOGLE_API']['SPREAD_SHEET_NAME'],
                             self.config['TABLE']['COLUMNS'])
                 
-                # Get Examples
+                # Retrieve Examples
                 self.examples = OwnExampleSentence(self.examples_file_path)
-                print(self.examples.titles)
-                print(self.examples.example_sentences)
-                print(self.examples.dict_of_examples)
-                quit()
                 break
             elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
                 break
@@ -73,26 +98,26 @@ class InputVocabularyBot(bot.Bot):
             is_yes = input(template.substitute({
                 'favorite': 'to write vocabularies on CSV'
                 })) 
+
             if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
                 self.is_CSV = True
-                self.CSV = csv.CSV(self.config['COLUMNS'],)
+                self.CSV = CSV(self.config['TABLE']['COLUMNS'])
                 break
             elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
                 break
         
         if self.is_GSS == False and self.is_CSV == False:
-            print("goodbye")
             quit()
         
-        self.vocabulary = vocabulary_file.Vocabulary()
-        self.scraping = from_cambridge.FromCambridge()
+        self.vocabulary = Vocabulary()
+        self.scraping = FromCambridge()
 
         return None
 
 
     def get_urls(self):
-        self.url = from_bookmarks.FromBookmarks()
-        self.url.get_urls(self.config['BOOKMARK_NAME'])
+        ''' '''
+        self.url = FromBookmarks(self.bookmarks_file_path, self.config['BOOKMARKS']['FOLDER_NAME'])
         urls_num = len(self.url.urls)
 
         template = console.get_template('how_many_urls.txt', self.speak_color)
@@ -128,34 +153,6 @@ class InputVocabularyBot(bot.Bot):
                 
             if self.is_CSV == True:
                 self.CSV.write(self.vocabulary, self.config['PATH_CSV'] + self.config['FILE_CSV'])
-        return None
-
-
-    def check_files(self):
-        ''' '''
-        # Check whether there is a bookmarks file or not. If there is no, tell to copy a bookmarks file until executing
-        if helper.is_file(self.bookmarks_file_path):
-            template = console.get_template('confirm_to_update_bookmarks.txt', self.speak_color)
-            input(template.substitute({'USER': '$USER'}))
-        else:
-            while True:
-                template = console.get_template('copy_bookmarks.txt', self.speak_color)
-                is_quit = input(template.substitute({'USER': '$USER'}))
-                if helper.is_file(self.bookmarks_file_path):
-                    break
-                if is_quit == 'quit':
-                    quit()
-        
-        # Check whether there is example, csv file or not. If there is no, create those files
-        for file_path in [self.examples_file_path, self.csv_file_path]:
-            if not helper.is_file(file_path):
-                helper.create_file(file_path)
-                template = console.get_template('create_file.txt', self.speak_color)
-                print(template.substitute({
-                    'file_path': file_path,
-                    'dir': self.config['FILES']['DIR']
-                }))
-
         return None
 
 
