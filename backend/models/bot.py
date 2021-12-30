@@ -1,7 +1,8 @@
 from views import console
 from models.url import UrlModel
-from models import scraping
+from models import scraping as scraping_file
 from models import export
+from models import vocabulary as vocabulary_file
 import helper
 
 class Bot(object):
@@ -26,6 +27,8 @@ class InputVocabularyBot(Bot):
         self.is_CSV = False
         self.GSS = None
         self.CSV = None
+        self.vocabulary = None
+        self.scraping = None
         self.urls = []
         self.examples = []
         self.result = {'scraping': [],
@@ -74,7 +77,6 @@ class InputVocabularyBot(Bot):
             is_yes = input(template.substitute()) 
             if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
                 self.is_CSV = True
-
                 self.CSV = export.CSV(self.config['COLUMNS'],)
                 break
             elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
@@ -83,6 +85,10 @@ class InputVocabularyBot(Bot):
         if self.is_GSS == False and self.is_CSV == False:
             print("goodbye")
             quit()
+        
+        self.vocabulary = vocabulary_file.Vocabulary()
+        self.scraping = scraping_file.FromCambridge()
+
         return None
 
 
@@ -97,24 +103,26 @@ class InputVocabularyBot(Bot):
 
 
     def write_vocabularies(self):
-        cambridge = scraping.Cambridge()
-
         for url in self.urls:
             # Get vocabulary from URL
-            vocabulary = cambridge.scraping(url)
-            self.result['scraping'].append(vocabulary.title)
+            self.vocabulary = self.scraping.scraping(url, self.vocabulary)
+            self.result['scraping'].append(self.vocabulary.title)
 
             # Get examples
             for example in self.examples:
-                if example['title'] == vocabulary.title:
-                    vocabulary.example_sentence = example['example_sentence']
-                    self.result['ex_written'].append(vocabulary.title)
+                if example['title'] == self.vocabulary.title:
+                    self.vocabulary.example_sentence = example['example_sentence']
+                    self.result['ex_written'].append(self.vocabulary.title)
+                    self.vocabulary.own_example = True
                     continue
+            
+            if self.vocabulary.own_example == False:
+                self.result['ex_not_written'].append(self.vocabulary.title)
 
             if self.is_GSS == True:
-                self.GSS.write(vocabulary, self.result)
+                self.GSS.write(self.vocabulary, self.result)
             if self.is_CSV == True:
-                self.CSV.write(vocabulary, self.config['PATH_CSV'] + self.config['FILE_CSV'])
+                self.CSV.write(self.vocabulary, self.config['PATH_CSV'] + self.config['FILE_CSV'])
         return None
 
     def check_files(self):
@@ -176,7 +184,7 @@ class InputVocabularyBot(Bot):
 
         # Ask to delete CSV
         template = console.get_template('ask_to_delete_file.txt', self.speak_color)
-        is_yes = input(template.substitute({self.config['PATH_CSV'] + self.config['FILE_CSV']}))
+        is_yes = input(template.substitute({'path': self.config['PATH_CSV'] + self.config['FILE_CSV']}))
         if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
             print(self.config['PATH_CSV'] + self.config['FILE_CSV'], 'has been deleted')
             helper.delete_file(self.config['PATH_CSV'] + self.config['FILE_CSV'])

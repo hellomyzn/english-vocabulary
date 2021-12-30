@@ -3,8 +3,6 @@ import requests
 
 import bs4
 
-from models import vocabulary as vocabulary_file
-
 class Scraping(object):
     def __init__(self):
         self.headers_dic = None
@@ -17,14 +15,13 @@ class Scraping(object):
         self.definition = None
         self.example = None
 
-    def scraping(self, url) ->dict:
+    def scraping(self, url, vocabulary) ->dict:
         '''Get vocabulary data from cambridge'''
         
         html = requests.get(url, headers=self.headers_dic)
         soup = bs4.BeautifulSoup(html.content, "html.parser")
 
         # Get data via scraping
-        vocabulary = vocabulary_file.Vocabulary()
         vocabulary.title            = soup.select(self.title,            limit=1)[0].text if soup.select(self.title, limit=1) else ''
         vocabulary.part_of_speech   = soup.select(self.parts_of_speech,  limit=1)[0].text if soup.select(self.parts_of_speech, limit=1) else ''
         vocabulary.us_pronunciation = soup.select(self.us_pronunciation, limit=1)[0].text if soup.select(self.us_pronunciation, limit=1) else ''
@@ -42,7 +39,7 @@ class Scraping(object):
         
         return vocabulary
 
-class Cambridge(Scraping):
+class FromCambridge(Scraping):
 
     def __init__(self):
         self.headers_dic = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"}

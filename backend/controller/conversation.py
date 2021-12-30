@@ -11,7 +11,6 @@ def talk_about_input_vocabulary():
     # Set up env as dict
     config = my_config.set_up()
     
-    # Set up instances
     input_bot = bot.InputVocabularyBot(config)
     input_bot.hello()
     input_bot.check_files()

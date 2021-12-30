@@ -12,5 +12,6 @@
     - EXAMPLE: 
         - WRITTEN: $num_ex_written
         $ex_written
+        
         - NOT_WRITTEN: $num_ex_not_written
         $ex_not_written
