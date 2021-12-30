@@ -1,4 +1,3 @@
-import os
 import time
 
 import gspread
@@ -14,11 +13,14 @@ class GoogleSpreadSheet(table.Table):
         - https://qiita.com/164kondo/items/eec4d1d8fd7648217935
         - https://www.cdatablog.jp/entry/2019/04/16/191006
     """
-    def __init__(self, 
+    def __init__(self,
+                json_dir: str,
+                json_file: str,
                 key: str, 
                 sheet_name: str, 
                 columns: list):
-        self.worksheet = GoogleSpreadSheet.connect(key, sheet_name)
+        self.json_path = json_dir + json_file
+        self.worksheet = GoogleSpreadSheet.connect(self.json_path, key, sheet_name)
         self.columns = columns
         self.all_vocabularies = self.worksheet.col_values(1)
         self.next_row = GoogleSpreadSheet.next_available_row(self.worksheet)
@@ -26,10 +28,10 @@ class GoogleSpreadSheet(table.Table):
        
 
     @classmethod
-    def connect(cls, key, sheet_name):
+    def connect(cls,json_path, key, sheet_name):
         print("Start connecting GSS...")
         scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
-        credentials = ServiceAccountCredentials.from_json_keyfile_name('src/' + str(os.getenv('JSONF')), scope)
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(json_path, scope)
         gc = gspread.authorize(credentials)
         workbook = gc.open_by_key(key)
         worksheet = workbook.worksheet(sheet_name)

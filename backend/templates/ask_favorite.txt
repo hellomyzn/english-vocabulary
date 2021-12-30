@@ -1,0 +1,1 @@
+■ Do you want $favorite ? [y/n]: 

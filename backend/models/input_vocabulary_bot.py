@@ -2,7 +2,8 @@ from interfaces import bot
 from views import console
 from models import from_bookmarks
 from models import from_cambridge
-from models import google_spread_sheet
+from models.google_spread_sheet import GoogleSpreadSheet
+from models.own_example_sentence import OwnExampleSentence
 from models import csv
 from models import vocabulary as vocabulary_file
 import helper
@@ -30,20 +31,6 @@ class InputVocabularyBot(bot.Bot):
                         'ex_written': [],
                         'ex_not_written': []}
 
-    @classmethod
-    def get_examples(cls, url, examples):
-        '''Get list including dict from data/examples.txt'''
-        print('Retrieve examples')
-        with open(url, 'r') as f:            
-            data = f.read()
-            
-            if data:
-                # SBV = Separated by Vocabulary
-                examples_SBV = f.read().split("\n\n")
-                examples = [{'title': example.split("\n")[0], 'example_sentence': example.split("\n")[1]} for example in examples_SBV]
-            
-        return examples
-
 
     def confirm_to_updates(self):
         template = console.get_template('confirm_to_update.txt', self.speak_color)
@@ -52,26 +39,40 @@ class InputVocabularyBot(bot.Bot):
 
 
     def ask_user_favorites(self):
-        # Ask you want GSS
+        ''' '''
+        # Ask you want to write vocabularies on GSS
         while True:
-            template = console.get_template('ask_gss.txt', self.speak_color)
-            is_yes = input(template.substitute()) 
+            template = console.get_template('ask_favorite.txt', self.speak_color)
+            is_yes = input(template.substitute({
+                'favorite': 'to write vocabularies on Google spreadsheet'
+                })) 
+                
             if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
                 # Set up GSS
                 self.is_GSS = True
-                self.GSS = google_spread_sheet.GoogleSpreadSheet(self.config['SPREAD_SHEET_KEY'], 
-                            self.config['SPREAD_SHEET_NAME'],
-                            self.config['COLUMNS'])
+                self.GSS = GoogleSpreadSheet(
+                            self.config['GOOGLE_API']['JSONF_DIR'], 
+                            self.config['GOOGLE_API']['JSON_FILE'], 
+                            self.config['GOOGLE_API']['SPREAD_SHEET_KEY'], 
+                            self.config['GOOGLE_API']['SPREAD_SHEET_NAME'],
+                            self.config['TABLE']['COLUMNS'])
+                
                 # Get Examples
-                self.examples = InputVocabularyBot.get_examples(self.config['PATH_EX'] + self.config['FILE_EX'], self.examples)
+                self.examples = OwnExampleSentence(self.examples_file_path)
+                print(self.examples.titles)
+                print(self.examples.example_sentences)
+                print(self.examples.dict_of_examples)
+                quit()
                 break
             elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
                 break
         
-        # Ask you want CSV
+        # Ask you want to write vocabularies on CSV
         while True:
-            template = console.get_template('ask_csv.txt', self.speak_color)
-            is_yes = input(template.substitute()) 
+            template = console.get_template('ask_favorite.txt', self.speak_color)
+            is_yes = input(template.substitute({
+                'favorite': 'to write vocabularies on CSV'
+                })) 
             if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
                 self.is_CSV = True
                 self.CSV = csv.CSV(self.config['COLUMNS'],)
@@ -154,7 +155,7 @@ class InputVocabularyBot(bot.Bot):
                     'file_path': file_path,
                     'dir': self.config['FILES']['DIR']
                 }))
-                
+
         return None
 
 

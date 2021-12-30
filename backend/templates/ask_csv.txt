@@ -1,1 +1,0 @@
-■ Do you want to write vocabularies on CSV? [y/n]: 
