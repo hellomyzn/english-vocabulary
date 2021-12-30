@@ -1,3 +1,4 @@
+from interfaces import bot
 from views import console
 from models.url import UrlModel
 from models import scraping as scraping_file
@@ -5,21 +6,9 @@ from models import export
 from models import vocabulary as vocabulary_file
 import helper
 
-class Bot(object):
-    """Base model for Robot."""
-
-    def __init__(self, speak_color='green'):
-        self.speak_color = speak_color
-
-    def hello(self):
-        """Returns words to the user that the robot speaks at the beginning."""
-        while True:
-            template = console.get_template('hello.txt', self.speak_color)
-            print(template.substitute())
-            break
 
 
-class InputVocabularyBot(Bot):
+class InputVocabularyBot(bot.Bot):
     def __init__(self, config: dict, speak_color='green'):
         super().__init__(speak_color)
         self.config = config
@@ -38,13 +27,16 @@ class InputVocabularyBot(Bot):
                         'ex_not_written': []}
 
     @classmethod
-    def get_examples(cls, url):
+    def get_examples(cls, url, examples):
         '''Get list including dict from data/examples.txt'''
         print('Retrieve examples')
-        with open(url, 'r') as f:
-            # SBV = Separated by Vocabulary
-            examples_SBV = f.read().split("\n\n")
-            examples = [{'title': example.split("\n")[0], 'example_sentence': example.split("\n")[1]} for example in examples_SBV]
+        with open(url, 'r') as f:            
+            data = f.read()
+            
+            if data:
+                # SBV = Separated by Vocabulary
+                examples_SBV = f.read().split("\n\n")
+                examples = [{'title': example.split("\n")[0], 'example_sentence': example.split("\n")[1]} for example in examples_SBV]
             
         return examples
 
@@ -66,7 +58,7 @@ class InputVocabularyBot(Bot):
                             self.config['COLUMNS'],
                             self.config['SLEEP_TIME'])
                 # Get Examples
-                self.examples = InputVocabularyBot.get_examples(self.config['PATH_EX'] + self.config['FILE_EX'])
+                self.examples = InputVocabularyBot.get_examples(self.config['PATH_EX'] + self.config['FILE_EX'], self.examples)
                 break
             elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
                 break

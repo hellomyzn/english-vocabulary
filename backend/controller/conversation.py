@@ -2,7 +2,7 @@
 import config_ as my_config
 
 """Controller for speaking with robot"""
-from models import bot
+from models import input_vocabulary_bot
 
 
 
@@ -11,7 +11,7 @@ def talk_about_input_vocabulary():
     # Set up env as dict
     config = my_config.set_up()
     
-    input_bot = bot.InputVocabularyBot(config)
+    input_bot = input_vocabulary_bot.InputVocabularyBot(config)
     input_bot.hello()
     input_bot.check_files()
     input_bot.ask_user_favorites()
