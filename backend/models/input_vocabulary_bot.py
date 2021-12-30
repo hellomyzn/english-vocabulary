@@ -1,7 +1,7 @@
 from interfaces import bot
 from views import console
 from models.url import UrlModel
-from models import scraping as scraping_file
+from models import from_cambridge
 from models import google_spread_sheet
 from models import csv
 from models import vocabulary as vocabulary_file
@@ -80,7 +80,7 @@ class InputVocabularyBot(bot.Bot):
             quit()
         
         self.vocabulary = vocabulary_file.Vocabulary()
-        self.scraping = scraping_file.FromCambridge()
+        self.scraping = from_cambridge.FromCambridge()
 
         return None
 
