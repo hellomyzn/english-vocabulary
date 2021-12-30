@@ -17,13 +17,12 @@ class GoogleSpreadSheet(table.Table):
     def __init__(self, 
                 key: str, 
                 sheet_name: str, 
-                columns: list,
-                sleep_time: float):
+                columns: list):
         self.worksheet = GoogleSpreadSheet.connect(key, sheet_name)
         self.columns = columns
         self.all_vocabularies = self.worksheet.col_values(1)
         self.next_row = GoogleSpreadSheet.next_available_row(self.worksheet)
-        self.sleep_time = sleep_time
+        self.sleep_time = 0.7
        
 
     @classmethod

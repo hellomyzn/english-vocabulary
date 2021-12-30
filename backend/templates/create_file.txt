@@ -1,0 +1,2 @@
+$file_path file didn't exist in $dir directory
+So $file_path was created in $dir directory

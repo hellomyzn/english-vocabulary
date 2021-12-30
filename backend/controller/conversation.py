@@ -1,17 +1,18 @@
-# import scraping as scraping
-import config_ as my_config
-
 """Controller for speaking with robot"""
-from models import input_vocabulary_bot
+from configparser import ConfigParser
 
+from models.input_vocabulary_bot import InputVocabularyBot
 
 
 def talk_about_input_vocabulary():
     """Function to speak with robot"""
-    # Set up env as dict
-    config = my_config.set_up()
-    
-    input_bot = input_vocabulary_bot.InputVocabularyBot(config)
+    # Set up config as dict
+    config_file = 'config.ini'
+    config = ConfigParser()
+    config.read(config_file)
+
+    # Start input vocabulary
+    input_bot = InputVocabularyBot(config)
     input_bot.hello()
     input_bot.check_files()
     input_bot.ask_user_favorites()

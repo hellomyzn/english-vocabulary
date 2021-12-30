@@ -13,6 +13,9 @@ class InputVocabularyBot(bot.Bot):
     def __init__(self, config: dict, speak_color='green'):
         super().__init__(speak_color)
         self.config = config
+        self.bookmarks_file_path = config['FILES']['DIR'] + config['FILES']['BOOKMARKS_FILE_NAME'] 
+        self.examples_file_path = config['FILES']['DIR'] + config['FILES']['EXAMPLES_FILE_NAME'] 
+        self.csv_file_path = config['FILES']['DIR'] + config['FILES']['CSV_FILE_NAME'] 
         self.is_GSS = False
         self.is_CSV = False
         self.GSS = None
@@ -41,11 +44,13 @@ class InputVocabularyBot(bot.Bot):
             
         return examples
 
+
     def confirm_to_updates(self):
         template = console.get_template('confirm_to_update.txt', self.speak_color)
         input(template.substitute({'USER': '$USER'}))
         return  None
-    
+
+
     def ask_user_favorites(self):
         # Ask you want GSS
         while True:
@@ -56,8 +61,7 @@ class InputVocabularyBot(bot.Bot):
                 self.is_GSS = True
                 self.GSS = google_spread_sheet.GoogleSpreadSheet(self.config['SPREAD_SHEET_KEY'], 
                             self.config['SPREAD_SHEET_NAME'],
-                            self.config['COLUMNS'],
-                            self.config['SLEEP_TIME'])
+                            self.config['COLUMNS'])
                 # Get Examples
                 self.examples = InputVocabularyBot.get_examples(self.config['PATH_EX'] + self.config['FILE_EX'], self.examples)
                 break
@@ -127,29 +131,31 @@ class InputVocabularyBot(bot.Bot):
 
 
     def check_files(self):
-        if helper.is_file(self.config['PATH_BOOKMARKS'] + self.config['FILE_BOOKMARKS']):
+        ''' '''
+        # Check whether there is a bookmarks file or not. If there is no, tell to copy a bookmarks file until executing
+        if helper.is_file(self.bookmarks_file_path):
             template = console.get_template('confirm_to_update_bookmarks.txt', self.speak_color)
             input(template.substitute({'USER': '$USER'}))
         else:
             while True:
                 template = console.get_template('copy_bookmarks.txt', self.speak_color)
-                i = input(template.substitute({'USER': '$USER'}))
-                if helper.is_file(self.config['PATH_BOOKMARKS'] + self.config['FILE_BOOKMARKS']):
+                is_quit = input(template.substitute({'USER': '$USER'}))
+                if helper.is_file(self.bookmarks_file_path):
                     break
-                if i == 'quit':
+                if is_quit == 'quit':
                     quit()
-                  
-        if helper.is_file(self.config['PATH_EX'] + self.config['FILE_EX']):
-            print("There is ", self.config['PATH_EX'] + self.config['FILE_EX'])
-        else:
-            print("There is no ", self.config['PATH_EX'] + self.config['FILE_EX'])
-            helper.create_file(self.config['PATH_EX'] + self.config['FILE_EX'])
-
-        if helper.is_file(self.config['PATH_CSV'] + self.config['FILE_CSV']):
-            print("There is ", self.config['PATH_CSV'] + self.config['FILE_CSV'])
-        else:
-            print("There is no ", self.config['PATH_CSV'] + self.config['FILE_CSV'])
-            helper.create_file(self.config['PATH_CSV'] + self.config['FILE_CSV'])
+        
+        # Check whether there is example, csv file or not. If there is no, create those files
+        for file_path in [self.examples_file_path, self.csv_file_path]:
+            if not helper.is_file(file_path):
+                helper.create_file(file_path)
+                template = console.get_template('create_file.txt', self.speak_color)
+                print(template.substitute({
+                    'file_path': file_path,
+                    'dir': self.config['FILES']['DIR']
+                }))
+                
+        return None
 
 
     def show_result(self):
