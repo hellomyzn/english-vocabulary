@@ -2,7 +2,8 @@ from interfaces import bot
 from views import console
 from models.url import UrlModel
 from models import scraping as scraping_file
-from models import export
+from models import google_spread_sheet
+from models import csv
 from models import vocabulary as vocabulary_file
 import helper
 
@@ -53,7 +54,7 @@ class InputVocabularyBot(bot.Bot):
             if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
                 # Set up GSS
                 self.is_GSS = True
-                self.GSS = export.GoogleSpreadSheet(self.config['SPREAD_SHEET_KEY'], 
+                self.GSS = google_spread_sheet.GoogleSpreadSheet(self.config['SPREAD_SHEET_KEY'], 
                             self.config['SPREAD_SHEET_NAME'],
                             self.config['COLUMNS'],
                             self.config['SLEEP_TIME'])
@@ -69,7 +70,7 @@ class InputVocabularyBot(bot.Bot):
             is_yes = input(template.substitute()) 
             if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
                 self.is_CSV = True
-                self.CSV = export.CSV(self.config['COLUMNS'],)
+                self.CSV = csv.CSV(self.config['COLUMNS'],)
                 break
             elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
                 break

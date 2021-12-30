@@ -1,3 +1,5 @@
+import abc
+
 from views import console
 
 class Bot(object):

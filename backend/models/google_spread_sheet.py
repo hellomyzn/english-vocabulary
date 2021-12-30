@@ -1,31 +1,14 @@
-import abc
-import csv
 import os
 import time
-import datetime
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
+from interfaces import table
 from models import vocabulary
 
-class Export(metaclass=abc.ABCMeta):
-    def __init__(self):
-        pass
 
-    @abc.abstractmethod
-    def write(self):
-        pass
-
-    @abc.abstractmethod
-    def create_columns(self):
-        pass
-
-    @abc.abstractmethod
-    def is_not_columns(self):
-        pass
-
-class GoogleSpreadSheet(Export):
+class GoogleSpreadSheet(table.Table):
     """
         Reference: 
         - https://qiita.com/164kondo/items/eec4d1d8fd7648217935
@@ -36,34 +19,23 @@ class GoogleSpreadSheet(Export):
                 sheet_name: str, 
                 columns: list,
                 sleep_time: float):
-        self.workbook = GoogleSpreadSheet.connect(key)
-        self.worksheet = self.workbook.worksheet(sheet_name)
+        self.worksheet = GoogleSpreadSheet.connect(key, sheet_name)
         self.columns = columns
         self.all_vocabularies = self.worksheet.col_values(1)
-        self.date = GoogleSpreadSheet.get_date()
         self.next_row = GoogleSpreadSheet.next_available_row(self.worksheet)
         self.sleep_time = sleep_time
        
 
     @classmethod
-    def connect(cls, key):
+    def connect(cls, key, sheet_name):
         print("Start connecting GSS...")
         scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
         credentials = ServiceAccountCredentials.from_json_keyfile_name('src/' + str(os.getenv('JSONF')), scope)
         gc = gspread.authorize(credentials)
         workbook = gc.open_by_key(key)
+        worksheet = workbook.worksheet(sheet_name)
         
-        return workbook
-
-
-    @classmethod
-    def get_date(cls):
-        t_delta = datetime.timedelta(hours=9)
-        JST = datetime.timezone(t_delta, 'JST')
-        now = datetime.datetime.now(JST)
-        date = now.strftime('%Y/%m/%d') 
-        
-        return date
+        return worksheet
     
 
     @classmethod
@@ -97,10 +69,6 @@ class GoogleSpreadSheet(Export):
         if GoogleSpreadSheet.is_not_columns(self.worksheet):
             GoogleSpreadSheet.create_columns(self.worksheet, self.columns)
             self.next_row += 1
-        
-        vocabulary.timestamp = self.date
-        vocabulary.check = False
-        
 
         for i, column in enumerate(self.columns, start=1):
             try:
@@ -113,37 +81,3 @@ class GoogleSpreadSheet(Export):
 
         result['voc_written'].append(vocabulary.title)
         self.next_row += 1
-    
-
-class CSV(Export):
-    def __init__(self, columns: dict):
-        self.columns = columns
-
-    @classmethod
-    def create_columns(cls, url, columns):
-        print('Create header on CSV')
-        with open(url, 'a', newline='') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=columns)
-            writer.writeheader()
-    @classmethod
-    def is_not_columns(cls, url):
-        with open(url, 'r', newline='') as csvfile:
-            data = csvfile.readline()
-            if not data:
-                return True
-            else:
-                return False
-
-    def write(self, vocabulary, url):
-        if CSV.is_not_columns(url):
-            CSV.create_columns(url, self.columns)
-
-        vocabulary_dict = {}
-        for i, column in enumerate(self.columns, start=1):
-            vocabulary_dict[column] = getattr(vocabulary, column)
-
-        with open(url, 'a', newline='') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=self.columns)
-            writer.writerow(vocabulary_dict)
-            print(f"WRITING: {column}:", getattr(vocabulary, column))
-        return
