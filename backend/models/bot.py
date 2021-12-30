@@ -138,3 +138,18 @@ class InputVocabularyBot(Bot):
         else:
             print("There is no example file")
             helper.create_file(self.config['PATH_CSV'] + self.config['FILE_CSV'])
+
+    def say_result(self):
+        template = console.get_template('result.txt', self.speak_color)
+        print(template.substitute({ 'num_urls':     len(self.urls),
+                                    'num_scraping': len(self.result['scraping']),
+
+                                    'num_voc_written':     len(self.result['voc_written']),
+                                    'num_voc_not_written': len(self.result['voc_not_written']),
+                                    'num_ex_written':      len(self.result['ex_written']),
+                                    'num_ex_not_written':  len(self.result['ex_not_written']),
+
+                                    'voc_written':      self.result['voc_written'],
+                                    'voc_not_written':  self.result['voc_not_written'],
+                                    'ex_written':       self.result['ex_written'],
+                                    'ex_not_written':   self.result['ex_not_written']}))

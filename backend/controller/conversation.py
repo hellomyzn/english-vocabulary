@@ -1,12 +1,8 @@
 # import scraping as scraping
 import config_ as my_config
-import helper
 
 """Controller for speaking with robot"""
 from models import bot
-from models import scraping
-from models import vocabulary as voc
-from models.url import UrlModel
 
 
 
@@ -22,23 +18,9 @@ def talk_about_input_vocabulary():
     input_bot.ask_user_favorites()
     input_bot.get_urls()
     input_bot.write_vocabularies()
+    input_bot.say_result()
   
-    conv.say_something(f"\
-■ Result:\n\
-- URLs: {len(result['urls'])} \n\
-- SCRAPING: {len(result['scraping'])} \n\
-- GSS: \n\
-    - VOCABULARY: \n\
-        - WRITTEN: {len(result['voc_written'])} \n\
-        {result['voc_written']} \n\n\
-        - NOT_WRITTEN: {len(result['voc_not_written'])} \n\
-        {result['voc_not_written']} \n\n\
-    - EXAMPLE: \n\
-        - WRITTEN: {len(result['ex_written'])} \n\
-        {result['ex_written']} \n\n\
-        - NOT_WRITTEN: {len(result['ex_not_written'])} \n\
-        {result['ex_not_written']} ")   
-
+    quit()
 
     # Ending
     # Policy: we don't touch the origin Bookmarks file directly

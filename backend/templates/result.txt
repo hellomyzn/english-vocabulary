@@ -1,0 +1,16 @@
+■ Result:
+- URLs: $num_urls
+- SCRAPING: $num_scraping
+- GSS: 
+    - VOCABULARY: 
+        - WRITTEN: $num_voc_written
+        $voc_written
+
+        - NOT_WRITTEN: $num_voc_not_written
+        $voc_not_written
+
+    - EXAMPLE: 
+        - WRITTEN: $num_ex_written
+        $ex_written
+        - NOT_WRITTEN: $num_ex_not_written
+        $ex_not_written
