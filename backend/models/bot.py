@@ -112,18 +112,25 @@ class InputVocabularyBot(Bot):
             for example in self.examples:
                 if example['title'] == self.vocabulary.title:
                     self.vocabulary.example_sentence = example['example_sentence']
-                    self.result['ex_written'].append(self.vocabulary.title)
                     self.vocabulary.own_example = True
                     continue
-            
-            if self.vocabulary.own_example == False:
-                self.result['ex_not_written'].append(self.vocabulary.title)
 
             if self.is_GSS == True:
+                if self.vocabulary.title in self.GSS.all_vocabularies:
+                    self.result['voc_not_written'].append(self.vocabulary.title)
+                    self.result['ex_not_written'].append(self.vocabulary.title)
+                    continue
                 self.GSS.write(self.vocabulary, self.result)
+                
+                if self.vocabulary.own_example == True:
+                    self.result['ex_written'].append(self.vocabulary.title)
+                else:
+                    self.result['ex_not_written'].append(self.vocabulary.title)
+                
             if self.is_CSV == True:
                 self.CSV.write(self.vocabulary, self.config['PATH_CSV'] + self.config['FILE_CSV'])
         return None
+
 
     def check_files(self):
         if helper.is_file(self.config['PATH_BOOKMARKS'] + self.config['FILE_BOOKMARKS']):

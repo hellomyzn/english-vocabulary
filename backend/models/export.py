@@ -80,6 +80,7 @@ class GoogleSpreadSheet(Export):
         for i, column in enumerate(columns, start=1):
             worksheet.update_cell(1, i, column)
 
+
         return None
 
 
@@ -95,6 +96,7 @@ class GoogleSpreadSheet(Export):
         # If the spreadsheet is empty, Add column on header(from (1,1))
         if GoogleSpreadSheet.is_not_columns(self.worksheet):
             GoogleSpreadSheet.create_columns(self.worksheet, self.columns)
+            self.next_row += 1
         
         vocabulary.timestamp = self.date
         vocabulary.check = False
