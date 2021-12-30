@@ -72,6 +72,7 @@ class GoogleSpreadSheet(Vocabulary):
         str_list = list(filter(None, worksheet.col_values(1)))
         return int(len(str_list)+1)
 
+
     @classmethod
     def create_columns(cls, worksheet, columns):
         print('Create header on GSS')
@@ -79,6 +80,7 @@ class GoogleSpreadSheet(Vocabulary):
             worksheet.update_cell(1, i, column)
 
         return None
+
 
     @classmethod
     def is_not_columns(cls, worksheet):
@@ -88,7 +90,7 @@ class GoogleSpreadSheet(Vocabulary):
             return False
 
 
-    def write(self, vocabulary):
+    def write(self, vocabulary, result):
         # If the spreadsheet is empty, Add column on header(from (1,1))
         if GoogleSpreadSheet.is_not_columns(self.worksheet):
             GoogleSpreadSheet.create_columns(self.worksheet, self.columns)
@@ -99,7 +101,8 @@ class GoogleSpreadSheet(Vocabulary):
         for i, column in enumerate(self.columns, start=1):
             try:
                 self.worksheet.update_cell(self.next_row, i, vocabulary[column])
-                print(f"WRITING: {column}:            ", vocabulary[column])
+                print(f"WRITING: {column}:", vocabulary[column])
+                
                 time.sleep(self.sleep_time)
             except gspread.exceptions.APIError:
                 conv.say_something("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'\nTry it again later on!")

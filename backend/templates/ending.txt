@@ -1,0 +1,5 @@
+■ Run this command below if you want to check the vocabulary table on CSV
+>>> open ./backend/data/vocabularies.csv
+
+■ Open the following link to remove some bookmark links you already wrote on GSS
+>>> chrome://bookmarks/

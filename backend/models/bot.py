@@ -1,5 +1,3 @@
-"""Defined a robot model """
-# from roboter.models import ranking
 from views import console
 from models.url import UrlModel
 from models import scraping
@@ -87,6 +85,7 @@ class InputVocabularyBot(Bot):
             quit()
         return None
 
+
     def get_urls(self):
         self.urls = UrlModel.from_bookmarks(self.config['BOOKMARK_NAME'])
         urls_num = len(self.urls)
@@ -95,6 +94,7 @@ class InputVocabularyBot(Bot):
         print(template.substitute({'urls': urls_num}))
 
         return None
+
 
     def write_vocabularies(self):
         cambridge = scraping.Cambridge()
@@ -109,7 +109,7 @@ class InputVocabularyBot(Bot):
                     vocabulary['example_sentence'] = example['example_sentence']
             
             if self.is_GSS == True:
-                self.GSS.write(vocabulary)
+                self.GSS.write(vocabulary, self.result)
             if self.is_CSV == True:
                 self.CSV.write(vocabulary, self.config['PATH_CSV'] + self.config['FILE_CSV'])
         return None
@@ -139,7 +139,7 @@ class InputVocabularyBot(Bot):
             print("There is no example file")
             helper.create_file(self.config['PATH_CSV'] + self.config['FILE_CSV'])
 
-    def say_result(self):
+    def show_result(self):
         template = console.get_template('result.txt', self.speak_color)
         print(template.substitute({ 'num_urls':     len(self.urls),
                                     'num_scraping': len(self.result['scraping']),
@@ -153,3 +153,33 @@ class InputVocabularyBot(Bot):
                                     'voc_not_written':  self.result['voc_not_written'],
                                     'ex_written':       self.result['ex_written'],
                                     'ex_not_written':   self.result['ex_not_written']}))
+    
+
+    def ask_to_delete(self):
+        # Ask to delete Bookmarks
+        template = console.get_template('ask_to_delete_file.txt', self.speak_color)
+        is_yes = input(template.substitute('path': self.config['PATH_BOOKMARKS'] + self.config['FILE_BOOKMARKS']))
+        if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
+            print(self.config['PATH_BOOKMARKS'] + self.config['FILE_BOOKMARKS'], 'has been deleted')
+            helper.delete_file(self.config['PATH_BOOKMARKS'] + self.config['FILE_BOOKMARKS'])
+        
+        # Ask to delete Examples
+        template = console.get_template('ask_to_delete_file.txt', self.speak_color)
+        is_yes = input(template.substitute('path': self.config['PATH_EX'] + self.config['FILE_EX']))
+        if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
+            print(self.config['PATH_EX'] + self.config['FILE_EX'], 'has been deleted')
+            helper.delete_file(self.config['PATH_EX'] + self.config['FILE_EX'])
+
+        # Ask to delete CSV
+        template = console.get_template('ask_to_delete_file.txt', self.speak_color)
+        is_yes = input(template.substitute(self.config['PATH_CSV'] + self.config['FILE_CSV']))
+        if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
+            print(self.config['PATH_EX'] + self.config['FILE_EX'], 'has been deleted')
+            helper.delete_file(self.config['PATH_CSV'] + self.config['FILE_CSV'])
+
+
+    def ending(self):
+        # Ending
+        # Policy: we don't touch the origin Bookmarks file directly
+        template = console.get_template('ending.txt', self.speak_color)
+        print(template.substitute())

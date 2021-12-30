@@ -1,0 +1,1 @@
+■ Is it okay to delete $path file? (y/n): 
