@@ -1,9 +1,14 @@
 import json
 import os
 
+from interfaces import url
 from views import console
 
-class UrlModel(object):
+
+class FromBookmarks(url.Url):
+    def __init__(self):
+        self.urls = []
+
 
     @classmethod
     def get_chrome_bookmark_data(cls) -> dict:
@@ -19,20 +24,17 @@ class UrlModel(object):
                 user_name = input(template.substitute({'USER': '$USER'}))
                 continue
 
-    @staticmethod
-    def from_bookmarks(folder_name: str):
+
+    def get_urls(self, folder_name: str):
         print("Get urls")
         '''Get the list of the urls '''
-        urls = []
-        bookmark_data = UrlModel.get_chrome_bookmark_data()
+        
+        bookmark_data = FromBookmarks.get_chrome_bookmark_data()
         bookmark_data = bookmark_data['roots']['bookmark_bar']
         for data in bookmark_data['children']:
             if data['type'] == 'folder' and data['name'] == folder_name:
                 for d in data['children']:
-                    urls.append(d['url'])
+                    self.urls.append(d['url'])
 
-        return urls
-    
-    def from_text(self, path: str):
-        print("This is not yet done")
+        return self.urls
 

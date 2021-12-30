@@ -1,6 +1,6 @@
 from interfaces import bot
 from views import console
-from models.url import UrlModel
+from models import from_bookmarks
 from models import from_cambridge
 from models import google_spread_sheet
 from models import csv
@@ -19,7 +19,7 @@ class InputVocabularyBot(bot.Bot):
         self.CSV = None
         self.vocabulary = None
         self.scraping = None
-        self.urls = []
+        self.url = None
         self.examples = []
         self.result = {'scraping': [],
                         'voc_written': [],
@@ -86,8 +86,9 @@ class InputVocabularyBot(bot.Bot):
 
 
     def get_urls(self):
-        self.urls = UrlModel.from_bookmarks(self.config['BOOKMARK_NAME'])
-        urls_num = len(self.urls)
+        self.url = from_bookmarks.FromBookmarks()
+        self.url.get_urls(self.config['BOOKMARK_NAME'])
+        urls_num = len(self.url.urls)
 
         template = console.get_template('how_many_urls.txt', self.speak_color)
         print(template.substitute({'urls': urls_num}))
@@ -96,7 +97,7 @@ class InputVocabularyBot(bot.Bot):
 
 
     def write_vocabularies(self):
-        for url in self.urls:
+        for url in self.url.urls:
             # Get vocabulary from URL
             self.vocabulary = self.scraping.scraping(url, self.vocabulary)
             self.result['scraping'].append(self.vocabulary.title)
@@ -153,7 +154,7 @@ class InputVocabularyBot(bot.Bot):
 
     def show_result(self):
         template = console.get_template('result.txt', self.speak_color)
-        print(template.substitute({ 'num_urls':     len(self.urls),
+        print(template.substitute({ 'num_urls':     len(self.url.urls),
                                     'num_scraping': len(self.result['scraping']),
 
                                     'num_voc_written':     len(self.result['voc_written']),
