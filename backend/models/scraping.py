@@ -3,6 +3,8 @@ import requests
 
 import bs4
 
+from models import vocabulary as vocabulary_file
+
 class Scraping(object):
     def __init__(self):
         self.headers_dic = None
@@ -22,21 +24,21 @@ class Scraping(object):
         soup = bs4.BeautifulSoup(html.content, "html.parser")
 
         # Get data via scraping
-        vocabulary = {}
-        vocabulary['title']            = soup.select(self.title,            limit=1)[0].text if soup.select(self.title, limit=1) else ''
-        vocabulary['part_of_speech']   = soup.select(self.parts_of_speech,  limit=1)[0].text if soup.select(self.parts_of_speech, limit=1) else ''
-        vocabulary['us_pronunciation'] = soup.select(self.us_pronunciation, limit=1)[0].text if soup.select(self.us_pronunciation, limit=1) else ''
-        vocabulary['uk_pronunciation'] = soup.select(self.uk_pronunciation, limit=1)[0].text if soup.select(self.uk_pronunciation, limit=1) else ''
-        vocabulary['definition']       = soup.select(self.definition,       limit=1)[0].text if soup.select(self.definition, limit=1) else ''
-        vocabulary['example_sentence'] = soup.select(self.example,          limit=1)[0].text if soup.select(self.example, limit=1) else ''
+        vocabulary = vocabulary_file.Vocabulary()
+        vocabulary.title            = soup.select(self.title,            limit=1)[0].text if soup.select(self.title, limit=1) else ''
+        vocabulary.part_of_speech   = soup.select(self.parts_of_speech,  limit=1)[0].text if soup.select(self.parts_of_speech, limit=1) else ''
+        vocabulary.us_pronunciation = soup.select(self.us_pronunciation, limit=1)[0].text if soup.select(self.us_pronunciation, limit=1) else ''
+        vocabulary.uk_pronunciation = soup.select(self.uk_pronunciation, limit=1)[0].text if soup.select(self.uk_pronunciation, limit=1) else ''
+        vocabulary.definition       = soup.select(self.definition,       limit=1)[0].text if soup.select(self.definition, limit=1) else ''
+        vocabulary.example_sentence = soup.select(self.example,          limit=1)[0].text if soup.select(self.example, limit=1) else ''
 
         print("SCRAPING: URL:              ", url)
-        print("SCRAPING: TITLE:            ", vocabulary['title'])
-        print("SCRAPING: Parts Of Speech:  ", vocabulary['part_of_speech'])
-        print("SCRAPING: US_PRONUNCIATION: ", vocabulary['us_pronunciation'])
-        print("SCRAPING: UK_RONUNCIATION:  ", vocabulary['uk_pronunciation'])
-        print("SCRAPING: DEFINITION:       ", vocabulary['definition'])
-        print("SCRAPING: EXAMPLE SENTENCE: ", vocabulary['example_sentence'], "\n\n\n")
+        print("SCRAPING: TITLE:            ", vocabulary.title)
+        print("SCRAPING: Parts Of Speech:  ", vocabulary.part_of_speech)
+        print("SCRAPING: US_PRONUNCIATION: ", vocabulary.us_pronunciation)
+        print("SCRAPING: UK_RONUNCIATION:  ", vocabulary.uk_pronunciation)
+        print("SCRAPING: DEFINITION:       ", vocabulary.definition)
+        print("SCRAPING: EXAMPLE SENTENCE: ", vocabulary.example_sentence, "\n\n\n")
         
         return vocabulary
 

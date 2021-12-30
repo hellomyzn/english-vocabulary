@@ -1,7 +1,7 @@
 from views import console
 from models.url import UrlModel
 from models import scraping
-from models import vocabulary
+from models import export
 import helper
 
 class Bot(object):
@@ -58,7 +58,7 @@ class InputVocabularyBot(Bot):
             if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
                 # Set up GSS
                 self.is_GSS = True
-                self.GSS = vocabulary.GoogleSpreadSheet(self.config['SPREAD_SHEET_KEY'], 
+                self.GSS = export.GoogleSpreadSheet(self.config['SPREAD_SHEET_KEY'], 
                             self.config['SPREAD_SHEET_NAME'],
                             self.config['COLUMNS'],
                             self.config['SLEEP_TIME'])
@@ -75,7 +75,7 @@ class InputVocabularyBot(Bot):
             if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
                 self.is_CSV = True
 
-                self.CSV = vocabulary.CSV(self.config['COLUMNS'],)
+                self.CSV = export.CSV(self.config['COLUMNS'],)
                 break
             elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
                 break
@@ -102,13 +102,13 @@ class InputVocabularyBot(Bot):
         for url in self.urls:
             # Get vocabulary from URL
             vocabulary = cambridge.scraping(url)
-            self.result['scraping'].append(vocabulary['title'])
+            self.result['scraping'].append(vocabulary.title)
 
             # Get examples
             for example in self.examples:
-                if example['title'] == vocabulary['title']:
-                    vocabulary['example_sentence'] = example['example_sentence']
-                    self.result['ex_written'].append(vocabulary['title'])
+                if example['title'] == vocabulary.title:
+                    vocabulary.example_sentence = example['example_sentence']
+                    self.result['ex_written'].append(vocabulary.title)
                     continue
 
             if self.is_GSS == True:
