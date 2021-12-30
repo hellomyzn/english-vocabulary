@@ -97,16 +97,18 @@ class GoogleSpreadSheet(Vocabulary):
         
         vocabulary['timestamp'] = self.date
         vocabulary['check'] = False
+        
 
         for i, column in enumerate(self.columns, start=1):
             try:
                 self.worksheet.update_cell(self.next_row, i, vocabulary[column])
                 print(f"WRITING: {column}:", vocabulary[column])
-                
                 time.sleep(self.sleep_time)
             except gspread.exceptions.APIError:
                 conv.say_something("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'\nTry it again later on!")
                 break
+
+        result['voc_written'].append(vocabulary['title'])
         self.next_row += 1
     
 

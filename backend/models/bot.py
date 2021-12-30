@@ -104,10 +104,13 @@ class InputVocabularyBot(Bot):
             vocabulary = cambridge.scraping(url)
             self.result['scraping'].append(vocabulary['title'])
 
+            # Get examples
             for example in self.examples:
                 if example['title'] == vocabulary['title']:
                     vocabulary['example_sentence'] = example['example_sentence']
-            
+                    self.result['ex_written'].append(vocabulary['title'])
+                    continue
+
             if self.is_GSS == True:
                 self.GSS.write(vocabulary, self.result)
             if self.is_CSV == True:
@@ -128,16 +131,17 @@ class InputVocabularyBot(Bot):
                     quit()
                   
         if helper.is_file(self.config['PATH_EX'] + self.config['FILE_EX']):
-            print("There is example file")
+            print("There is ", self.config['PATH_EX'] + self.config['FILE_EX'])
         else:
-            print("There is no example file")
+            print("There is no ", self.config['PATH_EX'] + self.config['FILE_EX'])
             helper.create_file(self.config['PATH_EX'] + self.config['FILE_EX'])
 
         if helper.is_file(self.config['PATH_CSV'] + self.config['FILE_CSV']):
-            print("There is example file")
+            print("There is ", self.config['PATH_CSV'] + self.config['FILE_CSV'])
         else:
-            print("There is no example file")
+            print("There is no ", self.config['PATH_CSV'] + self.config['FILE_CSV'])
             helper.create_file(self.config['PATH_CSV'] + self.config['FILE_CSV'])
+
 
     def show_result(self):
         template = console.get_template('result.txt', self.speak_color)
@@ -158,23 +162,23 @@ class InputVocabularyBot(Bot):
     def ask_to_delete(self):
         # Ask to delete Bookmarks
         template = console.get_template('ask_to_delete_file.txt', self.speak_color)
-        is_yes = input(template.substitute('path': self.config['PATH_BOOKMARKS'] + self.config['FILE_BOOKMARKS']))
+        is_yes = input(template.substitute({'path': self.config['PATH_BOOKMARKS'] + self.config['FILE_BOOKMARKS']}))
         if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
             print(self.config['PATH_BOOKMARKS'] + self.config['FILE_BOOKMARKS'], 'has been deleted')
             helper.delete_file(self.config['PATH_BOOKMARKS'] + self.config['FILE_BOOKMARKS'])
         
         # Ask to delete Examples
         template = console.get_template('ask_to_delete_file.txt', self.speak_color)
-        is_yes = input(template.substitute('path': self.config['PATH_EX'] + self.config['FILE_EX']))
+        is_yes = input(template.substitute({'path': self.config['PATH_EX'] + self.config['FILE_EX']}))
         if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
             print(self.config['PATH_EX'] + self.config['FILE_EX'], 'has been deleted')
             helper.delete_file(self.config['PATH_EX'] + self.config['FILE_EX'])
 
         # Ask to delete CSV
         template = console.get_template('ask_to_delete_file.txt', self.speak_color)
-        is_yes = input(template.substitute(self.config['PATH_CSV'] + self.config['FILE_CSV']))
+        is_yes = input(template.substitute({self.config['PATH_CSV'] + self.config['FILE_CSV']}))
         if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
-            print(self.config['PATH_EX'] + self.config['FILE_EX'], 'has been deleted')
+            print(self.config['PATH_CSV'] + self.config['FILE_CSV'], 'has been deleted')
             helper.delete_file(self.config['PATH_CSV'] + self.config['FILE_CSV'])
 
 
