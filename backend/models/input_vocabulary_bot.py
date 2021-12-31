@@ -182,26 +182,17 @@ class InputVocabularyBot(Bot):
     
 
     def ask_to_delete(self):
-        # Ask to delete Bookmarks
-        template = console.get_template('ask_to_delete_file.txt', self.speak_color)
-        is_yes = input(template.substitute({'path': self.config['PATH_BOOKMARKS'] + self.config['FILE_BOOKMARKS']}))
-        if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
-            print(self.config['PATH_BOOKMARKS'] + self.config['FILE_BOOKMARKS'], 'has been deleted')
-            helper.delete_file(self.config['PATH_BOOKMARKS'] + self.config['FILE_BOOKMARKS'])
-        
-        # Ask to delete Examples
-        template = console.get_template('ask_to_delete_file.txt', self.speak_color)
-        is_yes = input(template.substitute({'path': self.config['PATH_EX'] + self.config['FILE_EX']}))
-        if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
-            print(self.config['PATH_EX'] + self.config['FILE_EX'], 'has been deleted')
-            helper.delete_file(self.config['PATH_EX'] + self.config['FILE_EX'])
+        file_paths = [
+            self.bookmarks_file_path, 
+            self.examples_file_path, 
+            self.csv_file_path]
 
-        # Ask to delete CSV
-        template = console.get_template('ask_to_delete_file.txt', self.speak_color)
-        is_yes = input(template.substitute({'path': self.config['PATH_CSV'] + self.config['FILE_CSV']}))
-        if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
-            print(self.config['PATH_CSV'] + self.config['FILE_CSV'], 'has been deleted')
-            helper.delete_file(self.config['PATH_CSV'] + self.config['FILE_CSV'])
+        for file_path in file_paths:
+            template = console.get_template('ask_to_delete_file.txt', self.speak_color)
+            is_yes = input(template.substitute({'path': file_path}))
+            if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
+                helper.delete_file(file_path)
+                print(file_path, 'has been deleted')
 
 
     def ending(self):

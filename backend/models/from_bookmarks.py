@@ -1,10 +1,10 @@
 import json
 
-from interfaces import url
+from interfaces.url import Url
 from views import console
 
 
-class FromBookmarks(url.Url):
+class FromBookmarks(Url):
     def __init__(self, path, folder_name):
         self.urls = FromBookmarks.get_urls(path, folder_name)
         self.bookmark_path = path
