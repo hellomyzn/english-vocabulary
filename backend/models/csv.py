@@ -1,10 +1,10 @@
 import csv
 
-from interfaces import table
+from interfaces.table import Table
 
-class CSV(table.Table):
-    def __init__(self, columns: dict):
-        self.columns = columns
+class CSV(Table):
+    def __init__(self):
+        self.columns = CSV.get_columns()
 
     @classmethod
     def create_columns(cls, url, columns):

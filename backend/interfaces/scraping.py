@@ -15,7 +15,7 @@ class Scraping(object):
         self.definition = None
         self.example = None
 
-    def scraping(self, url, vocabulary) ->dict:
+    def get_vocabulary(self, url, vocabulary) ->dict:
         '''Get vocabulary data from cambridge'''
         
         html = requests.get(url, headers=self.headers_dic)

@@ -15,3 +15,16 @@ class Table(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def is_not_columns(self):
         pass
+
+    @classmethod
+    def get_columns(cls):
+        columns = [
+            'title', 
+            'part_of_speech', 
+            'us_pronunciation', 
+            'uk_pronunciation', 
+            'definition', 
+            'example_sentence', 
+            'timestamp', 
+            'check']
+        return columns

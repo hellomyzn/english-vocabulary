@@ -3,11 +3,11 @@ import time
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
-from interfaces import table
+from interfaces.table import Table
 from models import vocabulary
 
 
-class GoogleSpreadSheet(table.Table):
+class GoogleSpreadSheet(Table):
     """
         Reference: 
         - https://qiita.com/164kondo/items/eec4d1d8fd7648217935
@@ -17,12 +17,11 @@ class GoogleSpreadSheet(table.Table):
                 json_dir: str,
                 json_file: str,
                 key: str, 
-                sheet_name: str, 
-                columns: list):
+                sheet_name: str):
+        self.columns = GoogleSpreadSheet.get_columns()
         self.json_path = json_dir + json_file
         self.worksheet = GoogleSpreadSheet.connect(self.json_path, key, sheet_name)
-        self.columns = columns
-        self.all_vocabularies = self.worksheet.col_values(1)
+        self.current_vocabularies = self.worksheet.col_values(1)
         self.next_row = GoogleSpreadSheet.next_available_row(self.worksheet)
         self.sleep_time = 0.7
        
@@ -65,7 +64,7 @@ class GoogleSpreadSheet(table.Table):
             return False
 
 
-    def write(self, vocabulary, result):
+    def write(self, vocabulary):
         # If the spreadsheet is empty, Add column on header(from (1,1))
         if GoogleSpreadSheet.is_not_columns(self.worksheet):
             GoogleSpreadSheet.create_columns(self.worksheet, self.columns)
@@ -80,5 +79,4 @@ class GoogleSpreadSheet(table.Table):
                 conv.say_something("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'\nTry it again later on!")
                 break
 
-        result['voc_written'].append(vocabulary.title)
         self.next_row += 1
