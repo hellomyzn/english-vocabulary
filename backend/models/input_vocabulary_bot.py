@@ -1,5 +1,4 @@
-from interfaces import bot
-from views import console
+from interfaces.bot import Bot
 from models.vocabulary import Vocabulary
 from models.from_cambridge import FromCambridge
 from models.from_bookmarks import FromBookmarks
@@ -7,11 +6,12 @@ from models.result import Result
 from models.google_spreadsheet import GoogleSpreadSheet
 from models.own_example_sentence import OwnExampleSentence
 from models.csv import CSV
+from views import console
 import helper
 
 
 
-class InputVocabularyBot(bot.Bot):
+class InputVocabularyBot(Bot):
     def __init__(self, config: dict, speak_color='green'):
         super().__init__(speak_color)
         self.config = config
@@ -166,19 +166,19 @@ class InputVocabularyBot(bot.Bot):
 
 
     def show_result(self):
-        template = console.get_template('result.txt', self.speak_color)
+        template = console.get_template('show_result.txt', self.speak_color)
         print(template.substitute({ 'num_urls':     len(self.url.urls),
                                     'num_scraping': len(self.result.vocabularies_scraped),
 
-                                    'num_voc_written':     len(self.result.voc_written),
-                                    'num_voc_not_written': len(self.result.voc_not_written),
-                                    'num_ex_written':      len(self.result.ex_written),
-                                    'num_ex_not_written':  len(self.result.ex_not_written),
+                                    'num_voc_written':     len(self.result.vocabularies_written),
+                                    'num_voc_not_written': len(self.result.vocabularies_not_written),
+                                    'num_ex_written':      len(self.result.examples_written),
+                                    'num_ex_not_written':  len(self.result.examples_not_written),
 
-                                    'voc_written':      self.result.voc_written,
-                                    'voc_not_written':  self.result.voc_not_written,
-                                    'ex_written':       self.result.ex_written,
-                                    'ex_not_written':   self.result.ex_not_written}))
+                                    'voc_written':      self.result.vocabularies_written,
+                                    'voc_not_written':  self.result.vocabularies_not_written,
+                                    'ex_written':       self.result.examples_written,
+                                    'ex_not_written':   self.result.examples_not_written}))
     
 
     def ask_to_delete(self):

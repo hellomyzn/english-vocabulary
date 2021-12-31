@@ -9,7 +9,7 @@
         - NOT_WRITTEN: $num_voc_not_written
         $voc_not_written
 
-    - EXAMPLE: 
+    - OWN EXAMPLE: 
         - WRITTEN: $num_ex_written
         $ex_written
         
