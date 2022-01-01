@@ -32,5 +32,5 @@ class CSV(Table):
         with open(url, 'a', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=self.columns)
             writer.writerow(vocabulary_dict)
-            print(f"WRITING: {column}:", getattr(vocabulary, column))
+            print(f"[WRITING]: {vocabulary_dict}")
         return

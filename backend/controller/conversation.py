@@ -14,10 +14,9 @@ def talk_about_input_vocabulary():
     # Start input vocabulary
     input_bot = InputVocabularyBot(config)
     input_bot.hello()
-    input_bot.check_files()
     input_bot.ask_user_favorites()
+    input_bot.check_files()
     input_bot.get_urls()
-    quit()
     input_bot.write_vocabularies()
     input_bot.show_result()
     input_bot.ask_to_delete()
