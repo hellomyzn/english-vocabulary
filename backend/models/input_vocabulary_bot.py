@@ -2,6 +2,7 @@ from interfaces.bot import Bot
 from models.vocabulary import Vocabulary
 from models.from_cambridge import FromCambridge
 from models.from_bookmarks import FromBookmarks
+from models.from_text import FromText
 from models.result import Result
 from models.google_spreadsheet import GoogleSpreadSheet
 from models.own_example_sentence import OwnExampleSentence
@@ -114,7 +115,8 @@ class InputVocabularyBot(Bot):
 
     def get_urls(self):
         ''' '''
-        self.url = FromBookmarks(self.bookmarks_file_path, self.config['BOOKMARKS']['FOLDER_NAME'])
+        # self.url = FromBookmarks(self.bookmarks_file_path, self.config['BOOKMARKS']['FOLDER_NAME'])
+        self.url = FromText(self.examples_file_path, self.own_examples.titles, self.scraping.cambridge_url)
         urls_num = len(self.url.urls)
 
         template = console.get_template('how_many_urls.txt', self.speak_color)

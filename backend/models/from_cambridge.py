@@ -11,3 +11,4 @@ class FromCambridge(scraping.Scraping):
         self.uk_pronunciation = '.uk > .pron > .ipa'
         self.definition = '.ddef_h > .def'
         self.example = '.ddef_b > .examp > .eg'
+        self.cambridge_url = 'https://dictionary.cambridge.org/dictionary/english/'
