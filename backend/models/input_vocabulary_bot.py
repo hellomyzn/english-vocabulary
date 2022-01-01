@@ -132,13 +132,13 @@ class InputVocabularyBot(Bot):
             - Own Example: written
         CASE1: You can not find vocabulary through scraping with urls from text because the vocabulary's title from text doesn't exist in dictioanry web site
             - Vocabulary: not written
-            - Own Example: not written
+            - Own Example: not added
         CASE2: You can not find own example sentences
             - Vocabulary: written
             - Own Example: not written
         CASE3: The vocabulary already exists on Google Spreadsheet
             - Vocabulary: not written
-            - Own Example: not written
+            - Own Example: not added
         '''
         for url in self.url.urls:
             # Get vocabulary from URL through scraping
@@ -157,16 +157,14 @@ class InputVocabularyBot(Bot):
 
                 # Check whether the vocabulary exists on Google Spreadsheet or no (CASE3)
                 if self.vocabulary.title in self.google_spreadsheet.current_vocabularies:
-                    # Add result of vocabularies and examples not written. and then proceed next url afterwards
+                    # Add result of vocabularies not written. and then proceed next url afterwards
                     self.result.vocabularies_not_written.append(self.vocabulary.title)
-                    self.result.examples_not_written.append(self.vocabulary.title)
                     continue
 
                 # Check whether you could get vocabulary through scraping or no (CASE1)
                 if not self.vocabulary.definition:
-                    # Add result of vocabularies and examples not written. and then proceed next url afterwards
+                    # Add result of vocabularies not written. and then proceed next url afterwards
                     self.result.vocabularies_not_written.append(self.vocabulary.title)
-                    self.result.examples_not_written.append(self.vocabulary.title)
                     continue
 
                 # Write vocabulary on Google Spreadsheet    
