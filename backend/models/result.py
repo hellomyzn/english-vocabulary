@@ -7,3 +7,7 @@ class Result(object):
         self.vocabularies_not_written = []
         self.examples_written = []
         self.examples_not_written = []
+
+    
+    def create_file_for_result(self, file_path):
+        print(file_path)

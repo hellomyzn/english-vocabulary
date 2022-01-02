@@ -15,18 +15,24 @@ class InputVocabularyBot(Bot):
     def __init__(self, config: dict, speak_color='green'):
         super().__init__(speak_color)
         self.config = config
-        self.bookmarks_file_path = config['FILES']['DIR'] + config['FILES']['BOOKMARKS_FILE_NAME'] 
-        self.own_examples_file_path = config['FILES']['DIR'] + config['FILES']['EXAMPLES_FILE_NAME'] 
-        self.csv_file_path = config['FILES']['DIR'] + config['FILES']['CSV_FILE_NAME'] 
+        self.bookmarks_file_path               = config['FILES']['DIR'] + config['FILES']['BOOKMARKS_FILE_NAME'] 
+        self.own_examples_file_path            = config['FILES']['DIR'] + config['FILES']['EXAMPLES_FILE_NAME'] 
+        self.csv_file_path                     = config['FILES']['DIR'] + config['FILES']['CSV_FILE_NAME'] 
+        self.vocabulary_scraped_file_path      = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_SCRAPED_FILE_NAME'] 
+        self.vocabulary_not_scraped_file_path  = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_NOT_SCRAPED_FILE_NAME'] 
+        self.vocabulary_written_file_path      = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_WRITTEN_FILE_NAME'] 
+        self.vocabulary_existed_file_path      = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_EXISTED_FILE_NAME'] 
+        self.own_example_written_file_path     = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['OWN_EXAMPLE_WRITTEN'] 
+        self.own_example_not_written_file_path = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['OWN_EXAMPLE_NOT_WRITTEN'] 
         self.is_google_spreadsheet = False
         self.is_csv = False
         self.google_spreadsheet = None
         self.csv = None
         self.vocabulary = None
         self.scraping = None
-        self.urls = []
         self.own_examples = None
         self.result = None
+        self.urls = []
 
     @classmethod
     def check_bookmarks(cls, bookmarks_file_path, speak_color):
@@ -53,8 +59,19 @@ class InputVocabularyBot(Bot):
 
     def check_files(self):
         ''' '''
+        files = [
+            self.own_examples_file_path, 
+            self.csv_file_path,
+            self.vocabulary_scraped_file_path,
+            self.vocabulary_not_scraped_file_path,
+            self.vocabulary_written_file_path,
+            self.vocabulary_existed_file_path,
+            self.own_example_written_file_path,
+            self.own_example_not_written_file_path
+            ]
+
         # Check whether existing an example and a csv file or no. if it doesn't exist, those files are going to be created
-        for file_path in [self.own_examples_file_path, self.csv_file_path]:
+        for file_path in files:
             if not helper.is_file(file_path):
                 helper.create_file(file_path)
                 template = console.get_template('create_file.txt', self.speak_color)
@@ -62,6 +79,9 @@ class InputVocabularyBot(Bot):
                     'file_path': file_path,
                     'dir': self.config['FILES']['DIR']
                 }))
+
+        template = console.get_template('confirm_to_update_own_examples.txt', self.speak_color)
+        input(template.substitute({'own_examples_file_path': self.own_examples_file_path}))
 
         return None
 
@@ -84,8 +104,6 @@ class InputVocabularyBot(Bot):
                             self.config['GOOGLE_API']['SPREAD_SHEET_KEY'], 
                             self.config['GOOGLE_API']['SPREAD_SHEET_NAME'])
                 
-                # Retrieve Examples
-                self.own_examples = OwnExampleSentence(self.own_examples_file_path)
                 break
             elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
                 break
@@ -109,8 +127,16 @@ class InputVocabularyBot(Bot):
         
         # Generate instances
         self.vocabulary = Vocabulary()
+        # Retrieve Examples
+        self.own_examples = OwnExampleSentence(self.own_examples_file_path)
         self.scraping = Cambridge()
         self.result = Result()
+
+        return None
+
+
+    def get_urls(self):
+        ''' '''
 
         # Ask which do you prefer to retrieve vocabularies from
         while True:
@@ -119,20 +145,18 @@ class InputVocabularyBot(Bot):
                 'path': self.own_examples_file_path
                 })) 
 
+            # If Bookmarks
             if i == str(1):
                 InputVocabularyBot.check_bookmarks(self.bookmarks_file_path, self.speak_color)
                 bookmarks = Bookmarks(self.bookmarks_file_path, self.config['BOOKMARKS']['FOLDER_NAME'])
                 self.urls = bookmarks.get_urls_for_scraping()
                 break
+            
+            # If own_example_.txt
             elif i == str(2):
                 self.urls = self.own_examples.get_urls_for_scraping(self.scraping.url_for_search)
                 break
 
-        return None
-
-
-    def get_urls(self):
-        ''' '''
         urls_num = len(self.urls)
 
         template = console.get_template('how_many_urls.txt', self.speak_color)
@@ -225,7 +249,8 @@ class InputVocabularyBot(Bot):
                                     'ex_not_written':   self.result.examples_not_written}))
     
 
-    # def write_result(self):
+    def write_result(self):
+        self.result.create_file_for_result(self.vocabulary_not_scraped_file_path)
 
 
     def ask_to_delete(self):
