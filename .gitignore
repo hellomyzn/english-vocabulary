@@ -1,6 +1,6 @@
+backend/data/*.txt
+backend/data/*.csv
 backend/data/Bookmarks
-backend/data/examples.txt
-backend/data/vocabularies.csv
 backend/__pycache__
 backend/.bash_history
 backend/.python_history
@@ -8,6 +8,13 @@ backend/.DS_Store
 backend/.cache/*
 backend/src/*.json
 backend/config.ini
+backend/controller/__pycache__
+backend/data/__pycache__/
+backend/interfaces/__pycache__
+backend/models/__pycache__
+backend/src/__pycache__
+backend/templates/__pycache__
+backend/views/__pycache__
 .cache/pip
 .env
 .DS_Store

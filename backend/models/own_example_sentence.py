@@ -40,3 +40,11 @@ class OwnExampleSentence(object):
         dict_of_examples = [{'title': example.split("\n")[0], 'example_sentence': example.split("\n")[1]} for example in examples]
             
         return dict_of_examples
+
+
+    def get_urls_for_scraping(self, scraping_url):
+        urls = []
+        for title in self.titles:
+            url = scraping_url + title
+            urls.append(url)
+        return urls

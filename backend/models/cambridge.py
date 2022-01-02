@@ -1,6 +1,6 @@
 from interfaces import scraping
 
-class FromCambridge(scraping.Scraping):
+class Cambridge(scraping.Scraping):
 
     def __init__(self):
         self.headers_dic = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"}
@@ -11,4 +11,4 @@ class FromCambridge(scraping.Scraping):
         self.uk_pronunciation = '.uk > .pron > .ipa'
         self.definition = '.ddef_h > .def'
         self.example = '.ddef_b > .examp > .eg'
-        self.cambridge_url = 'https://dictionary.cambridge.org/dictionary/english/'
+        self.url_for_search = 'https://dictionary.cambridge.org/dictionary/english/'

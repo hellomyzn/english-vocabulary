@@ -1,8 +1,7 @@
 from interfaces.bot import Bot
 from models.vocabulary import Vocabulary
-from models.from_cambridge import FromCambridge
-from models.from_bookmarks import FromBookmarks
-from models.from_text import FromText
+from models.cambridge import Cambridge
+from models.bookmarks import Bookmarks
 from models.result import Result
 from models.google_spreadsheet import GoogleSpreadSheet
 from models.own_example_sentence import OwnExampleSentence
@@ -17,7 +16,7 @@ class InputVocabularyBot(Bot):
         super().__init__(speak_color)
         self.config = config
         self.bookmarks_file_path = config['FILES']['DIR'] + config['FILES']['BOOKMARKS_FILE_NAME'] 
-        self.examples_file_path = config['FILES']['DIR'] + config['FILES']['EXAMPLES_FILE_NAME'] 
+        self.own_examples_file_path = config['FILES']['DIR'] + config['FILES']['EXAMPLES_FILE_NAME'] 
         self.csv_file_path = config['FILES']['DIR'] + config['FILES']['CSV_FILE_NAME'] 
         self.is_google_spreadsheet = False
         self.is_csv = False
@@ -25,35 +24,37 @@ class InputVocabularyBot(Bot):
         self.csv = None
         self.vocabulary = None
         self.scraping = None
-        self.url = None
+        self.urls = []
         self.own_examples = None
         self.result = None
+
+    @classmethod
+    def check_bookmarks(cls, bookmarks_file_path, speak_color):
+        # Check whether existing a Bookmarks or no. if it doesn't exist, it goes to show how to copy the Bookmarks file until execution
+        if helper.is_file(bookmarks_file_path):
+            template = console.get_template('confirm_to_update_bookmarks.txt', speak_color)
+            input(template.substitute({
+                'USER': '$USER',
+                'bookmarks_file_path': bookmarks_file_path
+                }))
+        else:
+            while True:
+                template = console.get_template('copy_bookmarks.txt', speak_color)
+                is_quit = input(template.substitute({
+                    'USER': '$USER',
+                    'bookmarks_file_path': bookmarks_file_path
+                    }))
+                    
+                if helper.is_file(bookmarks_file_path):
+                    break
+                if is_quit == 'quit':
+                    quit()
 
 
     def check_files(self):
         ''' '''
-        # Check whether existing a Bookmarks or no. if it doesn't exist, it goes to show how to copy the Bookmarks file until execution
-        if helper.is_file(self.bookmarks_file_path):
-            template = console.get_template('confirm_to_update_bookmarks.txt', self.speak_color)
-            input(template.substitute({
-                'USER': '$USER',
-                'bookmarks_file_path': self.bookmarks_file_path
-                }))
-        else:
-            while True:
-                template = console.get_template('copy_bookmarks.txt', self.speak_color)
-                is_quit = input(template.substitute({
-                    'USER': '$USER',
-                    'bookmarks_file_path': self.bookmarks_file_path
-                    }))
-                    
-                if helper.is_file(self.bookmarks_file_path):
-                    break
-                if is_quit == 'quit':
-                    quit()
-        
         # Check whether existing an example and a csv file or no. if it doesn't exist, those files are going to be created
-        for file_path in [self.examples_file_path, self.csv_file_path]:
+        for file_path in [self.own_examples_file_path, self.csv_file_path]:
             if not helper.is_file(file_path):
                 helper.create_file(file_path)
                 template = console.get_template('create_file.txt', self.speak_color)
@@ -84,7 +85,7 @@ class InputVocabularyBot(Bot):
                             self.config['GOOGLE_API']['SPREAD_SHEET_NAME'])
                 
                 # Retrieve Examples
-                self.own_examples = OwnExampleSentence(self.examples_file_path)
+                self.own_examples = OwnExampleSentence(self.own_examples_file_path)
                 break
             elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
                 break
@@ -106,18 +107,33 @@ class InputVocabularyBot(Bot):
         if self.is_google_spreadsheet == False and self.is_csv == False:
             quit()
         
+        # Generate instances
         self.vocabulary = Vocabulary()
-        self.scraping = FromCambridge()
+        self.scraping = Cambridge()
         self.result = Result()
+
+        # Ask which do you prefer to retrieve vocabularies from
+        while True:
+            template = console.get_template('ask_bookmarks_or_own_examples.txt', self.speak_color)
+            i = input(template.substitute({
+                'path': self.own_examples_file_path
+                })) 
+
+            if i == str(1):
+                InputVocabularyBot.check_bookmarks(self.bookmarks_file_path, self.speak_color)
+                bookmarks = Bookmarks(self.bookmarks_file_path, self.config['BOOKMARKS']['FOLDER_NAME'])
+                self.urls = bookmarks.get_urls_for_scraping()
+                break
+            elif i == str(2):
+                self.urls = self.own_examples.get_urls_for_scraping(self.scraping.url_for_search)
+                break
 
         return None
 
 
     def get_urls(self):
         ''' '''
-        # self.url = FromBookmarks(self.bookmarks_file_path, self.config['BOOKMARKS']['FOLDER_NAME'])
-        self.url = FromText(self.examples_file_path, self.own_examples.titles, self.scraping.cambridge_url)
-        urls_num = len(self.url.urls)
+        urls_num = len(self.urls)
 
         template = console.get_template('how_many_urls.txt', self.speak_color)
         print(template.substitute({'urls': urls_num}))
@@ -140,7 +156,7 @@ class InputVocabularyBot(Bot):
             - Vocabulary: existed
             - Own Example: not added
         '''
-        for url in self.url.urls:
+        for url in self.urls:
             # Get vocabulary from URL through scraping
             self.vocabulary = self.scraping.get_vocabulary(url, self.vocabulary)
 
@@ -189,7 +205,7 @@ class InputVocabularyBot(Bot):
 
     def show_result(self):
         template = console.get_template('show_result.txt', self.speak_color)
-        print(template.substitute({ 'num_urls':     len(self.url.urls),
+        print(template.substitute({ 'num_urls':     len(self.urls),
                                     'num_scraped': len(self.result.vocabularies_scraped),
                                     'num_not_scraped': len(self.result.vocabularies_not_scraped),
                                     
@@ -209,10 +225,13 @@ class InputVocabularyBot(Bot):
                                     'ex_not_written':   self.result.examples_not_written}))
     
 
+    # def write_result(self):
+
+
     def ask_to_delete(self):
         file_paths = [
             self.bookmarks_file_path, 
-            self.examples_file_path, 
+            self.own_examples_file_path, 
             self.csv_file_path]
 
         for file_path in file_paths:

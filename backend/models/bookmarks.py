@@ -4,9 +4,8 @@ from interfaces.url import Url
 from views import console
 
 
-class FromBookmarks(Url):
+class Bookmarks(object):
     def __init__(self, path, folder_name):
-        self.urls = FromBookmarks.get_urls(path, folder_name)
         self.bookmark_path = path
         self.folder_name = folder_name
 
@@ -18,17 +17,17 @@ class FromBookmarks(Url):
             return json.load(f)
 
 
-    @classmethod
-    def get_urls(self, path, folder_name: str):
+    def get_urls_for_scraping(self):
         print("Get urls")
         '''Get the list of the urls '''
         
         urls = []
 
-        bookmark_data = FromBookmarks.get_chrome_bookmark_data(path)
+        bookmark_data = Bookmarks.get_chrome_bookmark_data(self.bookmark_path)
         bookmark_data = bookmark_data['roots']['bookmark_bar']
+
         for data in bookmark_data['children']:
-            if data['type'] == 'folder' and data['name'] == folder_name:
+            if data['type'] == 'folder' and data['name'] == self.folder_name:
                 for d in data['children']:
                     urls.append(d['url'])
 

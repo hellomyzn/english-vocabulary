@@ -1,0 +1,3 @@
+■ Which do you prefer to get vocabularies from Bookmarks or $path?
+- [1]: Bookmarks
+- [2]: $path
