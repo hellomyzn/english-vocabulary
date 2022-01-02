@@ -131,20 +131,28 @@ class InputVocabularyBot(Bot):
             - Vocabulary: written
             - Own Example: written
         CASE1: You can not find vocabulary through scraping with urls from text because the vocabulary's title from text doesn't exist in dictioanry web site
-            - Vocabulary: not written
+            - Vocabulary: not scraped
             - Own Example: not added
         CASE2: You can not find own example sentences
             - Vocabulary: written
             - Own Example: not written
         CASE3: The vocabulary already exists on Google Spreadsheet
-            - Vocabulary: not written
+            - Vocabulary: existed
             - Own Example: not added
         '''
         for url in self.url.urls:
             # Get vocabulary from URL through scraping
             self.vocabulary = self.scraping.get_vocabulary(url, self.vocabulary)
-            # Add result of vocabulary scraped
-            self.result.vocabularies_scraped.append(self.vocabulary.title)
+
+            # Check whether you could get vocabulary through scraping or no (CASE1)
+            if self.vocabulary.definition:
+                # Add result of vocabulary scraped
+                self.result.vocabularies_scraped.append(self.vocabulary.title)
+            else:
+                # Add result of vocabularies not scraped. and then proceed next url afterwards
+                self.result.vocabularies_not_scraped.append(self.vocabulary.title)
+                continue
+
             # Get examples if it is matched by title (CASE2)
             for example in self.own_examples.dict_of_examples:
                 if example['title'] == self.vocabulary.title:
@@ -158,13 +166,7 @@ class InputVocabularyBot(Bot):
                 # Check whether the vocabulary exists on Google Spreadsheet or no (CASE3)
                 if self.vocabulary.title in self.google_spreadsheet.current_vocabularies:
                     # Add result of vocabularies not written. and then proceed next url afterwards
-                    self.result.vocabularies_not_written.append(self.vocabulary.title)
-                    continue
-
-                # Check whether you could get vocabulary through scraping or no (CASE1)
-                if not self.vocabulary.definition:
-                    # Add result of vocabularies not written. and then proceed next url afterwards
-                    self.result.vocabularies_not_written.append(self.vocabulary.title)
+                    self.result.vocabularies_existed.append(self.vocabulary.title)
                     continue
 
                 # Write vocabulary on Google Spreadsheet    
@@ -188,14 +190,20 @@ class InputVocabularyBot(Bot):
     def show_result(self):
         template = console.get_template('show_result.txt', self.speak_color)
         print(template.substitute({ 'num_urls':     len(self.url.urls),
-                                    'num_scraping': len(self.result.vocabularies_scraped),
+                                    'num_scraped': len(self.result.vocabularies_scraped),
+                                    'num_not_scraped': len(self.result.vocabularies_not_scraped),
+                                    
+                                    'voc_scraped': self.result.vocabularies_scraped,
+                                    'voc_not_scraped': self.result.vocabularies_not_scraped,
 
                                     'num_voc_written':     len(self.result.vocabularies_written),
+                                    'num_voc_existed':     len(self.result.vocabularies_existed),
                                     'num_voc_not_written': len(self.result.vocabularies_not_written),
                                     'num_ex_written':      len(self.result.examples_written),
                                     'num_ex_not_written':  len(self.result.examples_not_written),
 
                                     'voc_written':      self.result.vocabularies_written,
+                                    'voc_existed':      self.result.vocabularies_existed,
                                     'voc_not_written':  self.result.vocabularies_not_written,
                                     'ex_written':       self.result.examples_written,
                                     'ex_not_written':   self.result.examples_not_written}))

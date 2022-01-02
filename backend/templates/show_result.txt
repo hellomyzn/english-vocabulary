@@ -1,17 +1,27 @@
 ■ Result:
 - URLs: $num_urls
-- SCRAPING: $num_scraping
-- GSS: 
-    - VOCABULARY: 
-        - WRITTEN: $num_voc_written
-        $voc_written
+- SCRAPING: 
+    - Succeeded: $num_scraped
+        $voc_scraped
 
-        - NOT_WRITTEN: $num_voc_not_written
+    - Failed: $num_not_scraped
+        $voc_not_scraped
+
+
+- VOCABULARY: 
+    - WRITTEN: $num_voc_written
+        $voc_written
+    
+    - EXISTED: $num_voc_existed
+        $voc_existed
+
+    - NOT_WRITTEN: $num_voc_not_written
         $voc_not_written
 
-    - OWN EXAMPLE: 
-        - WRITTEN: $num_ex_written
+
+- OWN EXAMPLE: 
+    - WRITTEN: $num_ex_written
         $ex_written
-        
-        - NOT_WRITTEN: $num_ex_not_written
+    
+    - NOT_WRITTEN: $num_ex_not_written
         $ex_not_written
