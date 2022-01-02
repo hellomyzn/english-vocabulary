@@ -2,6 +2,7 @@ import requests
 
 import bs4
 
+from models.vocabulary import Vocabulary
 
 class Scraping(object):
     def __init__(self):
@@ -16,8 +17,10 @@ class Scraping(object):
         self.definition = None
         self.example = None
 
-    def get_vocabulary(self, url, vocabulary) ->dict:
+    def get_vocabulary(self, url) ->dict:
         '''Get vocabulary data from cambridge'''
+        vocabulary = Vocabulary()
+
         # Get the substitution vocabulary's title from url parameter
         self.substitution_title = url.split('/')[-1]
 
