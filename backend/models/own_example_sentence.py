@@ -23,7 +23,7 @@ class OwnExampleSentence(object):
     @classmethod
     def get_titles(cls, examples):
         ''' '''
-        titles = [example.split("\n")[0] for example in examples]            
+        titles = [example.split("\n")[0].lower() for example in examples]            
         return titles
 
 
@@ -37,7 +37,7 @@ class OwnExampleSentence(object):
     @classmethod
     def get_dict_of_examples(cls, examples):
         ''' '''
-        dict_of_examples = [{'title': example.split("\n")[0], 'example_sentence': example.split("\n")[1]} for example in examples]
+        dict_of_examples = [{'title': example.split("\n")[0].lower(), 'example_sentence': example.split("\n")[1]} for example in examples]
             
         return dict_of_examples
 
