@@ -13,7 +13,7 @@ class OwnExampleSentence(object):
         print('Retrieve examples')
         with open(path, 'r') as f:            
             data = f.read()
-
+            examples = None
             if data:
                 examples = data.split("\n\n")
             
@@ -23,27 +23,34 @@ class OwnExampleSentence(object):
     @classmethod
     def get_titles(cls, examples):
         ''' '''
-        titles = [example.split("\n")[0].lower() for example in examples]            
+        titles = None
+        if examples:
+            titles = [example.split("\n")[0].lower() for example in examples]            
         return titles
 
 
     @classmethod
     def get_example_sentences(cls, examples):
         ''' '''
-        example_sentences = [example.split("\n")[1] for example in examples]            
+        example_sentences = None
+        if examples:
+            example_sentences = [example.split("\n")[1] for example in examples]            
         return example_sentences
 
 
     @classmethod
     def get_dict_of_examples(cls, examples):
         ''' '''
-        dict_of_examples = [{'title': example.split("\n")[0].lower(), 'example_sentence': example.split("\n")[1]} for example in examples]
+        dict_of_examples = None
+        if examples:
+            dict_of_examples = [{'title': example.split("\n")[0].lower(), 'example_sentence': example.split("\n")[1]} for example in examples]
             
         return dict_of_examples
 
 
     def get_urls_for_scraping(self, scraping_url):
         urls = []
+
         for title in self.titles:
             url = scraping_url + title
             urls.append(url)

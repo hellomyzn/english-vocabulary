@@ -183,11 +183,12 @@ class InputVocabularyBot(Bot):
             self.vocabulary = self.scraping.get_vocabulary(url)
 
             # Get examples if it is matched by title (CASE1)
-            for example in self.own_examples.dict_of_examples:
-                if example['title'] == self.vocabulary.title:
-                    self.vocabulary.example_sentence = example['example_sentence']
-                    self.vocabulary.is_own_example = True
-                    continue
+            if self.own_examples.dict_of_examples:
+                for example in self.own_examples.dict_of_examples:
+                    if example['title'] == self.vocabulary.title:
+                        self.vocabulary.example_sentence = example['example_sentence']
+                        self.vocabulary.is_own_example = True
+                        continue
 
             # Check whether you could get vocabulary through scraping or no (CASE2)
             if self.vocabulary.definition:
