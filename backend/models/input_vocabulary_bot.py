@@ -14,16 +14,18 @@ class InputVocabularyBot(Bot):
     def __init__(self, config: dict, speak_color='green'):
         super().__init__(speak_color)
         self.config = config
-        self.bookmarks_file_path               = config['FILES']['DIR'] + config['FILES']['BOOKMARKS_FILE_NAME'] 
-        self.own_examples_file_path            = config['FILES']['DIR'] + config['FILES']['OWN_EXAMPLES_FILE_NAME'] 
-        self.own_definition_file_path          = config['FILES']['DIR'] + config['FILES']['OWN_DEFINITION_FILE_NAME'] 
-        self.csv_file_path                     = config['FILES']['DIR'] + config['FILES']['CSV_FILE_NAME'] 
-        self.vocabulary_scraped_file_path      = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_SCRAPED_FILE_NAME'] 
-        self.vocabulary_not_scraped_file_path  = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_NOT_SCRAPED_FILE_NAME'] 
-        self.vocabulary_written_file_path      = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_WRITTEN_FILE_NAME'] 
-        self.vocabulary_existed_file_path      = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_EXISTED_FILE_NAME'] 
-        self.own_example_written_file_path     = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['OWN_EXAMPLE_WRITTEN'] 
-        self.own_example_not_written_file_path = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['OWN_EXAMPLE_NOT_WRITTEN'] 
+        self.bookmarks_file_path                  = config['FILES']['DIR'] + config['FILES']['BOOKMARKS_FILE_NAME'] 
+        self.own_examples_file_path               = config['FILES']['DIR'] + config['FILES']['OWN_EXAMPLES_FILE_NAME'] 
+        self.own_definition_file_path             = config['FILES']['DIR'] + config['FILES']['OWN_DEFINITION_FILE_NAME'] 
+        self.csv_file_path                        = config['FILES']['DIR'] + config['FILES']['CSV_FILE_NAME'] 
+        self.vocabulary_scraped_file_path         = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_SCRAPED_FILE_NAME'] 
+        self.vocabulary_not_scraped_file_path     = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_NOT_SCRAPED_FILE_NAME'] 
+        self.vocabulary_written_file_path         = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_WRITTEN_FILE_NAME'] 
+        self.vocabulary_existed_file_path         = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_EXISTED_FILE_NAME'] 
+        self.own_example_written_file_path        = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['OWN_EXAMPLE_WRITTEN'] 
+        self.own_example_not_written_file_path    = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['OWN_EXAMPLE_NOT_WRITTEN'] 
+        self.own_definition_written_file_path     = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['OWN_DEFINITION_WRITTEN'] 
+        self.own_definition_not_written_file_path = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['OWN_DEFINITION_NOT_WRITTEN'] 
         self.is_google_spreadsheet = False
         self.is_csv = False
         self.google_spreadsheet = None
@@ -178,10 +180,13 @@ class InputVocabularyBot(Bot):
         CASE1: You can not find own example sentences
             - Vocabulary: written
             - Own Example: not written
-        CASE2: You can not find vocabulary through scraping with urls from text because the vocabulary's title from text doesn't exist in dictioanry web site
+        CASE2: You can not find own example sentences
+            - Vocabulary: written
+            - Own Example: not written
+        CASE3: You can not find vocabulary through scraping with urls from text because the vocabulary's title from text doesn't exist in dictioanry web site
             - Vocabulary: not scraped
             - Own Example: not added
-        CASE3: The vocabulary already exists on Google Spreadsheet
+        CASE4: The vocabulary already exists on Google Spreadsheet
             - Vocabulary: existed
             - Own Example: not added
         '''
@@ -197,7 +202,7 @@ class InputVocabularyBot(Bot):
                         self.vocabulary.is_own_example = True
                         continue
             
-            # Get own definitions if it is matched by title (CASE1)
+            # Get own definitions if it is matched by title (CASE2)
             if self.own_files.dict_of_own_definitions:
                 for definition in self.own_files.dict_of_own_definitions:
                     if definition['title'] == self.vocabulary.title:
@@ -205,7 +210,7 @@ class InputVocabularyBot(Bot):
                         self.vocabulary.is_own_definition = True
                         continue
 
-            # Check whether you could get vocabulary through scraping or no (CASE2)
+            # Check whether you could get vocabulary through scraping or no (CASE3)
             if self.vocabulary.definition:
                 # Add result of vocabulary scraped
                 self.result.vocabularies_scraped.append(self.vocabulary)
@@ -217,7 +222,7 @@ class InputVocabularyBot(Bot):
             # Logic of writing on Goolge Spreadsheet
             if self.is_google_spreadsheet == True:
 
-                # Check whether the vocabulary exists on Google Spreadsheet or no (CASE3)
+                # Check whether the vocabulary exists on Google Spreadsheet or no (CASE4)
                 if self.vocabulary.title in self.google_spreadsheet.current_vocabularies:
                     # Add result of vocabularies not written. and then proceed next url afterwards
                     self.result.vocabularies_existed.append(self.vocabulary)
@@ -234,6 +239,12 @@ class InputVocabularyBot(Bot):
                 else:
                     self.result.examples_not_written.append(self.vocabulary)
 
+                # Add result of difinitions written or not written (CASE2)
+                if self.vocabulary.is_own_example == True: 
+                    self.result.difinitions_written.append(self.vocabulary)
+                else:
+                    self.result.difinitions_not_written.append(self.vocabulary)
+
             # Logic of writing on CSV                
             if self.is_csv == True:
                 self.csv.write(self.vocabulary, self.csv_file_path)
@@ -244,31 +255,37 @@ class InputVocabularyBot(Bot):
     def show_result(self):
         template = console.get_template('show_result.txt', self.speak_color)
         print(template.substitute({ 'num_urls':     len(self.urls),
-                                    'num_scraped': len([vocabulary.title for vocabulary in self.result.vocabularies_scraped]),
-                                    'num_not_scraped': len([vocabulary.title for vocabulary in self.result.vocabularies_not_scraped]),
+                                    'num_scraped':      len([vocabulary.title for vocabulary in self.result.vocabularies_scraped]),
+                                    'num_not_scraped':  len([vocabulary.title for vocabulary in self.result.vocabularies_not_scraped]),
                                     
-                                    'voc_scraped': [vocabulary.title for vocabulary in self.result.vocabularies_scraped],
+                                    'voc_scraped':     [vocabulary.title for vocabulary in self.result.vocabularies_scraped],
                                     'voc_not_scraped': [vocabulary.title for vocabulary in self.result.vocabularies_not_scraped],
 
-                                    'num_voc_written':     len([vocabulary.title for vocabulary in self.result.vocabularies_written]),
-                                    'num_voc_existed':     len([vocabulary.title for vocabulary in self.result.vocabularies_existed]),
-                                    'num_ex_written':      len([vocabulary.title for vocabulary in self.result.examples_written]),
-                                    'num_ex_not_written':  len([vocabulary.title for vocabulary in self.result.examples_not_written]),
+                                    'num_voc_written':       len([vocabulary.title for vocabulary in self.result.vocabularies_written]),
+                                    'num_voc_existed':       len([vocabulary.title for vocabulary in self.result.vocabularies_existed]),
+                                    'num_ex_written':        len([vocabulary.title for vocabulary in self.result.examples_written]),
+                                    'num_ex_not_written':    len([vocabulary.title for vocabulary in self.result.examples_not_written]),
+                                    'num_difi_written':      len([vocabulary.title for vocabulary in self.result.difinitions_written]),
+                                    'num_difi_not_written':  len([vocabulary.title for vocabulary in self.result.difinitions_not_written]),
 
-                                    'voc_written':      [vocabulary.title for vocabulary in self.result.vocabularies_written],
-                                    'voc_existed':      [vocabulary.title for vocabulary in self.result.vocabularies_existed],
-                                    'ex_written':       [vocabulary.title for vocabulary in self.result.examples_written],
-                                    'ex_not_written':   [vocabulary.title for vocabulary in self.result.examples_not_written]}))
+                                    'voc_written':        [vocabulary.title for vocabulary in self.result.vocabularies_written],
+                                    'voc_existed':        [vocabulary.title for vocabulary in self.result.vocabularies_existed],
+                                    'ex_written':         [vocabulary.title for vocabulary in self.result.examples_written],
+                                    'ex_not_written':     [vocabulary.title for vocabulary in self.result.examples_not_written],
+                                    'difi_written':       [vocabulary.title for vocabulary in self.result.difinitions_written],
+                                    'difi_not_written':   [vocabulary.title for vocabulary in self.result.difinitions_not_written]}))
     
 
     def write_result(self):
         file_path_and_result_dict = [
-            {'file_path': self.vocabulary_scraped_file_path     ,'result': self.result.vocabularies_scraped},
-            {'file_path': self.vocabulary_not_scraped_file_path ,'result': self.result.vocabularies_not_scraped},
-            {'file_path': self.vocabulary_written_file_path     ,'result': self.result.vocabularies_written},
-            {'file_path': self.vocabulary_existed_file_path     ,'result': self.result.vocabularies_existed},
-            {'file_path': self.own_example_written_file_path    ,'result': self.result.examples_written},
-            {'file_path': self.own_example_not_written_file_path,'result': self.result.examples_not_written},]
+            {'file_path': self.vocabulary_scraped_file_path         ,'result': self.result.vocabularies_scraped},
+            {'file_path': self.vocabulary_not_scraped_file_path     ,'result': self.result.vocabularies_not_scraped},
+            {'file_path': self.vocabulary_written_file_path         ,'result': self.result.vocabularies_written},
+            {'file_path': self.vocabulary_existed_file_path         ,'result': self.result.vocabularies_existed},
+            {'file_path': self.own_example_written_file_path        ,'result': self.result.examples_written},
+            {'file_path': self.own_example_not_written_file_path    ,'result': self.result.examples_not_written},
+            {'file_path': self.own_definition_written_file_path     ,'result': self.result.examples_written},
+            {'file_path': self.own_definition_not_written_file_path ,'result': self.result.examples_not_written}]
         
         for file_path_and_result in file_path_and_result_dict:
             self.result.write_files_for_result(file_path_and_result)
@@ -277,7 +294,8 @@ class InputVocabularyBot(Bot):
     def ask_to_delete(self):
         file_paths = [
             self.bookmarks_file_path, 
-            self.own_examples_file_path, 
+            self.own_examples_file_path,
+            self.own_definition_file_path,
             self.csv_file_path]
 
         for file_path in file_paths:

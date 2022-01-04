@@ -6,6 +6,8 @@ class Result(object):
         self.vocabularies_existed = []
         self.examples_written = []
         self.examples_not_written = []
+        self.difinitions_written = []
+        self.difinitions_not_written = []
 
     
     def write_files_for_result(self, file_path_and_result):

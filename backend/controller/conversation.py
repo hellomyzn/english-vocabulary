@@ -18,7 +18,6 @@ def talk_about_input_vocabulary():
     input_bot.ask_user_favorites()
     input_bot.get_urls()
     input_bot.write_vocabularies()
-    quit()
     input_bot.show_result()
     input_bot.write_result()
     input_bot.ask_to_delete()

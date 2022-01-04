@@ -22,3 +22,11 @@
     
     - NOT_WRITTEN: $num_ex_not_written
         $ex_not_written
+
+
+- OWN DIFINITIONS: 
+    - WRITTEN: $num_difi_written
+        $difi_written
+    
+    - NOT_WRITTEN: $num_difi_not_written
+        $difi_not_written
