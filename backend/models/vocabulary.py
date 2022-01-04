@@ -11,6 +11,7 @@ class Vocabulary(object):
         self.timestamp = Vocabulary.get_date()
         self.check = False
         self.is_own_example = False
+        self.is_own_definition = False
         
 
     @classmethod

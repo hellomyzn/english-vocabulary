@@ -3,7 +3,7 @@ from models.cambridge import Cambridge
 from models.bookmarks import Bookmarks
 from models.result import Result
 from models.google_spreadsheet import GoogleSpreadSheet
-from models.own_example_sentence import OwnExampleSentence
+from models.own_files import OwnFiles
 from models.csv import CSV
 from views import console
 import helper
@@ -16,7 +16,7 @@ class InputVocabularyBot(Bot):
         self.config = config
         self.bookmarks_file_path               = config['FILES']['DIR'] + config['FILES']['BOOKMARKS_FILE_NAME'] 
         self.own_examples_file_path            = config['FILES']['DIR'] + config['FILES']['OWN_EXAMPLES_FILE_NAME'] 
-        self.own_meanings_file_path            = config['FILES']['DIR'] + config['FILES']['OWN_MEANINGS_FILE_NAME'] 
+        self.own_definition_file_path          = config['FILES']['DIR'] + config['FILES']['OWN_DEFINITION_FILE_NAME'] 
         self.csv_file_path                     = config['FILES']['DIR'] + config['FILES']['CSV_FILE_NAME'] 
         self.vocabulary_scraped_file_path      = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_SCRAPED_FILE_NAME'] 
         self.vocabulary_not_scraped_file_path  = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_NOT_SCRAPED_FILE_NAME'] 
@@ -30,7 +30,7 @@ class InputVocabularyBot(Bot):
         self.csv = None
         self.vocabulary = None
         self.scraping = None
-        self.own_examples = None
+        self.own_files = None
         self.result = None
         self.urls = []
 
@@ -61,7 +61,7 @@ class InputVocabularyBot(Bot):
         ''' '''
         files = [
             self.own_examples_file_path,
-            self.own_meanings_file_path, 
+            self.own_definition_file_path, 
             self.csv_file_path,
             self.vocabulary_scraped_file_path,
             self.vocabulary_not_scraped_file_path,
@@ -85,7 +85,7 @@ class InputVocabularyBot(Bot):
         input(template.substitute({'file_path': self.own_examples_file_path}))
 
         template = console.get_template('confirm_to_update_files.txt', self.speak_color)
-        input(template.substitute({'file_path': self.own_meanings_file_path}))
+        input(template.substitute({'file_path': self.own_definition_file_path}))
 
         return None
 
@@ -131,7 +131,9 @@ class InputVocabularyBot(Bot):
         
         # Generate instances
         # Retrieve Examples
-        self.own_examples = OwnExampleSentence(self.own_examples_file_path)
+        self.own_files = OwnFiles(
+            self.own_examples_file_path,
+            self.own_definition_file_path)
         self.scraping = Cambridge()
         self.result = Result()
 
@@ -187,12 +189,20 @@ class InputVocabularyBot(Bot):
             # Get vocabulary from URL through scraping
             self.vocabulary = self.scraping.get_vocabulary(url)
 
-            # Get examples if it is matched by title (CASE1)
-            if self.own_examples.dict_of_examples:
-                for example in self.own_examples.dict_of_examples:
+            # Get own examples if it is matched by title (CASE1)
+            if self.own_files.dict_of_own_examples:
+                for example in self.own_files.dict_of_own_examples:
                     if example['title'] == self.vocabulary.title:
-                        self.vocabulary.example_sentence = example['example_sentence']
+                        self.vocabulary.example_sentence = example['sentences']
                         self.vocabulary.is_own_example = True
+                        continue
+            
+            # Get own definitions if it is matched by title (CASE1)
+            if self.own_files.dict_of_own_definitions:
+                for definition in self.own_files.dict_of_own_definitions:
+                    if definition['title'] == self.vocabulary.title:
+                        self.vocabulary.definition = definition['sentences']
+                        self.vocabulary.is_own_definition = True
                         continue
 
             # Check whether you could get vocabulary through scraping or no (CASE2)
@@ -223,7 +233,7 @@ class InputVocabularyBot(Bot):
                     self.result.examples_written.append(self.vocabulary)
                 else:
                     self.result.examples_not_written.append(self.vocabulary)
-                
+
             # Logic of writing on CSV                
             if self.is_csv == True:
                 self.csv.write(self.vocabulary, self.csv_file_path)
