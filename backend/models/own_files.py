@@ -1,7 +1,12 @@
 class OwnFiles(object):
-    def __init__(self, own_examples_file_path: str, own_meanings_file_path: str):
-        examples = OwnFiles.get_list_separated_by_vocabulary(own_examples_file_path)
-        definitions = OwnFiles.get_list_separated_by_vocabulary(own_meanings_file_path)
+    def __init__(
+        self, file_path_of_own_examples: str, 
+        file_path_of_own_definitions: str,
+        file_path_of_vocabularies_to_scrape: str):
+
+        examples = OwnFiles.get_list_separated_by_vocabulary(file_path_of_own_examples)
+        definitions = OwnFiles.get_list_separated_by_vocabulary(file_path_of_own_definitions)
+        self.vocabularies_to_scrape = OwnFiles.get_list_separated_by_vocabulary(file_path_of_vocabularies_to_scrape)
 
         self.own_example_titles = OwnFiles.get_titles(examples)
         self.own_example_sentences = OwnFiles.get_sentences(examples)
@@ -56,7 +61,7 @@ class OwnFiles(object):
     def get_urls_for_scraping(self, scraping_url):
         urls = []
 
-        for title in self.titles:
+        for title in self.vocabularies_to_scrape:
             url = scraping_url + title
             urls.append(url)
         return urls

@@ -14,18 +14,19 @@ class InputVocabularyBot(Bot):
     def __init__(self, config: dict, speak_color='green'):
         super().__init__(speak_color)
         self.config = config
-        self.bookmarks_file_path                  = config['FILES']['DIR'] + config['FILES']['BOOKMARKS_FILE_NAME'] 
-        self.own_examples_file_path               = config['FILES']['DIR'] + config['FILES']['OWN_EXAMPLES_FILE_NAME'] 
-        self.own_definition_file_path             = config['FILES']['DIR'] + config['FILES']['OWN_DEFINITION_FILE_NAME'] 
-        self.csv_file_path                        = config['FILES']['DIR'] + config['FILES']['CSV_FILE_NAME'] 
-        self.vocabulary_scraped_file_path         = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_SCRAPED_FILE_NAME'] 
-        self.vocabulary_not_scraped_file_path     = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_NOT_SCRAPED_FILE_NAME'] 
-        self.vocabulary_written_file_path         = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_WRITTEN_FILE_NAME'] 
-        self.vocabulary_existed_file_path         = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_EXISTED_FILE_NAME'] 
-        self.own_example_written_file_path        = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['OWN_EXAMPLE_WRITTEN'] 
-        self.own_example_not_written_file_path    = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['OWN_EXAMPLE_NOT_WRITTEN'] 
-        self.own_definition_written_file_path     = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['OWN_DEFINITION_WRITTEN'] 
-        self.own_definition_not_written_file_path = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['OWN_DEFINITION_NOT_WRITTEN'] 
+        self.file_path_of_bookmarks                   = config['FILES']['DIR'] + config['FILES']['FILENAME_OF_BOOKMARKS'] 
+        self.file_path_of_own_examples                = config['FILES']['DIR'] + config['FILES']['FILENAME_OF_OWN_EXAMPLES'] 
+        self.file_path_of_own_definitions             = config['FILES']['DIR'] + config['FILES']['FILENAME_OF_OWN_DEFINITION'] 
+        self.file_path_of_csv                         = config['FILES']['DIR'] + config['FILES']['FILENAME_OF_CSV'] 
+        self.file_path_of_vocabularies_to_scrape      = config['FILES']['DIR'] + config['FILES']['FILENAME_OF_VOCABULARY_TO_SCRAPE'] 
+        self.file_path_of_vocabularies_scraped        = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['FILENAME_OF_VOCABULARY_SCRAPED'] 
+        self.file_path_of_vocabularies_not_scraped    = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['FILENAME_OF_VOCABULARY_NOT_SCRAPED'] 
+        self.file_path_of_vocabularies_written        = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['FILENAME_OF_VOCABULARY_WRITTEN'] 
+        self.file_path_of_vocabularies_existed        = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['FILENAME_OF_VOCABULARY_EXISTED'] 
+        self.file_path_of_own_examples_written        = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['FILENAME_OF_OWN_EXAMPLE_WRITTEN'] 
+        self.file_path_of_own_examples_not_written    = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['FILENAME_OF_OWN_EXAMPLE_NOT_WRITTEN']
+        self.file_path_of_own_definitions_written     = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['FILENAME_OF_OWN_DEFINITION_WRITTEN'] 
+        self.file_path_of_own_definitions_not_written = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['FILENAME_OF_OWN_DEFINITION_NOT_WRITTEN'] 
         self.is_google_spreadsheet = False
         self.is_csv = False
         self.google_spreadsheet = None
@@ -62,15 +63,18 @@ class InputVocabularyBot(Bot):
     def check_files(self):
         ''' '''
         files = [
-            self.own_examples_file_path,
-            self.own_definition_file_path, 
-            self.csv_file_path,
-            self.vocabulary_scraped_file_path,
-            self.vocabulary_not_scraped_file_path,
-            self.vocabulary_written_file_path,
-            self.vocabulary_existed_file_path,
-            self.own_example_written_file_path,
-            self.own_example_not_written_file_path
+            self.file_path_of_own_examples,
+            self.file_path_of_own_definitions, 
+            self.file_path_of_csv,
+            self.file_path_of_vocabularies_to_scrape,
+            self.file_path_of_vocabularies_scraped,
+            self.file_path_of_vocabularies_not_scraped,
+            self.file_path_of_vocabularies_written,
+            self.file_path_of_vocabularies_existed,
+            self.file_path_of_own_examples_written,
+            self.file_path_of_own_examples_not_written,
+            self.file_path_of_own_definitions_written,
+            self.file_path_of_own_definitions_not_written
             ]
 
         # Check whether existing an example and a csv file or no. if it doesn't exist, those files are going to be created
@@ -84,10 +88,10 @@ class InputVocabularyBot(Bot):
                 }))
 
         template = console.get_template('confirm_to_update_files.txt', self.speak_color)
-        input(template.substitute({'file_path': self.own_examples_file_path}))
+        input(template.substitute({'file_path': self.file_path_of_own_examples}))
 
         template = console.get_template('confirm_to_update_files.txt', self.speak_color)
-        input(template.substitute({'file_path': self.own_definition_file_path}))
+        input(template.substitute({'file_path': self.file_path_of_own_definitions}))
 
         return None
 
@@ -134,8 +138,9 @@ class InputVocabularyBot(Bot):
         # Generate instances
         # Retrieve Examples
         self.own_files = OwnFiles(
-            self.own_examples_file_path,
-            self.own_definition_file_path)
+            self.file_path_of_own_examples,
+            self.file_path_of_own_definitions,
+            self.file_path_of_vocabularies_to_scrape)
         self.scraping = Cambridge()
         self.result = Result()
 
@@ -147,21 +152,21 @@ class InputVocabularyBot(Bot):
 
         # Ask which do you prefer to retrieve vocabularies from
         while True:
-            template = console.get_template('ask_bookmarks_or_own_examples.txt', self.speak_color)
+            template = console.get_template('ask_how_you_get_urls.txt', self.speak_color)
             i = input(template.substitute({
-                'path': self.own_examples_file_path
+                'path': self.file_path_of_vocabularies_to_scrape
                 })) 
 
             # If Bookmarks
             if i == str(1):
-                InputVocabularyBot.check_bookmarks(self.bookmarks_file_path, self.speak_color)
-                bookmarks = Bookmarks(self.bookmarks_file_path, self.config['BOOKMARKS']['FOLDER_NAME'])
+                InputVocabularyBot.check_bookmarks(self.file_path_of_bookmarks, self.speak_color)
+                bookmarks = Bookmarks(self.file_path_of_bookmarks, self.config['BOOKMARKS']['FOLDER_NAME'])
                 self.urls = bookmarks.get_urls_for_scraping()
                 break
             
             # If own_example_.txt
             elif i == str(2):
-                self.urls = self.own_examples.get_urls_for_scraping(self.scraping.url_for_search)
+                self.urls = self.own_files.get_urls_for_scraping(self.scraping.url_for_search)
                 break
 
         urls_num = len(self.urls)
@@ -247,7 +252,7 @@ class InputVocabularyBot(Bot):
 
             # Logic of writing on CSV                
             if self.is_csv == True:
-                self.csv.write(self.vocabulary, self.csv_file_path)
+                self.csv.write(self.vocabulary, self.file_path_of_csv)
 
         return None
 
@@ -278,14 +283,14 @@ class InputVocabularyBot(Bot):
 
     def write_result(self):
         file_path_and_result_dict = [
-            {'file_path': self.vocabulary_scraped_file_path         ,'result': self.result.vocabularies_scraped},
-            {'file_path': self.vocabulary_not_scraped_file_path     ,'result': self.result.vocabularies_not_scraped},
-            {'file_path': self.vocabulary_written_file_path         ,'result': self.result.vocabularies_written},
-            {'file_path': self.vocabulary_existed_file_path         ,'result': self.result.vocabularies_existed},
-            {'file_path': self.own_example_written_file_path        ,'result': self.result.examples_written},
-            {'file_path': self.own_example_not_written_file_path    ,'result': self.result.examples_not_written},
-            {'file_path': self.own_definition_written_file_path     ,'result': self.result.examples_written},
-            {'file_path': self.own_definition_not_written_file_path ,'result': self.result.examples_not_written}]
+            {'file_path': self.file_path_of_vocabularies_scraped         ,'result': self.result.vocabularies_scraped},
+            {'file_path': self.file_path_of_vocabularies_not_scraped     ,'result': self.result.vocabularies_not_scraped},
+            {'file_path': self.file_path_of_vocabularies_written         ,'result': self.result.vocabularies_written},
+            {'file_path': self.file_path_of_vocabularies_existed         ,'result': self.result.vocabularies_existed},
+            {'file_path': self.file_path_of_own_examples_written        ,'result': self.result.examples_written},
+            {'file_path': self.file_path_of_own_examples_not_written    ,'result': self.result.examples_not_written},
+            {'file_path': self.file_path_of_own_definitions_written     ,'result': self.result.examples_written},
+            {'file_path': self.file_path_of_own_definitions_not_written ,'result': self.result.examples_not_written}]
         
         for file_path_and_result in file_path_and_result_dict:
             self.result.write_files_for_result(file_path_and_result)
@@ -293,14 +298,19 @@ class InputVocabularyBot(Bot):
 
     def ask_to_delete(self):
         file_paths = [
-            self.bookmarks_file_path, 
-            self.own_examples_file_path,
-            self.own_definition_file_path,
-            self.csv_file_path]
+            self.file_path_of_bookmarks, 
+            self.file_path_of_own_examples,
+            self.file_path_of_own_definitions,
+            self.file_path_of_csv,
+            self.file_path_of_vocabularies_to_scrape]
 
         for file_path in file_paths:
+            if not helper.is_file(file_path):
+                continue
+
             template = console.get_template('ask_to_delete_file.txt', self.speak_color)
             is_yes = input(template.substitute({'path': file_path}))
+
             if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
                 helper.delete_file(file_path)
                 print(file_path, 'has been deleted')
