@@ -1,2 +1,0 @@
-■ Please update $own_examples_file_path if you want to add some own examples
-If you finish, Press enter.

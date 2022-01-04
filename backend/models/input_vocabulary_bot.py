@@ -15,7 +15,8 @@ class InputVocabularyBot(Bot):
         super().__init__(speak_color)
         self.config = config
         self.bookmarks_file_path               = config['FILES']['DIR'] + config['FILES']['BOOKMARKS_FILE_NAME'] 
-        self.own_examples_file_path            = config['FILES']['DIR'] + config['FILES']['EXAMPLES_FILE_NAME'] 
+        self.own_examples_file_path            = config['FILES']['DIR'] + config['FILES']['OWN_EXAMPLES_FILE_NAME'] 
+        self.own_meanings_file_path            = config['FILES']['DIR'] + config['FILES']['OWN_MEANINGS_FILE_NAME'] 
         self.csv_file_path                     = config['FILES']['DIR'] + config['FILES']['CSV_FILE_NAME'] 
         self.vocabulary_scraped_file_path      = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_SCRAPED_FILE_NAME'] 
         self.vocabulary_not_scraped_file_path  = config['FILES']['DIR'] + config['FILES']['RESULT_DIR'] + config['FILES']['VOCABULARY_NOT_SCRAPED_FILE_NAME'] 
@@ -59,7 +60,8 @@ class InputVocabularyBot(Bot):
     def check_files(self):
         ''' '''
         files = [
-            self.own_examples_file_path, 
+            self.own_examples_file_path,
+            self.own_meanings_file_path, 
             self.csv_file_path,
             self.vocabulary_scraped_file_path,
             self.vocabulary_not_scraped_file_path,
@@ -79,8 +81,11 @@ class InputVocabularyBot(Bot):
                     'dir': self.config['FILES']['DIR']
                 }))
 
-        template = console.get_template('confirm_to_update_own_examples.txt', self.speak_color)
-        input(template.substitute({'own_examples_file_path': self.own_examples_file_path}))
+        template = console.get_template('confirm_to_update_files.txt', self.speak_color)
+        input(template.substitute({'file_path': self.own_examples_file_path}))
+
+        template = console.get_template('confirm_to_update_files.txt', self.speak_color)
+        input(template.substitute({'file_path': self.own_meanings_file_path}))
 
         return None
 

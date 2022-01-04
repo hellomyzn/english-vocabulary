@@ -15,6 +15,7 @@ def talk_about_input_vocabulary():
     input_bot = InputVocabularyBot(config)
     input_bot.hello()
     input_bot.check_files()
+    quit()
     input_bot.ask_user_favorites()
     input_bot.get_urls()
     input_bot.write_vocabularies()
