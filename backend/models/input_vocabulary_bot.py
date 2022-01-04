@@ -166,6 +166,9 @@ class InputVocabularyBot(Bot):
             
             # If own_example_.txt
             elif i == str(2):
+                template = console.get_template('confirm_to_update_files.txt', self.speak_color)
+                input(template.substitute({'file_path': self.file_path_of_vocabularies_to_scrape}))
+
                 self.urls = self.own_files.get_urls_for_scraping(self.scraping.url_for_search)
                 break
 
