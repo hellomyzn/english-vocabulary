@@ -93,6 +93,11 @@ class InputVocabularyBot(Bot):
         template = console.get_template('confirm_to_update_files.txt', self.speak_color)
         input(template.substitute({'file_path': self.file_path_of_own_definitions}))
 
+        # Create instance
+        self.own_files = OwnFiles(self.file_path_of_own_examples,
+                                  self.file_path_of_own_definitions,
+                                  self.file_path_of_vocabularies_to_scrape)
+
         return None
 
 
@@ -134,21 +139,14 @@ class InputVocabularyBot(Bot):
         
         if self.is_google_spreadsheet == False and self.is_csv == False:
             quit()
-        
-        # Generate instances
-        # Retrieve Examples
-        self.own_files = OwnFiles(
-            self.file_path_of_own_examples,
-            self.file_path_of_own_definitions,
-            self.file_path_of_vocabularies_to_scrape)
-        self.scraping = Cambridge()
-        self.result = Result()
-
+            
         return None
 
 
     def get_urls(self):
         ''' '''
+        # Create instance
+        self.scraping = Cambridge()
 
         # Ask which do you prefer to retrieve vocabularies from
         while True:
@@ -198,6 +196,10 @@ class InputVocabularyBot(Bot):
             - Vocabulary: existed
             - Own Example: not added
         '''
+
+        # Create Instance
+        self.result = Result()
+
         for url in self.urls:
             # Get vocabulary from URL through scraping
             self.vocabulary = self.scraping.get_vocabulary(url)
