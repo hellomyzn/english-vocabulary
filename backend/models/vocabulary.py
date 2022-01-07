@@ -10,8 +10,6 @@ class Vocabulary(object):
         self.example_sentence = None
         self.timestamp = Vocabulary.get_date()
         self.check = False
-        self.is_own_example = False
-        self.is_own_definition = False
         
 
     @classmethod

@@ -183,15 +183,15 @@ class InputVocabularyBot(Bot):
         Regular Case: You can find vocabulary through scraping with urls and own example sentence from data/examples.txt
             - Vocabulary: written
             - Own Example: written
-        CASE1: You can not find own example sentences
-            - Vocabulary: written
-            - Own Example: not written
+        CASE1: You can not find vocabulary through scraping with urls from text because the vocabulary's title from text doesn't exist in dictioanry web site
+            - Vocabulary: not scraped
+            - Own Example: not added
         CASE2: You can not find own example sentences
             - Vocabulary: written
             - Own Example: not written
-        CASE3: You can not find vocabulary through scraping with urls from text because the vocabulary's title from text doesn't exist in dictioanry web site
-            - Vocabulary: not scraped
-            - Own Example: not added
+        CASE3: You can not find own difinition sentences
+            - Vocabulary: written
+            - Own Example: not written
         CASE4: The vocabulary already exists on Google Spreadsheet
             - Vocabulary: existed
             - Own Example: not added
@@ -204,23 +204,7 @@ class InputVocabularyBot(Bot):
             # Get vocabulary from URL through scraping
             self.vocabulary = self.scraping.get_vocabulary(url)
 
-            # Get own examples if it is matched by title (CASE1)
-            if self.own_files.dict_of_own_examples:
-                for example in self.own_files.dict_of_own_examples:
-                    if example['title'] == self.vocabulary.title:
-                        self.vocabulary.example_sentence = example['sentences']
-                        self.vocabulary.is_own_example = True
-                        continue
-            
-            # Get own definitions if it is matched by title (CASE2)
-            if self.own_files.dict_of_own_definitions:
-                for definition in self.own_files.dict_of_own_definitions:
-                    if definition['title'] == self.vocabulary.title:
-                        self.vocabulary.definition = definition['sentences']
-                        self.vocabulary.is_own_definition = True
-                        continue
-
-            # Check whether you could get vocabulary through scraping or no (CASE3)
+            # Check whether you could get vocabulary through scraping or no (CASE1)
             if self.vocabulary.definition:
                 # Add result of vocabulary scraped
                 self.result.vocabularies_scraped.append(self.vocabulary)
@@ -228,6 +212,30 @@ class InputVocabularyBot(Bot):
                 # Add result of vocabularies not scraped. and then proceed next url afterwards
                 self.result.vocabularies_not_scraped.append(self.vocabulary)
                 continue
+
+            # Get own examples if it is matched by title (CASE2)
+            if self.vocabulary.title in self.own_files.own_example_titles:
+                # Get index number of the own examples list
+                index_number = int(self.own_files.own_example_titles.index(str(self.vocabulary.title)))
+                # Overwrite own example sentence 
+                self.vocabulary.example_sentence = self.own_files.own_example_sentences[index_number]
+                # Add result
+                self.result.examples_written.append(self.vocabulary)
+            else:
+                # Add result
+                self.result.examples_not_written.append(self.vocabulary)
+
+            # Get own definitions if it is matched by title (CASE3)
+            if self.vocabulary.title in self.own_files.own_definition_titles:
+                # Get index number of the own difinitions list
+                index_number = int(self.own_files.own_definition_titles.index(str(self.vocabulary.title)))
+                # Overwrite own difinition
+                self.vocabulary.definition = self.own_files.own_definition_sentences[index_number]
+                # Add result
+                self.result.difinitions_written.append(self.vocabulary)
+            else:
+                # Add result
+                self.result.difinitions_not_written.append(self.vocabulary)
 
             # Logic of writing on Goolge Spreadsheet
             if self.is_google_spreadsheet == True:
@@ -242,18 +250,6 @@ class InputVocabularyBot(Bot):
                 self.google_spreadsheet.write(self.vocabulary)
                 # Add result of vocabularies written
                 self.result.vocabularies_written.append(self.vocabulary)
-                
-                # Add result of examples written or not written (CASE1)
-                if self.vocabulary.is_own_example == True:
-                    self.result.examples_written.append(self.vocabulary)
-                else:
-                    self.result.examples_not_written.append(self.vocabulary)
-
-                # Add result of difinitions written or not written (CASE2)
-                if self.vocabulary.is_own_example == True: 
-                    self.result.difinitions_written.append(self.vocabulary)
-                else:
-                    self.result.difinitions_not_written.append(self.vocabulary)
 
             # Logic of writing on CSV                
             if self.is_csv == True:
