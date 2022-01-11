@@ -1,6 +1,7 @@
 class OwnFiles(object):
     def __init__(
-        self, file_path_of_own_examples: str, 
+        self, 
+        file_path_of_own_examples: str, 
         file_path_of_own_definitions: str,
         file_path_of_vocabularies_to_scrape: str):
 
