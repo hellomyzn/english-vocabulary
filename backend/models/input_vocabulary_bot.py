@@ -15,8 +15,8 @@ class InputVocabularyBot(Bot):
     def __init__(self, speak_color='green'):
         super().__init__(speak_color)
         self.is_google_spreadsheet = False
-        self.is_csv = False
         self.google_spreadsheet = None
+        self.is_csv = False
         self.csv = None
         self.vocabulary = None
         self.scraping = None
