@@ -49,19 +49,7 @@ class InputVocabularyBot(Bot):
 
     def check_files(self):
         ''' '''
-        files = [
-            setting.FILE_PATH_OF_OWN_EXAMPLES,
-            setting.FILE_PATH_OF_OWN_DEFINITIONS, 
-            setting.FILE_PATH_OF_CSV,
-            setting.FILE_PATH_OF_VOCABULARIES_TO_SCRAPE,
-            setting.FILE_PATH_OF_VOCABULARIES_SCRAPED,
-            setting.FILE_PATH_OF_VOCABULARIES_NOT_SCRAPED,
-            setting.FILE_PATH_OF_VOCABULARIES_WRITTEN,
-            setting.FILE_PATH_OF_VOCABULARIES_EXISTED,
-            setting.FILE_PATH_OF_OWN_EXAMPLES_WRITTEN,
-            setting.FILE_PATH_OF_OWN_EXAMPLES_NOT_WRITTEN,
-            setting.FILE_PATH_OF_OWN_DEFINITIONS_WRITTEN,
-            setting.FILE_PATH_OF_OWN_DEFINITIONS_NOT_WRITTEN]
+        files = setting.FILES
 
         # Check whether existing an example and a csv file or no. if it doesn't exist, those files are going to be created
         for file_path in files:
