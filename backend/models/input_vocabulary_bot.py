@@ -291,7 +291,7 @@ class InputVocabularyBot(Bot):
         template = console.get_template('show_result.txt', self.speak_color)
         print(template.substitute(result_dict))
     
-
+    # saveのほうが　わかりやすい？
     def write_result(self):
         """
         Write the result of vocabularies on each files you set up

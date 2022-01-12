@@ -35,12 +35,12 @@ class Scraping(object):
         vocabulary.definition       = soup.select(self.definition,       limit=1)[0].text if soup.select(self.definition, limit=1) else ''
         vocabulary.example_sentence = soup.select(self.example,          limit=1)[0].text if soup.select(self.example, limit=1) else ''
 
-        print("[SCRAPING]: URL:", url)
-        print("[SCRAPING]: TITLE:", vocabulary.title)
-        print("[SCRAPING]: Parts Of Speech:", vocabulary.part_of_speech)
-        print("[SCRAPING]: US_PRONUNCIATION:", vocabulary.us_pronunciation)
-        print("[SCRAPING]: UK_RONUNCIATION:", vocabulary.uk_pronunciation)
-        print("[SCRAPING]: DEFINITION:", vocabulary.definition)
-        print("[SCRAPING]: EXAMPLE SENTENCE:", vocabulary.example_sentence)
+        print("[INFO] - SCRAPED URL:", url)
+        print("[INFO] - SCRAPED TITLE:", vocabulary.title)
+        print("[INFO] - SCRAPED PARTS OF SPEECH:", vocabulary.part_of_speech)
+        print("[INFO] - SCRAPED US_PRONUNCIATION:", vocabulary.us_pronunciation)
+        print("[INFO] - SCRAPED UK_RONUNCIATION:", vocabulary.uk_pronunciation)
+        print("[INFO] - SCRAPED DEFINITION:", vocabulary.definition)
+        print("[INFO] - SCRAPED EXAMPLE SENTENCE:", vocabulary.example_sentence)
         
         return vocabulary
