@@ -25,7 +25,7 @@ class InputVocabularyBot(Bot):
         self.urls = []
 
     @classmethod
-    def check_bookmarks(cls, bookmarks_file_path, speak_color):
+    def check_bookmarks_exists(cls, bookmarks_file_path, speak_color):
         # Check whether existing a Bookmarks or no. if it doesn't exist, it goes to show how to copy the Bookmarks file until execution
         if helper.is_file(bookmarks_file_path):
             template = console.get_template('confirm_to_update_bookmarks.txt', speak_color)
@@ -47,7 +47,7 @@ class InputVocabularyBot(Bot):
                     quit()
 
 
-    def check_files(self):
+    def check_files_exist(self):
         """
         Check whether existing all the files you will use or no. if it doesn't exist, those files are going to be created.
         Get own examples, difinitions, vocabularies which you want to scrape.
@@ -154,7 +154,7 @@ class InputVocabularyBot(Bot):
 
             # If Bookmarks
             if choices == str(1):
-                InputVocabularyBot.check_bookmarks(setting.FILE_PATH_OF_BOOKMARKS, self.speak_color)
+                InputVocabularyBot.check_bookmarks_exists(setting.FILE_PATH_OF_BOOKMARKS, self.speak_color)
                 bookmarks = Bookmarks(setting.FILE_PATH_OF_BOOKMARKS, setting.CONFIG['BOOKMARKS']['FOLDER_NAME'])
                 self.urls = bookmarks.get_urls_for_scraping()
                 break
