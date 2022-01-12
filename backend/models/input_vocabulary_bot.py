@@ -49,10 +49,10 @@ class InputVocabularyBot(Bot):
 
     def check_files(self):
         ''' '''
-        files = setting.FILES
+        file_paths = setting.FILES_TO_BE_CHECKED
 
         # Check whether existing an example and a csv file or no. if it doesn't exist, those files are going to be created
-        for file_path in files:
+        for file_path in file_paths:
             if not helper.is_file(file_path):
                 helper.create_file(file_path)
                 template = console.get_template('create_file.txt', self.speak_color)
@@ -233,27 +233,30 @@ class InputVocabularyBot(Bot):
 
 
     def show_result(self):
+        result_dict = { 
+            'num_urls':              len(self.urls),
+            'num_scraped':           len([vocabulary.title for vocabulary in self.result.vocabularies_scraped]),
+            'num_not_scraped':       len([vocabulary.title for vocabulary in self.result.vocabularies_not_scraped]),
+            
+            'voc_scraped':           [vocabulary.title for vocabulary in self.result.vocabularies_scraped],
+            'voc_not_scraped':       [vocabulary.title for vocabulary in self.result.vocabularies_not_scraped],
+
+            'num_voc_written':       len([vocabulary.title for vocabulary in self.result.vocabularies_written]),
+            'num_voc_existed':       len([vocabulary.title for vocabulary in self.result.vocabularies_existed]),
+            'num_ex_written':        len([vocabulary.title for vocabulary in self.result.examples_written]),
+            'num_ex_not_written':    len([vocabulary.title for vocabulary in self.result.examples_not_written]),
+            'num_difi_written':      len([vocabulary.title for vocabulary in self.result.difinitions_written]),
+            'num_difi_not_written':  len([vocabulary.title for vocabulary in self.result.difinitions_not_written]),
+
+            'voc_written':           [vocabulary.title for vocabulary in self.result.vocabularies_written],
+            'voc_existed':           [vocabulary.title for vocabulary in self.result.vocabularies_existed],
+            'ex_written':            [vocabulary.title for vocabulary in self.result.examples_written],
+            'ex_not_written':        [vocabulary.title for vocabulary in self.result.examples_not_written],
+            'difi_written':          [vocabulary.title for vocabulary in self.result.difinitions_written],
+            'difi_not_written':      [vocabulary.title for vocabulary in self.result.difinitions_not_written]}
+
         template = console.get_template('show_result.txt', self.speak_color)
-        print(template.substitute({ 'num_urls':     len(self.urls),
-                                    'num_scraped':      len([vocabulary.title for vocabulary in self.result.vocabularies_scraped]),
-                                    'num_not_scraped':  len([vocabulary.title for vocabulary in self.result.vocabularies_not_scraped]),
-                                    
-                                    'voc_scraped':     [vocabulary.title for vocabulary in self.result.vocabularies_scraped],
-                                    'voc_not_scraped': [vocabulary.title for vocabulary in self.result.vocabularies_not_scraped],
-
-                                    'num_voc_written':       len([vocabulary.title for vocabulary in self.result.vocabularies_written]),
-                                    'num_voc_existed':       len([vocabulary.title for vocabulary in self.result.vocabularies_existed]),
-                                    'num_ex_written':        len([vocabulary.title for vocabulary in self.result.examples_written]),
-                                    'num_ex_not_written':    len([vocabulary.title for vocabulary in self.result.examples_not_written]),
-                                    'num_difi_written':      len([vocabulary.title for vocabulary in self.result.difinitions_written]),
-                                    'num_difi_not_written':  len([vocabulary.title for vocabulary in self.result.difinitions_not_written]),
-
-                                    'voc_written':        [vocabulary.title for vocabulary in self.result.vocabularies_written],
-                                    'voc_existed':        [vocabulary.title for vocabulary in self.result.vocabularies_existed],
-                                    'ex_written':         [vocabulary.title for vocabulary in self.result.examples_written],
-                                    'ex_not_written':     [vocabulary.title for vocabulary in self.result.examples_not_written],
-                                    'difi_written':       [vocabulary.title for vocabulary in self.result.difinitions_written],
-                                    'difi_not_written':   [vocabulary.title for vocabulary in self.result.difinitions_not_written]}))
+        print(template.substitute(result_dict))
     
 
     def write_result(self):
@@ -262,22 +265,17 @@ class InputVocabularyBot(Bot):
             {'file_path': setting.FILE_PATH_OF_VOCABULARIES_NOT_SCRAPED     ,'result': self.result.vocabularies_not_scraped},
             {'file_path': setting.FILE_PATH_OF_VOCABULARIES_WRITTEN         ,'result': self.result.vocabularies_written},
             {'file_path': setting.FILE_PATH_OF_VOCABULARIES_EXISTED         ,'result': self.result.vocabularies_existed},
-            {'file_path': setting.FILE_PATH_OF_OWN_EXAMPLES_WRITTEN        ,'result': self.result.examples_written},
-            {'file_path': setting.FILE_PATH_OF_OWN_EXAMPLES_NOT_WRITTEN    ,'result': self.result.examples_not_written},
-            {'file_path': setting.FILE_PATH_OF_OWN_DEFINITIONS_WRITTEN     ,'result': self.result.examples_written},
-            {'file_path': setting.FILE_PATH_OF_OWN_DEFINITIONS_NOT_WRITTEN ,'result': self.result.examples_not_written}]
+            {'file_path': setting.FILE_PATH_OF_OWN_EXAMPLES_WRITTEN         ,'result': self.result.examples_written},
+            {'file_path': setting.FILE_PATH_OF_OWN_EXAMPLES_NOT_WRITTEN     ,'result': self.result.examples_not_written},
+            {'file_path': setting.FILE_PATH_OF_OWN_DEFINITIONS_WRITTEN      ,'result': self.result.examples_written},
+            {'file_path': setting.FILE_PATH_OF_OWN_DEFINITIONS_NOT_WRITTEN  ,'result': self.result.examples_not_written}]
         
         for file_path_and_result in file_path_and_result_dict:
             self.result.write_files_for_result(file_path_and_result)
 
 
     def ask_to_delete(self):
-        file_paths = [
-            setting.FILE_PATH_OF_BOOKMARKS, 
-            setting.FILE_PATH_OF_OWN_EXAMPLES,
-            setting.FILE_PATH_OF_OWN_DEFINITIONS,
-            setting.FILE_PATH_OF_CSV,
-            setting.FILE_PATH_OF_VOCABULARIES_TO_SCRAPE]
+        file_paths = setting.FILES_TO_BE_DELETE
 
         for file_path in file_paths:
             if not helper.is_file(file_path):
