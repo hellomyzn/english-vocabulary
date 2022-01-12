@@ -48,26 +48,37 @@ class InputVocabularyBot(Bot):
 
 
     def check_files(self):
-        ''' '''
+        """
+        Check whether existing all the files you will use or no. if it doesn't exist, those files are going to be created.
+        Get own examples, difinitions, vocabularies which you want to scrape.
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
+
         file_paths = setting.FILES_TO_BE_CHECKED
 
-        # Check whether existing an example and a csv file or no. if it doesn't exist, those files are going to be created
+        # Check
         for file_path in file_paths:
             if not helper.is_file(file_path):
                 helper.create_file(file_path)
                 template = console.get_template('create_file.txt', self.speak_color)
                 print(template.substitute({
                     'file_path': file_path,
-                    'dir': setting.CONFIG['FILES']['DIR']
+                    'dir': setting.DIR
                 }))
 
+        # Show to update own files if you want
         template = console.get_template('confirm_to_update_files.txt', self.speak_color)
         input(template.substitute({'file_path': setting.FILE_PATH_OF_OWN_EXAMPLES}))
 
         template = console.get_template('confirm_to_update_files.txt', self.speak_color)
         input(template.substitute({'file_path': setting.FILE_PATH_OF_OWN_DEFINITIONS}))
 
-        # Create instance
+        # Get own examples, definitions, vacabularies to scrape from own files
         self.own_files = OwnFiles(setting.FILE_PATH_OF_OWN_EXAMPLES,
                                   setting.FILE_PATH_OF_OWN_DEFINITIONS,
                                   setting.FILE_PATH_OF_VOCABULARIES_TO_SCRAPE)
@@ -75,14 +86,21 @@ class InputVocabularyBot(Bot):
         return None
 
 
-    def ask_user_favorites(self):
-        ''' '''
-        # Ask you want to write vocabularies on Google Spreadsheet
+    def ask_output_format(self):
+        """
+        Ask where you want to write vocabularies
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
+
+        # Ask you want to write vocabularies on Google Spreadsheet unless you input y or n
         while True:
             template = console.get_template('ask_favorite.txt', self.speak_color)
-            is_yes = input(template.substitute({
-                'favorite': 'to write vocabularies on Google spreadsheet'
-                })) 
+            is_yes = input(template.substitute({'favorite': 'to write vocabularies on Google spreadsheet'})) 
                 
             if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
                 # Set up Google Spreadsheet
@@ -97,12 +115,10 @@ class InputVocabularyBot(Bot):
             elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
                 break
         
-        # Ask you want to write vocabularies on CSV
+        # Ask you want to write vocabularies on CSV unless you input y or n
         while True:
             template = console.get_template('ask_favorite.txt', self.speak_color)
-            is_yes = input(template.substitute({
-                'favorite': 'to write vocabularies on CSV'
-                })) 
+            is_yes = input(template.substitute({'favorite': 'to write vocabularies on CSV'})) 
 
             if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
                 self.is_csv = True
@@ -111,33 +127,40 @@ class InputVocabularyBot(Bot):
             elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
                 break
         
+        # You don't want to any vocabularies?
         if self.is_google_spreadsheet == False and self.is_csv == False:
             quit()
             
         return None
 
 
-    def get_urls(self):
-        ''' '''
-        # Create instance
+    def ask_how_you_get_urls(self):
+        """
+        Ask where you want to write vocabularies
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
+        # Create scraping instance
         self.scraping = Cambridge()
 
-        # Ask which do you prefer to retrieve vocabularies from
+        # Ask which do you prefer to retrieve vocabularies from unless you choose
         while True:
             template = console.get_template('ask_how_you_get_urls.txt', self.speak_color)
-            i = input(template.substitute({
-                'path': setting.FILE_PATH_OF_VOCABULARIES_TO_SCRAPE
-                })) 
+            choices = input(template.substitute({'path': setting.FILE_PATH_OF_VOCABULARIES_TO_SCRAPE})) 
 
             # If Bookmarks
-            if i == str(1):
+            if choices == str(1):
                 InputVocabularyBot.check_bookmarks(setting.FILE_PATH_OF_BOOKMARKS, self.speak_color)
                 bookmarks = Bookmarks(setting.FILE_PATH_OF_BOOKMARKS, setting.CONFIG['BOOKMARKS']['FOLDER_NAME'])
                 self.urls = bookmarks.get_urls_for_scraping()
                 break
             
-            # If own_example_.txt
-            elif i == str(2):
+            # If own file (vocabularies_to_scrape.txt)
+            elif choices == str(2):
                 template = console.get_template('confirm_to_update_files.txt', self.speak_color)
                 input(template.substitute({'file_path': setting.FILE_PATH_OF_VOCABULARIES_TO_SCRAPE}))
 

@@ -1,39 +1,58 @@
 class OwnFiles(object):
-    def __init__(
-        self, 
+    def __init__(self, 
         file_path_of_own_examples: str, 
         file_path_of_own_definitions: str,
         file_path_of_vocabularies_to_scrape: str):
 
-        examples = OwnFiles.get_list_separated_by_vocabulary(file_path_of_own_examples)
-        definitions = OwnFiles.get_list_separated_by_vocabulary(file_path_of_own_definitions)
+        # Get own vocabularies you write on own files
+        own_examples                = OwnFiles.get_list_separated_by_vocabulary(file_path_of_own_examples)
+        own_definitions             = OwnFiles.get_list_separated_by_vocabulary(file_path_of_own_definitions)
         self.vocabularies_to_scrape = OwnFiles.get_list_separated_by_vocabulary(file_path_of_vocabularies_to_scrape)
 
-        self.own_example_titles = OwnFiles.get_titles(examples)
-        self.own_example_sentences = OwnFiles.get_sentences(examples)
-        self.dict_of_own_examples = OwnFiles.get_dict_of_vocabularies(examples)
-
-        self.own_definition_titles = OwnFiles.get_titles(definitions)
-        self.own_definition_sentences = OwnFiles.get_sentences(definitions)
-        self.dict_of_own_definitions = OwnFiles.get_dict_of_vocabularies(definitions)
+        # Get own example of title, sentence and dict[title, sentence]
+        self.own_example_titles     = OwnFiles.get_own_titles(own_examples)
+        self.own_example_sentences  = OwnFiles.get_own_sentences(own_examples)
+        self.dict_of_own_examples   = OwnFiles.get_dict_of_vocabularies(own_examples)
+        
+        # Get own definition of title, sentence and dict[title, sentence]
+        self.own_definition_titles      = OwnFiles.get_own_titles(own_definitions)
+        self.own_definition_sentences   = OwnFiles.get_own_sentences(own_definitions)
+        self.dict_of_own_definitions    = OwnFiles.get_dict_of_vocabularies(own_definitions)
 
 
     @classmethod
     def get_list_separated_by_vocabulary(cls, path):
-        ''' '''
-        print('Retrieve examples')
+        """
+        Get own vocabularies list separated by vocabulary.
+
+        Args:
+            path: file path you want to get own vocabularies.
+
+        Returns:
+            own_vocabularies: list of own vocabularies separated by vocabulary.
+                              if there is no own vocabularies in the path, return None.
+        """
+        print(f'Retrieve data from {path}')
         with open(path, 'r') as f:            
             data = f.read()
-            examples = None
+            own_vocabularies = None
             if data:
-                examples = data.split("\n\n")
+                own_vocabularies = data.split("\n\n")
             
-        return examples
+        return own_vocabularies
 
 
     @classmethod
-    def get_titles(cls, vocabularies):
-        ''' '''
+    def get_own_titles(cls, vocabularies):
+        """
+        Get own vocabulary's title list.
+
+        Args:
+            vocabularies: own vocabularies separated by vocabulary from own file.
+
+        Returns:
+            own_titles: get only titles from vocabularies. if there is no own vocabularies in the path, return None.
+        """
         own_titles = None
         if vocabularies:
             own_titles = [vocabulary.split("\n")[0].lower() for vocabulary in vocabularies]            
@@ -41,25 +60,52 @@ class OwnFiles(object):
 
 
     @classmethod
-    def get_sentences(cls, vocabularies):
-        ''' '''
-        sentences = None
+    def get_own_sentences(cls, vocabularies):
+        """
+        Get own vocabulary's senteneces list.
+
+        Args:
+            vocabularies: own vocabularies separated by vocabulary from own file.
+
+        Returns:
+            own_titles: get only sentences from vocabularies. if there is no own vocabularies in the path, return None.
+        """
+        own_sentences = None
         if vocabularies:
-            sentences = [vocabulary.split("\n")[1] for vocabulary in vocabularies]            
-        return sentences
+            own_sentences = [vocabulary.split("\n")[1] for vocabulary in vocabularies]            
+        return own_sentences
 
 
     @classmethod
     def get_dict_of_vocabularies(cls, vocabularies):
-        ''' '''
-        dict_of_own_examples = None
+        """
+        Get own vocabularies dict separated by vocabulary
+
+        Args:
+            path: file path you want to get own vocabularies
+
+        Returns:
+            dict_of_own_vocabularies: dict of own vocabularies separated by vocabulary.
+                                      if there is no own vocabularies in the path, return None.
+        """
+        dict_of_own_vocabularies = None
         if vocabularies:
-            dict_of_own_examples = [{'title': vocabulary.split("\n")[0].lower(), 'sentences': vocabulary.split("\n")[1]} for vocabulary in vocabularies]
+            dict_of_own_vocabularies = [{'title': vocabulary.split("\n")[0].lower(), 'sentences': vocabulary.split("\n")[1]} for vocabulary in vocabularies]
             
-        return dict_of_own_examples
+        return dict_of_own_vocabularies
 
 
-    def get_urls_for_scraping(self, scraping_url):
+    def get_urls_for_scraping(self, scraping_url) -> list:
+        """
+        Get the list of the urls
+
+        Args:
+            scraping_url: the web site urls for scraping.
+
+        Returns:
+            urls: the list of urls for scraping from user's Google Chrome Bookmarks
+        """
+        print("[INFO] - Get urls from Google Chrome Bookmarks")
         urls = []
 
         for title in self.vocabularies_to_scrape:

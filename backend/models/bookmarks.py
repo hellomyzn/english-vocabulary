@@ -1,6 +1,5 @@
 import json
 
-from interfaces.url import Url
 from views import console
 
 
@@ -11,22 +10,29 @@ class Bookmarks(object):
 
 
     @classmethod
-    def get_chrome_bookmark_data(cls,path) -> dict:
+    def get_chrome_bookmark_json_data(cls,path) -> dict:
         '''Get the json of user's Chrome bookmark.'''
         with open(path) as f:
             return json.load(f)
 
 
     def get_urls_for_scraping(self):
-        print("Get urls")
-        '''Get the list of the urls '''
-        
+        """
+        Get the list of the urls
+
+        Args:
+            None
+
+        Returns:
+            urls: the list of urls for scraping from user's Google Chrome Bookmarks
+        """
+        print("[INFO] - Get urls from Google Chrome Bookmarks")
         urls = []
 
-        bookmark_data = Bookmarks.get_chrome_bookmark_data(self.bookmark_path)
-        bookmark_data = bookmark_data['roots']['bookmark_bar']
+        bookmark_json_data = Bookmarks.get_chrome_bookmark_json_data(self.bookmark_path)
+        bookmark_json_data = bookmark_json_data['roots']['bookmark_bar']
 
-        for data in bookmark_data['children']:
+        for data in bookmark_json_data['children']:
             if data['type'] == 'folder' and data['name'] == self.folder_name:
                 for d in data['children']:
                     urls.append(d['url'])
