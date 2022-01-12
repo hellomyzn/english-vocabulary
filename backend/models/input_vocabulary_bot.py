@@ -342,6 +342,7 @@ class InputVocabularyBot(Bot):
                 if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
                     helper.delete_file(file_path)
                     print(file_path, 'has been deleted')
+                    break
                 if is_yes.lower() == 'n' or is_yes.lower() == 'no':
                     break
 
