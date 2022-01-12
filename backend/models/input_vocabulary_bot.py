@@ -167,8 +167,8 @@ class InputVocabularyBot(Bot):
                 self.urls = self.own_files.get_urls_for_scraping(self.scraping.url_for_search)
                 break
 
+        # Show how many urls you got
         urls_num = len(self.urls)
-
         template = console.get_template('how_many_urls.txt', self.speak_color)
         print(template.substitute({'urls': urls_num}))
 
@@ -256,6 +256,16 @@ class InputVocabularyBot(Bot):
 
 
     def show_result(self):
+        """
+        Show the result of vocabularies as a summary like how many vocabularies were written.
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
+
         result_dict = { 
             'num_urls':              len(self.urls),
             'num_scraped':           len([vocabulary.title for vocabulary in self.result.vocabularies_scraped]),
@@ -283,6 +293,17 @@ class InputVocabularyBot(Bot):
     
 
     def write_result(self):
+        """
+        Write the result of vocabularies on each files you set up
+        like the written vocabularies will be written a certain file(vocabularies_written.txt) for log
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
+
         file_path_and_result_dict = [
             {'file_path': setting.FILE_PATH_OF_VOCABULARIES_SCRAPED         ,'result': self.result.vocabularies_scraped},
             {'file_path': setting.FILE_PATH_OF_VOCABULARIES_NOT_SCRAPED     ,'result': self.result.vocabularies_not_scraped},
@@ -298,18 +319,31 @@ class InputVocabularyBot(Bot):
 
 
     def ask_to_delete(self):
+        """
+        Ask whether those files are still necessary or not
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
+
         file_paths = setting.FILES_TO_BE_DELETE
 
         for file_path in file_paths:
             if not helper.is_file(file_path):
                 continue
 
-            template = console.get_template('ask_to_delete_file.txt', self.speak_color)
-            is_yes = input(template.substitute({'path': file_path}))
+            while True:
+                template = console.get_template('ask_to_delete_file.txt', self.speak_color)
+                is_yes = input(template.substitute({'path': file_path}))
 
-            if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
-                helper.delete_file(file_path)
-                print(file_path, 'has been deleted')
+                if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
+                    helper.delete_file(file_path)
+                    print(file_path, 'has been deleted')
+                if is_yes.lower() == 'n' or is_yes.lower() == 'no':
+                    break
 
 
     def ending(self):
