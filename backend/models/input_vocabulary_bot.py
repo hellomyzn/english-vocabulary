@@ -334,7 +334,7 @@ class InputVocabularyBot(Bot):
                 template = console.get_template('ask_to_delete_file.txt', self.speak_color)
                 user_input = input(template.substitute({'path': file_path}))
 
-                if helper.is_yes(user_input
+                if helper.is_yes(user_input):
                     helper.delete_file(file_path)
                     print(file_path, 'has been deleted')
                     break

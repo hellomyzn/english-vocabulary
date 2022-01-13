@@ -18,6 +18,6 @@ def is_yes(user_input):
     return False
 
 def is_no(user_input):
-    user_input.lower() == 'n' or user_input.lower() == 'no':
+    if user_input.lower() == 'n' or user_input.lower() == 'no':
         return True
     return False
