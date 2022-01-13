@@ -5,7 +5,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 from interfaces.table import Table
 from models import vocabulary
-
+import setting
 
 class GoogleSpreadSheet(Table):
     """
@@ -13,23 +13,22 @@ class GoogleSpreadSheet(Table):
         - https://qiita.com/164kondo/items/eec4d1d8fd7648217935
         - https://www.cdatablog.jp/entry/2019/04/16/191006
     """
-    def __init__(self,
-                json_dir: str,
-                json_file: str,
-                key: str, 
-                sheet_name: str):
+    def __init__(self):
         self.columns = GoogleSpreadSheet.get_columns()
-        self.json_path = json_dir + json_file
-        self.worksheet = GoogleSpreadSheet.connect(self.json_path, key, sheet_name)
+        self.worksheet = GoogleSpreadSheet.connect()
         self.current_vocabularies = self.worksheet.col_values(1)
         self.next_row = GoogleSpreadSheet.next_available_row(self.worksheet)
         self.sleep_time = 0.7
        
 
     @classmethod
-    def connect(cls,json_path, key, sheet_name):
-        print("Start connecting GSS...")
+    def connect(cls):
+        print("[INFO] - Start connecting GSS...")
+        json_path = setting.CONFIG['GOOGLE_API']['JSONF_DIR'] + setting.CONFIG['GOOGLE_API']['JSON_FILE']
         scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+        key = setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_KEY']
+        sheet_name =  setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_NAME_FOR_PRO']
+
         credentials = ServiceAccountCredentials.from_json_keyfile_name(json_path, scope)
         gc = gspread.authorize(credentials)
         workbook = gc.open_by_key(key)

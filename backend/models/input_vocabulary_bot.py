@@ -105,16 +105,13 @@ class InputVocabularyBot(Bot):
             if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
                 # Set up Google Spreadsheet
                 self.is_google_spreadsheet = True
-                self.google_spreadsheet = GoogleSpreadSheet(
-                            setting.CONFIG['GOOGLE_API']['JSONF_DIR'], 
-                            setting.CONFIG['GOOGLE_API']['JSON_FILE'], 
-                            setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_KEY'], 
-                            setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_NAME'])
+                self.google_spreadsheet = GoogleSpreadSheet()
                 
                 break
             elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
                 break
         
+        # メソッド化する
         # Ask you want to write vocabularies on CSV unless you input y or n
         while True:
             template = console.get_template('ask_favorite.txt', self.speak_color)
