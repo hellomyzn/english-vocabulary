@@ -20,4 +20,5 @@ RUN python -m pip install \
     bs4 \
     gspread \
     oauth2client \
-    termcolor
+    termcolor \
+    pytest
