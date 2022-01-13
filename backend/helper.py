@@ -11,3 +11,13 @@ def create_file(path: str):
 
 def delete_file(path: str):
     os.remove(path)
+
+def is_yes(user_input):
+    if user_input.lower() == 'y' or user_input.lower() == 'yes':
+        return True
+    return False
+
+def is_no(user_input):
+    user_input.lower() == 'n' or user_input.lower() == 'no':
+        return True
+    return False

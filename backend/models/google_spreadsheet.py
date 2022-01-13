@@ -18,7 +18,7 @@ class GoogleSpreadSheet(Table):
         self.worksheet = GoogleSpreadSheet.connect()
         self.current_vocabularies = self.worksheet.col_values(1)
         self.next_row = GoogleSpreadSheet.next_available_row(self.worksheet)
-        self.sleep_time = 0.7
+        self.sleep_time_sec = 0.7
        
 
     @classmethod
@@ -73,7 +73,7 @@ class GoogleSpreadSheet(Table):
             try:
                 self.worksheet.update_cell(self.next_row, i, getattr(vocabulary, column))
                 print(f"[WRITING]: {column}:", getattr(vocabulary, column))
-                time.sleep(self.sleep_time)
+                time.sleep(self.sleep_time_sec)
             except gspread.exceptions.APIError:
                 print("Oops! You exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:856605576640'\nTry it again later on!")
                 break

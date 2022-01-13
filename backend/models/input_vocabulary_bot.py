@@ -100,28 +100,26 @@ class InputVocabularyBot(Bot):
         # Ask you want to write vocabularies on Google Spreadsheet unless you input y or n
         while True:
             template = console.get_template('ask_favorite.txt', self.speak_color)
-            is_yes = input(template.substitute({'favorite': 'to write vocabularies on Google spreadsheet'})) 
+            user_input = input(template.substitute({'favorite': 'to write vocabularies on Google spreadsheet'})) 
                 
-            if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
+            if helper.is_yes(user_input):
                 # Set up Google Spreadsheet
                 self.is_google_spreadsheet = True
                 self.google_spreadsheet = GoogleSpreadSheet()
-                
                 break
-            elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
+            elif helper.is_no(user_input):
                 break
         
-        # メソッド化する
         # Ask you want to write vocabularies on CSV unless you input y or n
         while True:
             template = console.get_template('ask_favorite.txt', self.speak_color)
-            is_yes = input(template.substitute({'favorite': 'to write vocabularies on CSV'})) 
+            user_input = input(template.substitute({'favorite': 'to write vocabularies on CSV'})) 
 
-            if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
+            if helper.is_yes(user_input):
                 self.is_csv = True
                 self.csv = CSV()
                 break
-            elif is_yes.lower() == 'n' or is_yes.lower() == 'no':
+            elif helper.is_no(user_input):
                 break
         
         # You don't want to any vocabularies?
@@ -334,13 +332,13 @@ class InputVocabularyBot(Bot):
 
             while True:
                 template = console.get_template('ask_to_delete_file.txt', self.speak_color)
-                is_yes = input(template.substitute({'path': file_path}))
+                user_input = input(template.substitute({'path': file_path}))
 
-                if is_yes.lower() == 'y' or is_yes.lower() == 'yes':
+                if helper.is_yes(user_input
                     helper.delete_file(file_path)
                     print(file_path, 'has been deleted')
                     break
-                if is_yes.lower() == 'n' or is_yes.lower() == 'no':
+                elif helper.is_no(user_input):
                     break
 
 
