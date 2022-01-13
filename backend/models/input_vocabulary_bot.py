@@ -145,17 +145,17 @@ class InputVocabularyBot(Bot):
         # Ask which do you prefer to retrieve vocabularies from unless you choose
         while True:
             template = console.get_template('ask_how_you_get_urls.txt', self.speak_color)
-            choices = input(template.substitute({'path': setting.FILE_PATH_OF_VOCABULARIES_TO_SCRAPE})) 
+            choice = input(template.substitute({'path': setting.FILE_PATH_OF_VOCABULARIES_TO_SCRAPE})) 
 
             # If Bookmarks
-            if choices == str(1):
+            if choice == str(1):
                 InputVocabularyBot.check_bookmarks_exists(setting.FILE_PATH_OF_BOOKMARKS, self.speak_color)
                 bookmarks = Bookmarks(setting.FILE_PATH_OF_BOOKMARKS, setting.CONFIG['BOOKMARKS']['FOLDER_NAME'])
                 self.urls = bookmarks.get_urls_for_scraping()
                 break
             
             # If own file (vocabularies_to_scrape.txt)
-            elif choices == str(2):
+            elif choice == str(2):
                 template = console.get_template('confirm_to_update_files.txt', self.speak_color)
                 input(template.substitute({'file_path': setting.FILE_PATH_OF_VOCABULARIES_TO_SCRAPE}))
 
