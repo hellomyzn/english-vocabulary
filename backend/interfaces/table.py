@@ -26,5 +26,7 @@ class Table(metaclass=abc.ABCMeta):
             'definition', 
             'example_sentence', 
             'timestamp', 
-            'check']
+            'check',
+            'memorized',
+            'pronunciation']
         return columns
