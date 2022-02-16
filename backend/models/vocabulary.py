@@ -9,7 +9,6 @@ class Vocabulary(object):
         self.definition = None        
         self.example_sentence = None
         self.timestamp = Vocabulary.get_date()
-        self.check = False
         self.memorized = False
         self.pronunciation = False
         

@@ -27,7 +27,7 @@ class GoogleSpreadSheet(Table):
         json_path = setting.CONFIG['GOOGLE_API']['JSONF_DIR'] + setting.CONFIG['GOOGLE_API']['JSON_FILE']
         scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
         key = setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_KEY']
-        sheet_name =  setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_NAME_FOR_DEV']
+        sheet_name =  setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_NAME_FOR_PRO']
 
         credentials = ServiceAccountCredentials.from_json_keyfile_name(json_path, scope)
         gc = gspread.authorize(credentials)
