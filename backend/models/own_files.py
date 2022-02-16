@@ -55,7 +55,7 @@ class OwnFiles(object):
         """
         own_titles = None
         if vocabularies:
-            own_titles = [vocabulary.split("\n")[0].lower() for vocabulary in vocabularies]            
+            own_titles = [vocabulary.split("\n")[0].lower().rstrip() for vocabulary in vocabularies]            
         return own_titles
 
 
