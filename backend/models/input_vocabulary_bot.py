@@ -188,7 +188,6 @@ class InputVocabularyBot(Bot):
             - Vocabulary: existed
             - Own Example: not added
         '''
-
         # Create Instance
         self.result = Result()
 
@@ -204,30 +203,40 @@ class InputVocabularyBot(Bot):
                 # Add result of vocabularies not scraped. and then proceed next url afterwards
                 self.result.vocabularies_not_scraped.append(self.vocabulary)
                 continue
-
-            # Get own examples if it is matched by title (CASE2)
-            if self.vocabulary.title in self.own_files.own_example_titles:
-                # Get index number of the own examples list
-                index_number = int(self.own_files.own_example_titles.index(str(self.vocabulary.title)))
-                # Overwrite own example sentence 
-                self.vocabulary.example_sentence = self.own_files.own_example_sentences[index_number]
-                # Add result
-                self.result.examples_written.append(self.vocabulary)
-            else:
+            
+            # There is own example file or not?
+            if not self.own_files.own_example_titles:
                 # Add result
                 self.result.examples_not_written.append(self.vocabulary)
-
-            # Get own definitions if it is matched by title (CASE3)
-            if self.vocabulary.title in self.own_files.own_definition_titles:
-                # Get index number of the own difinitions list
-                index_number = int(self.own_files.own_definition_titles.index(str(self.vocabulary.title)))
-                # Overwrite own difinition
-                self.vocabulary.definition = self.own_files.own_definition_sentences[index_number]
-                # Add result
-                self.result.difinitions_written.append(self.vocabulary)
             else:
+                # Get own examples if it is matched by title (CASE2)
+                if self.vocabulary.title in self.own_files.own_example_titles:
+                    # Get index number of the own examples list
+                    index_number = int(self.own_files.own_example_titles.index(str(self.vocabulary.title)))
+                    # Overwrite own example sentence 
+                    self.vocabulary.example_sentence = self.own_files.own_example_sentences[index_number]
+                    # Add result
+                    self.result.examples_written.append(self.vocabulary)
+                else:
+                    # Add result
+                    self.result.examples_not_written.append(self.vocabulary)
+
+            # There is own difinition file or not?
+            if not self.own_files.own_definition_titles:
                 # Add result
                 self.result.difinitions_not_written.append(self.vocabulary)
+            else:                
+                # Get own definitions if it is matched by title (CASE3)
+                if self.own_files.own_definition_titles and self.vocabulary.title in self.own_files.own_definition_titles:
+                    # Get index number of the own difinitions list
+                    index_number = int(self.own_files.own_definition_titles.index(str(self.vocabulary.title)))
+                    # Overwrite own difinition
+                    self.vocabulary.definition = self.own_files.own_definition_sentences[index_number]
+                    # Add result
+                    self.result.difinitions_written.append(self.vocabulary)
+                else:
+                    # Add result
+                    self.result.difinitions_not_written.append(self.vocabulary)
 
             # Logic of writing on Goolge Spreadsheet
             if self.is_google_spreadsheet == True:
