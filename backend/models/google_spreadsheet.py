@@ -82,3 +82,11 @@ class GoogleSpreadSheet(Table):
                 break
 
         self.next_row += 1
+
+
+    def update_memorized(self, vocabulary) -> None:
+        # Update memorized col
+        cell = self.worksheet.find(vocabulary.title)
+        self.worksheet.update_cell(cell.row, 8, False)
+        time.sleep(self.sleep_time_sec)
+        return None

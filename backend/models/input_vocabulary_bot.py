@@ -227,7 +227,7 @@ class InputVocabularyBot(Bot):
                 self.result.difinitions_not_written.append(self.vocabulary)
             else:                
                 # Get own definitions if it is matched by title (CASE3)
-                if self.own_files.own_definition_titles and self.vocabulary.title in self.own_files.own_definition_titles:
+                if self.vocabulary.title in self.own_files.own_definition_titles:
                     # Get index number of the own difinitions list
                     index_number = int(self.own_files.own_definition_titles.index(str(self.vocabulary.title)))
                     # Overwrite own difinition
@@ -245,6 +245,7 @@ class InputVocabularyBot(Bot):
                 if self.vocabulary.title in self.google_spreadsheet.current_vocabularies:
                     # Add result of vocabularies not written. and then proceed next url afterwards
                     self.result.vocabularies_existed.append(self.vocabulary)
+                    self.google_spreadsheet.update_memorized(self.vocabulary)
                     continue
 
                 # Write vocabulary on Google Spreadsheet    
