@@ -174,8 +174,16 @@ class InputVocabularyBot(Bot):
             
             # If own file (vocabularies_to_scrape.txt)
             elif choice == str(2):
-                template = console.get_template('confirm_to_update_files.txt', self.speak_color)
-                input(template.substitute({'file_path': setting.FILE_PATH_OF_VOCABULARIES_TO_SCRAPE}))
+                while True:
+                    template = console.get_template('ask_to_update_own_files.txt', self.speak_color)
+                    user_input = input(template.substitute({'file_path': setting.FILE_PATH_OF_VOCABULARIES_TO_SCRAPE}))
+                    
+                    if helper.is_yes(user_input):
+                        subprocess.run(('vi', str(setting.FILE_PATH_OF_VOCABULARIES_TO_SCRAPE)))
+                        break
+                    elif helper.is_no(user_input):
+                        break
+
 
                 self.urls = self.own_files.get_urls_for_scraping(self.scraping.url_for_search)
                 break
