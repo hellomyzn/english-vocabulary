@@ -88,5 +88,6 @@ class GoogleSpreadSheet(Table):
         # Update memorized col
         cell = self.worksheet.find(vocabulary.title)
         self.worksheet.update_cell(cell.row, 8, False)
+        self.worksheet.update_cell(cell.row, 9, False)
         time.sleep(self.sleep_time_sec)
         return None
