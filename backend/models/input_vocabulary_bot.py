@@ -1,3 +1,6 @@
+import subprocess
+import setting
+
 from interfaces.bot import Bot
 from models.cambridge import Cambridge
 from models.bookmarks import Bookmarks
@@ -6,8 +9,8 @@ from models.google_spreadsheet import GoogleSpreadSheet
 from models.own_files import OwnFiles
 from models.csv import CSV
 from views import console
+
 import helper
-import setting
 
 
 
@@ -71,12 +74,27 @@ class InputVocabularyBot(Bot):
                     'dir': setting.DIR
                 }))
 
-        # Show to update own files if you want
-        template = console.get_template('confirm_to_update_files.txt', self.speak_color)
-        input(template.substitute({'file_path': setting.FILE_PATH_OF_OWN_EXAMPLES}))
+        # Show to update own example files if you want
+        while True:
+            template = console.get_template('confirm_to_update_files.txt', self.speak_color)
+            user_input = input(template.substitute({'file_path': setting.FILE_PATH_OF_OWN_EXAMPLES}))
 
-        template = console.get_template('confirm_to_update_files.txt', self.speak_color)
-        input(template.substitute({'file_path': setting.FILE_PATH_OF_OWN_DEFINITIONS}))
+            if helper.is_yes(user_input):
+                subprocess.run(('vi', str(setting.FILE_PATH_OF_OWN_EXAMPLES)))
+                break
+            elif helper.is_no(user_input):
+                break
+
+        # Show to update own definition files if you want
+        while True:
+            template = console.get_template('confirm_to_update_files.txt', self.speak_color)
+            user_input = input(template.substitute({'file_path': setting.FILE_PATH_OF_OWN_DEFINITIONS}))
+
+            if helper.is_yes(user_input):
+                subprocess.run(('vi', str(setting.FILE_PATH_OF_OWN_DEFINITIONS)))
+                break
+            elif helper.is_no(user_input):
+                break
 
         # Get own examples, definitions, vacabularies to scrape from own files
         self.own_files = OwnFiles(setting.FILE_PATH_OF_OWN_EXAMPLES,

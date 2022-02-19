@@ -1,0 +1,68 @@
+# この viminfo ファイルは Vim 8.2 によって生成されました.
+# 変更する際には十分注意してください!
+
+# Viminfo version
+|1,4
+
+# このファイルが書かれた時の 'encoding' の値
+*encoding=utf-8
+
+
+# hlsearch on (H) or off (h):
+~h
+# コマンドライン 項目の履歴 (新しいものから古いものへ):
+:wq
+|2,0,1645263247,,"wq"
+
+# 検索文字列 項目の履歴 (新しいものから古いものへ):
+
+# 式 項目の履歴 (新しいものから古いものへ):
+
+# 入力行 項目の履歴 (新しいものから古いものへ):
+
+# デバッグ行 項目の履歴 (新しいものから古いものへ):
+
+# レジスタ:
+
+# ファイルマーク:
+'0  1  18  ~/src/own_definition.txt
+|4,48,1,18,1645263247,"~/src/own_definition.txt"
+'1  6  3  ~/src/own_examples.txt
+|4,49,6,3,1645263235,"~/src/own_examples.txt"
+'2  1  3  ~/src/own_examples.txt
+|4,50,1,3,1645262942,"~/src/own_examples.txt"
+'3  1  3  ~/src/own_examples.txt
+|4,51,1,3,1645262942,"~/src/own_examples.txt"
+
+# ジャンプリスト (新しいものが先):
+-'  1  18  ~/src/own_definition.txt
+|4,39,1,18,1645263247,"~/src/own_definition.txt"
+-'  6  3  ~/src/own_examples.txt
+|4,39,6,3,1645263235,"~/src/own_examples.txt"
+-'  6  3  ~/src/own_examples.txt
+|4,39,6,3,1645263235,"~/src/own_examples.txt"
+-'  1  3  ~/src/own_examples.txt
+|4,39,1,3,1645263223,"~/src/own_examples.txt"
+-'  1  3  ~/src/own_examples.txt
+|4,39,1,3,1645263223,"~/src/own_examples.txt"
+-'  1  3  ~/src/own_examples.txt
+|4,39,1,3,1645262942,"~/src/own_examples.txt"
+-'  1  3  ~/src/own_examples.txt
+|4,39,1,3,1645262942,"~/src/own_examples.txt"
+
+# ファイル内マークの履歴 (新しいものから古いもの):
+
+> ~/src/own_definition.txt
+	*	1645263246	0
+	"	1	18
+	^	1	19
+	.	1	19
+	+	1	19
+
+> ~/src/own_examples.txt
+	*	1645263234	0
+	"	6	3
+	^	6	4
+	.	6	4
+	+	1	3
+	+	6	4
