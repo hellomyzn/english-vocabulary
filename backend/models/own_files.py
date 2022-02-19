@@ -105,10 +105,14 @@ class OwnFiles(object):
         Returns:
             urls: the list of urls for scraping from user's Google Chrome Bookmarks
         """
-        print("[INFO] - Get urls from Google Chrome Bookmarks")
+        print("[INFO] - Get urls from vocabularies_to_scrape file")
         urls = []
 
-        for title in self.vocabularies_to_scrape:
-            url = scraping_url + title
-            urls.append(url)
-        return urls
+        if self.vocabularies_to_scrape:
+            for title in self.vocabularies_to_scrape:
+                url = scraping_url + title
+                urls.append(url)
+            return urls
+        else:
+            print("[WRITING] - There is no vocabulary on 'vocabularies_to_scrape file'")
+            quit()
