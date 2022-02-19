@@ -10,7 +10,7 @@ def talk_about_input_vocabulary():
     # Start input vocabulary
     input_bot = InputVocabularyBot()
     input_bot.hello()
-    input_bot.check_files_exist()
+    input_bot.ask_own_files()
     input_bot.ask_output_format()
     input_bot.ask_how_you_get_urls()
     input_bot.write_vocabularies()

@@ -1,2 +1,0 @@
-■ Please update $file_path if you want to add some own something
-If you finish, Press enter.

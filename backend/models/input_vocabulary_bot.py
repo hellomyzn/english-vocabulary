@@ -50,7 +50,7 @@ class InputVocabularyBot(Bot):
                     quit()
 
 
-    def check_files_exist(self):
+    def ask_own_files(self):
         """
         Check whether existing all the files you will use or no. if it doesn't exist, those files are going to be created.
         Get own examples, difinitions, vocabularies which you want to scrape.
@@ -74,9 +74,9 @@ class InputVocabularyBot(Bot):
                     'dir': setting.DIR
                 }))
 
-        # Show to update own example files if you want
+        # Ask to update own example files if you want
         while True:
-            template = console.get_template('confirm_to_update_files.txt', self.speak_color)
+            template = console.get_template('ask_to_update_own_files.txt', self.speak_color)
             user_input = input(template.substitute({'file_path': setting.FILE_PATH_OF_OWN_EXAMPLES}))
 
             if helper.is_yes(user_input):
@@ -85,9 +85,9 @@ class InputVocabularyBot(Bot):
             elif helper.is_no(user_input):
                 break
 
-        # Show to update own definition files if you want
+        # Ask to update own definition files if you want
         while True:
-            template = console.get_template('confirm_to_update_files.txt', self.speak_color)
+            template = console.get_template('ask_to_update_own_files.txt', self.speak_color)
             user_input = input(template.substitute({'file_path': setting.FILE_PATH_OF_OWN_DEFINITIONS}))
 
             if helper.is_yes(user_input):
