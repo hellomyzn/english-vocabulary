@@ -12,3 +12,4 @@ backend/config.ini
 .cache/pip
 .env
 .DS_Store
+*viminfo

@@ -98,8 +98,7 @@ class InputVocabularyBot(Bot):
 
         # Get own examples, definitions, vacabularies to scrape from own files
         self.own_files = OwnFiles(setting.FILE_PATH_OF_OWN_EXAMPLES,
-                                  setting.FILE_PATH_OF_OWN_DEFINITIONS,
-                                  setting.FILE_PATH_OF_VOCABULARIES_TO_SCRAPE)
+                                  setting.FILE_PATH_OF_OWN_DEFINITIONS)
 
         return None
 
@@ -184,8 +183,10 @@ class InputVocabularyBot(Bot):
                     elif helper.is_no(user_input):
                         break
 
-
-                self.urls = self.own_files.get_urls_for_scraping(self.scraping.url_for_search)
+                self
+                self.urls = self.own_files.get_urls_for_scraping(
+                        setting.FILE_PATH_OF_VOCABULARIES_TO_SCRAPE,
+                        self.scraping.url_for_search)
                 break
 
         # Show how many urls you got
