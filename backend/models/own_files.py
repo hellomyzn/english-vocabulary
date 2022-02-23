@@ -4,9 +4,8 @@ class OwnFiles(object):
         file_path_of_own_definitions: str):
 
         # Get own vocabularies you write on own files
-        own_examples                = OwnFiles.get_list_separated_by_vocabulary(file_path_of_own_examples)
-        own_definitions             = OwnFiles.get_list_separated_by_vocabulary(file_path_of_own_definitions)
-        # self.vocabularies_to_scrape = OwnFiles.get_list_separated_by_vocabulary(file_path_of_vocabularies_to_scrape)
+        own_examples                = OwnFiles.get_list_separated_by_vocabulary(file_path_of_own_examples, "\n\n")
+        own_definitions             = OwnFiles.get_list_separated_by_vocabulary(file_path_of_own_definitions, "\n\n")
 
         # Get own example of title, sentence and dict[title, sentence]
         self.own_example_titles     = OwnFiles.get_own_titles(own_examples)
@@ -20,7 +19,7 @@ class OwnFiles(object):
 
 
     @classmethod
-    def get_list_separated_by_vocabulary(cls, path):
+    def get_list_separated_by_vocabulary(cls, path, separator):
         """
         Get own vocabularies list separated by vocabulary.
 
@@ -36,7 +35,7 @@ class OwnFiles(object):
             data = f.read()
             own_vocabularies = None
             if data:
-                own_vocabularies = data.split("\n\n")
+                own_vocabularies = data.split(separator)
             
         return own_vocabularies
 
@@ -106,7 +105,7 @@ class OwnFiles(object):
         """
         print("[INFO] - Get urls from vocabularies_to_scrape file")
         urls = []
-        vocabularies_to_scrape = OwnFiles.get_list_separated_by_vocabulary(file_path_of_vocabularies_to_scrape)
+        vocabularies_to_scrape = OwnFiles.get_list_separated_by_vocabulary(file_path_of_vocabularies_to_scrape, "\n")
         if vocabularies_to_scrape:
             for title in vocabularies_to_scrape:
                 url = scraping_url + title
