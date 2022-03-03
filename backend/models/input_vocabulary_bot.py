@@ -1,5 +1,6 @@
 import subprocess
 import setting
+import argparse
 
 from interfaces.bot import Bot
 from models.cambridge import Cambridge
@@ -26,6 +27,7 @@ class InputVocabularyBot(Bot):
         self.own_files = None
         self.result = None
         self.urls = []
+        self.env = None
 
     @classmethod
     def check_bookmarks_exists(cls, bookmarks_file_path, speak_color):
@@ -48,6 +50,13 @@ class InputVocabularyBot(Bot):
                     break
                 if is_quit == 'quit':
                     quit()
+
+
+    def set_env_from_args(self):
+        parser = argparse.ArgumentParser()
+        parser.add_argument("--env", help='optional')
+        args = parser.parse_args()
+        self.env = args.env
 
 
     def ask_own_files(self):
@@ -122,7 +131,7 @@ class InputVocabularyBot(Bot):
             if helper.is_yes(user_input):
                 # Set up Google Spreadsheet
                 self.is_google_spreadsheet = True
-                self.google_spreadsheet = GoogleSpreadSheet()
+                self.google_spreadsheet = GoogleSpreadSheet(self.env)
                 break
             elif helper.is_no(user_input):
                 break

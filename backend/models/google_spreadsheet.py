@@ -13,23 +13,25 @@ class GoogleSpreadSheet(Table):
         - https://qiita.com/164kondo/items/eec4d1d8fd7648217935
         - https://www.cdatablog.jp/entry/2019/04/16/191006
     """
-    def __init__(self):
+    def __init__(self, env):
         self.columns = GoogleSpreadSheet.get_columns()
-        self.worksheet = GoogleSpreadSheet.connect()
+        self.worksheet = GoogleSpreadSheet.connect(env)
         self.current_vocabularies = self.worksheet.col_values(1)
         self.next_row = GoogleSpreadSheet.next_available_row(self.worksheet)
         self.sleep_time_sec = 0.7
-       
 
     @classmethod
-    def connect(cls):
+    def connect(cls, env):
         print("[INFO] - Start connecting GSS...")
         json_path = setting.CONFIG['GOOGLE_API']['JSONF_DIR'] + setting.CONFIG['GOOGLE_API']['JSON_FILE']
         scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
         key = setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_KEY']
-        if setting.CONFIG['APP']['ENV'] == 'DEV':
+
+        if env == 'dev':
             sheet_name = setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_NAME_FOR_DEV']
-        elif setting.CONFIG['APP']['ENV'] == 'PRO':
+        elif env == 'pro':
+            sheet_name = setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_NAME_FOR_PRO']
+        else:
             sheet_name = setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_NAME_FOR_PRO']
 
         credentials = ServiceAccountCredentials.from_json_keyfile_name(json_path, scope)
