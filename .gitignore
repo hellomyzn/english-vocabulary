@@ -8,6 +8,7 @@ backend/.DS_Store
 backend/.cache/*
 backend/src/*.json
 backend/config.ini
+backend/.vimrc
 *.pyc
 .cache/pip
 .env
