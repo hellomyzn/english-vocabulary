@@ -231,7 +231,7 @@ class InputVocabularyBot(Bot):
 
         for url in self.urls:
             # Get vocabulary from URL through scraping
-            self.vocabulary = self.scraping.get_vocabulary(url)
+            self.vocabulary = self.scraping.scrape(url)
 
             # Check whether you could get vocabulary through scraping or no (CASE1)
             if self.vocabulary.definition:
