@@ -29,6 +29,7 @@ class InputVocabularyBot(Bot):
         self.result = None
         self.urls = []
         self.env = None
+        self.src = None
 
     @classmethod
     def check_bookmarks_exists(cls, bookmarks_file_path, speak_color):
@@ -56,9 +57,11 @@ class InputVocabularyBot(Bot):
     def set_env_from_args(self):
         parser = argparse.ArgumentParser()
         parser.add_argument("--env", help='optional')
+        parser.add_argument("--src", help='optional')
         args = parser.parse_args()
+        
         self.env = args.env
-
+        self.src = args.src
 
     def ask_own_files(self):
         """
@@ -166,9 +169,14 @@ class InputVocabularyBot(Bot):
         Returns:
             None
         """
+
         # Create scraping instance
-        # self.scraping = Cambridge()
-        self.scraping = Weblio()
+        if self.src == 'weblio':
+            self.scraping = Weblio()    
+        elif self.src == 'cambridge':
+            self.scraping = Cambridge()
+        else:
+            self.scraping = Cambridge()
 
         # Ask which do you prefer to retrieve vocabularies from unless you choose
         while True:

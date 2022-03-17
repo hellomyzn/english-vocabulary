@@ -24,6 +24,7 @@ class Weblio(scraping.Scraping):
         vocabulary.us_pronunciation = soup.select(self.us_pronunciation,        )[0].text if soup.select(self.us_pronunciation, limit=1) else ''
         vocabulary.uk_pronunciation = soup.select(self.uk_pronunciation,        )[1].text if soup.select(self.uk_pronunciation, limit=1) else ''
         vocabulary.definition       = soup.select(self.definition,       limit=1)[0].text if soup.select(self.definition, limit=1) else ''
+        vocabulary.definition       = soup.select(self.definition,       limit=1)[0].text if soup.select(self.definition, limit=1) else ''
         vocabulary.example_sentence = soup.select(self.example,          limit=1)[0].text if soup.select(self.example, limit=1) else ''
 
         # Remove unnecessary blank
