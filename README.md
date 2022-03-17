@@ -4,7 +4,6 @@ You can write up to 63 vocabularies for 5 mins so far
 
 
 ## Requirements
-- [ ] Mac OS
 - [ ] Google Chrome
 - [ ] Google Cloud Platform
 - [ ] Google Spreadsheet
@@ -17,8 +16,8 @@ You can write up to 63 vocabularies for 5 mins so far
 
 ```
 $ git clone git@github.com:hellomyzn/generate-vocabulary-list.git
-$ cd generate-vocabulary-list
-$ docker-compose up -d --build
+$ cd english_vocabulary_app
+$ make up or $docker-compose up -d --build
 ```
 
 2. Google Cloud Platform
