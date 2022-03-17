@@ -4,6 +4,7 @@ import argparse
 
 from interfaces.bot import Bot
 from models.cambridge import Cambridge
+from models.weblio import Weblio
 from models.bookmarks import Bookmarks
 from models.result import Result
 from models.google_spreadsheet import GoogleSpreadSheet
@@ -166,7 +167,8 @@ class InputVocabularyBot(Bot):
             None
         """
         # Create scraping instance
-        self.scraping = Cambridge()
+        # self.scraping = Cambridge()
+        self.scraping = Weblio()
 
         # Ask which do you prefer to retrieve vocabularies from unless you choose
         while True:
