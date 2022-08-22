@@ -15,19 +15,8 @@ class GoogleSpreadSheet(Table):
     """
     def __init__(self, env):
         self.columns = GoogleSpreadSheet.get_columns()
-        self.worksheet = GoogleSpreadSheet.connect(env)
-        self.current_vocabularies = self.worksheet.col_values(1)
-        self.examples = self.worksheet.col_values(6)
-        self.next_row = GoogleSpreadSheet.next_available_row(self.worksheet)
-        self.sleep_time_sec = 0.7
-
-    @classmethod
-    def connect(cls, env):
-        print("[INFO] - Start connecting GSS...")
-        json_path = setting.CONFIG['GOOGLE_API']['JSONF_DIR'] + setting.CONFIG['GOOGLE_API']['JSON_FILE']
-        scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
-        key = setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_KEY']
-
+        self.workbook = GoogleSpreadSheet.get_workbook()
+        
         if env == 'dev':
             sheet_name = setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_NAME_FOR_DEV']
         elif env == 'pro':
@@ -35,11 +24,29 @@ class GoogleSpreadSheet(Table):
         else:
             sheet_name = setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_NAME_FOR_PRO']
 
+        self.worksheet = GoogleSpreadSheet.get_worksheet(self.workbook, sheet_name)
+        self.unique_worksheet = GoogleSpreadSheet.get_worksheet(self.workbook, "Unique Input")
+        self.current_vocabularies = self.worksheet.col_values(1)
+        self.examples = self.worksheet.col_values(6)
+        self.next_row = GoogleSpreadSheet.next_available_row(self.worksheet)
+        self.sleep_time_sec = 0.7
+
+    @classmethod
+    def get_workbook(cls):
+        print("[INFO] - Start connecting GSS...")
+        json_path = setting.CONFIG['GOOGLE_API']['JSONF_DIR'] + setting.CONFIG['GOOGLE_API']['JSON_FILE']
+        scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+        key = setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_KEY']        
+
         credentials = ServiceAccountCredentials.from_json_keyfile_name(json_path, scope)
         gc = gspread.authorize(credentials)
         workbook = gc.open_by_key(key)
+
+        return workbook
+
+    @classmethod
+    def get_worksheet(cls, workbook, sheet_name):
         worksheet = workbook.worksheet(sheet_name)
-        
         return worksheet
     
 
@@ -89,9 +96,9 @@ class GoogleSpreadSheet(Table):
 
     def update_memorized(self, vocabulary) -> None:
         # Update memorized col
-        cell = self.worksheet.find(vocabulary.title)
-        self.worksheet.update_cell(cell.row, 8, False)
-        self.worksheet.update_cell(cell.row, 9, False)
+        cell = self.unique_worksheet.find(vocabulary.title)
+        self.unique_worksheet.update_cell(cell.row, 4, False)
+        self.unique_worksheet.update_cell(cell.row, 5, False)
         time.sleep(self.sleep_time_sec)
         return None
 
