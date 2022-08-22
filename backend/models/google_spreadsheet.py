@@ -17,6 +17,7 @@ class GoogleSpreadSheet(Table):
         self.columns = GoogleSpreadSheet.get_columns()
         self.worksheet = GoogleSpreadSheet.connect(env)
         self.current_vocabularies = self.worksheet.col_values(1)
+        self.examples = self.worksheet.col_values(6)
         self.next_row = GoogleSpreadSheet.next_available_row(self.worksheet)
         self.sleep_time_sec = 0.7
 
@@ -93,3 +94,10 @@ class GoogleSpreadSheet(Table):
         self.worksheet.update_cell(cell.row, 9, False)
         time.sleep(self.sleep_time_sec)
         return None
+
+    def get_vac_and_ex_dicts(self) -> list:
+        l = []
+        for v, e in zip(self.current_vocabularies, self.examples):
+            d = {"voc": v, "ex": e}
+            l.append(d)
+        return l

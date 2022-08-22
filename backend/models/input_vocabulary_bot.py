@@ -288,11 +288,13 @@ class InputVocabularyBot(Bot):
 
                 # Check whether the vocabulary exists on Google Spreadsheet or no (CASE4)
                 if self.vocabulary.title in self.google_spreadsheet.current_vocabularies:
-                    # Add result of vocabularies not written. and then proceed next url afterwards
-                    self.result.vocabularies_existed.append(self.vocabulary)
-                    self.google_spreadsheet.update_memorized(self.vocabulary)
-                    continue
-
+                    voc_and_ex = self.google_spreadsheet.get_vac_and_ex_dicts()
+                    examples_from_gs = [ l["ex"] for l in voc_and_ex]
+                    if self.vocabulary.example_sentence in examples_from_gs:
+                        # Add result of vocabularies not written. and then proceed next url afterwards
+                        self.result.vocabularies_existed.append(self.vocabulary)
+                        self.google_spreadsheet.update_memorized(self.vocabulary)
+                        continue
                 # Write vocabulary on Google Spreadsheet    
                 self.google_spreadsheet.write(self.vocabulary)
                 # Add result of vocabularies written
