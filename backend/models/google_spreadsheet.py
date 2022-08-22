@@ -25,7 +25,8 @@ class GoogleSpreadSheet(Table):
             sheet_name = setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_NAME_FOR_PRO']
 
         self.worksheet = GoogleSpreadSheet.get_worksheet(self.workbook, sheet_name)
-        self.unique_worksheet = GoogleSpreadSheet.get_worksheet(self.workbook, "Unique Input")
+        sheet_name = setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_NAME_FOR_UNIQUE']
+        self.unique_worksheet = GoogleSpreadSheet.get_worksheet(self.workbook, sheet_name)
         self.current_vocabularies = self.worksheet.col_values(1)
         self.examples = self.worksheet.col_values(6)
         self.next_row = GoogleSpreadSheet.next_available_row(self.worksheet)
