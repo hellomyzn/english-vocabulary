@@ -16,7 +16,7 @@ class GoogleSpreadSheet(Table):
     def __init__(self, env):
         self.columns = GoogleSpreadSheet.get_columns()
         self.workbook = GoogleSpreadSheet.get_workbook()
-        
+
         if env == 'dev':
             sheet_name = setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_NAME_FOR_DEV']
         elif env == 'pro':
@@ -27,7 +27,9 @@ class GoogleSpreadSheet(Table):
         self.worksheet = GoogleSpreadSheet.get_worksheet(self.workbook, sheet_name)
         sheet_name = setting.CONFIG['GOOGLE_API']['SPREAD_SHEET_NAME_FOR_UNIQUE']
         self.unique_worksheet = GoogleSpreadSheet.get_worksheet(self.workbook, sheet_name)
+        print('start to get vocabulary')
         self.current_vocabularies = self.worksheet.col_values(1)
+        print('start to get example')
         self.examples = self.worksheet.col_values(6)
         self.next_row = GoogleSpreadSheet.next_available_row(self.worksheet)
         self.sleep_time_sec = 0.7
@@ -47,6 +49,7 @@ class GoogleSpreadSheet(Table):
 
     @classmethod
     def get_worksheet(cls, workbook, sheet_name):
+        print(f'[INFO] - Connect to worksheet: {sheet_name}')
         worksheet = workbook.worksheet(sheet_name)
         return worksheet
     
